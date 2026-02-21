@@ -49,13 +49,8 @@ export default function Navbar() {
                 ))}
                 <div className="mt-8 pt-8 border-t border-white/5 flex flex-col gap-4">
                   <SheetClose asChild>
-                    <Link href="/dashboard" className="text-xs font-bold tracking-widest uppercase text-white/40 hover:text-white transition-colors flex items-center gap-2">
-                      <LayoutDashboard className="w-4 h-4" /> Portal
-                    </Link>
-                  </SheetClose>
-                  <SheetClose asChild>
                     <Link href="/login" className="text-xs font-bold tracking-widest uppercase text-white/40 hover:text-white transition-colors flex items-center gap-2">
-                      <User className="w-4 h-4" /> Member Login
+                      <User className="w-4 h-4" /> Sign In
                     </Link>
                   </SheetClose>
                 </div>
@@ -81,21 +76,11 @@ export default function Navbar() {
 
         <div className="flex items-center gap-6">
           <Link 
-            href="/dashboard" 
-            className={cn(
-              "hidden md:flex items-center gap-2 text-[10px] font-black tracking-widest uppercase transition-colors",
-              location === "/dashboard" ? "text-white" : "text-white/40 hover:text-white"
-            )}
-          >
-            <LayoutDashboard className="w-3 h-3" />
-            Portal
-          </Link>
-          <Link 
             href="/login" 
             className="flex items-center gap-2 bg-white text-black px-6 py-2 text-[10px] font-black tracking-[0.2em] uppercase hover:bg-white/90 transition-all min-h-[44px]"
           >
             <User className="w-3 h-3" />
-            Login
+            Sign In
           </Link>
         </div>
       </div>
