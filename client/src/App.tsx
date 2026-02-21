@@ -20,6 +20,7 @@ import Earnings from "@/pages/dashboard/Earnings";
 import Payouts from "@/pages/dashboard/Payouts";
 import Settings from "@/pages/dashboard/Settings";
 import Support from "@/pages/dashboard/Support";
+import HelpCenter from "@/pages/dashboard/HelpCenter";
 import AdminApplications from "@/pages/admin/Applications";
 import AdminReleases from "@/pages/admin/Releases";
 import AdminUsers from "@/pages/admin/Users";
@@ -101,6 +102,7 @@ function Router() {
       <Route path="/app/payouts"><RequireAuth><Payouts /></RequireAuth></Route>
       <Route path="/app/settings"><RequireAuth><Settings /></RequireAuth></Route>
       <Route path="/app/support"><RequireAuth><Support /></RequireAuth></Route>
+      <Route path="/app/help"><RequireAuth><HelpCenter /></RequireAuth></Route>
 
       <Route path="/app/admin/applications"><RequireAdmin><AdminApplications /></RequireAdmin></Route>
       <Route path="/app/admin/releases"><RequireAdmin><AdminReleases /></RequireAdmin></Route>
