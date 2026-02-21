@@ -117,7 +117,7 @@ export async function registerRoutes(
       maxAge: 30 * 24 * 60 * 60 * 1000,
       httpOnly: true,
       secure: process.env.REPLIT_DEPLOYMENT === "1",
-      sameSite: process.env.REPLIT_DEPLOYMENT === "1" ? "none" as const : "lax" as const,
+      sameSite: "lax" as const,
     },
   }));
 
