@@ -122,6 +122,18 @@ export const ticketMessages = pgTable("ticket_messages", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
+export const newsPosts = pgTable("news_posts", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  content: text("content").notNull(),
+  excerpt: text("excerpt"),
+  status: text("status").notNull().default("draft"),
+  authorId: integer("author_id").notNull().references(() => users.id),
+  publishedAt: timestamp("published_at"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
 export const platformSettings = pgTable("platform_settings", {
   id: serial("id").primaryKey(),
   key: text("key").notNull().unique(),
@@ -189,6 +201,13 @@ export const insertPayoutRequestSchema = z.object({
   amount: z.number().min(50, "Minimum payout amount is $50"),
 });
 
+export const insertNewsPostSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  content: z.string().min(1, "Content is required"),
+  excerpt: z.string().optional(),
+  status: z.enum(["draft", "published"]).default("draft"),
+});
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof registerSchema>;
 export type Release = typeof releases.$inferSelect;
@@ -202,3 +221,4 @@ export type Earning = typeof earnings.$inferSelect;
 export type Ticket = typeof tickets.$inferSelect;
 export type TicketMessage = typeof ticketMessages.$inferSelect;
 export type PlatformSetting = typeof platformSettings.$inferSelect;
+export type NewsPost = typeof newsPosts.$inferSelect;

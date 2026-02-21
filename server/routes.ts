@@ -7,7 +7,7 @@ import path from "path";
 import fs from "fs";
 import express from "express";
 import { storage } from "./storage";
-import { registerSchema, loginSchema, insertReleaseSchema, insertTicketSchema, insertTicketMessageSchema, insertPayoutMethodSchema, insertPayoutRequestSchema } from "@shared/schema";
+import { registerSchema, loginSchema, insertReleaseSchema, insertTicketSchema, insertTicketMessageSchema, insertPayoutMethodSchema, insertPayoutRequestSchema, insertNewsPostSchema } from "@shared/schema";
 import { z } from "zod";
 import connectPgSimple from "connect-pg-simple";
 
@@ -593,6 +593,62 @@ export async function registerRoutes(
   app.get("/api/admin/tickets", requireAdmin, async (_req: Request, res: Response) => {
     const tix = await storage.getAllTickets();
     res.json(tix);
+  });
+
+  // ==================== NEWS POSTS ====================
+  app.get("/api/news", async (_req: Request, res: Response) => {
+    const posts = await storage.getPublishedNewsPosts();
+    res.json(posts);
+  });
+
+  app.get("/api/admin/news", requireAdmin, async (_req: Request, res: Response) => {
+    const posts = await storage.getAllNewsPosts();
+    res.json(posts);
+  });
+
+  app.get("/api/admin/news/:id", requireAdmin, async (req: Request, res: Response) => {
+    const post = await storage.getNewsPost(paramId(req.params.id));
+    if (!post) return res.status(404).json({ message: "Not found" });
+    res.json(post);
+  });
+
+  app.post("/api/admin/news", requireAdmin, async (req: Request, res: Response) => {
+    try {
+      const data = insertNewsPostSchema.parse(req.body);
+      const post = await storage.createNewsPost({
+        title: data.title,
+        content: data.content,
+        excerpt: data.excerpt || null,
+        status: data.status || "draft",
+        authorId: req.session.userId!,
+      });
+      res.json(post);
+    } catch (e: any) {
+      if (e instanceof z.ZodError) return res.status(400).json({ message: e.errors[0].message });
+      res.status(500).json({ message: e.message });
+    }
+  });
+
+  app.put("/api/admin/news/:id", requireAdmin, async (req: Request, res: Response) => {
+    try {
+      const data = insertNewsPostSchema.parse(req.body);
+      const post = await storage.updateNewsPost(paramId(req.params.id), {
+        title: data.title,
+        content: data.content,
+        excerpt: data.excerpt || null,
+        status: data.status || "draft",
+      });
+      if (!post) return res.status(404).json({ message: "Not found" });
+      res.json(post);
+    } catch (e: any) {
+      if (e instanceof z.ZodError) return res.status(400).json({ message: e.errors[0].message });
+      res.status(500).json({ message: e.message });
+    }
+  });
+
+  app.delete("/api/admin/news/:id", requireAdmin, async (req: Request, res: Response) => {
+    await storage.deleteNewsPost(paramId(req.params.id));
+    res.json({ message: "Post deleted" });
   });
 
   return httpServer;

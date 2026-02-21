@@ -4,10 +4,11 @@ import pg from "pg";
 import {
   users, applications, releases, tracks, releaseDsps, dsps,
   tickets, ticketMessages, payoutMethodApplications, payoutRequests,
-  earnings, platformSettings,
+  earnings, platformSettings, newsPosts,
   type User, type Release, type Track, type Application, type DSP,
   type ReleaseDSP, type PayoutMethodApplication, type PayoutRequest,
   type Earning, type Ticket, type TicketMessage, type PlatformSetting,
+  type NewsPost,
 } from "@shared/schema";
 
 const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
@@ -250,6 +251,48 @@ export class DatabaseStorage {
   }
   async getAllSettings(): Promise<PlatformSetting[]> {
     return db.select().from(platformSettings);
+  }
+
+  async createNewsPost(data: { title: string; content: string; excerpt?: string | null; status: string; authorId: number }): Promise<NewsPost> {
+    const publishedAt = data.status === "published" ? new Date() : null;
+    const [post] = await db.insert(newsPosts).values({ ...data, publishedAt }).returning();
+    return post;
+  }
+  async getNewsPost(id: number): Promise<NewsPost | undefined> {
+    const [post] = await db.select().from(newsPosts).where(eq(newsPosts.id, id));
+    return post;
+  }
+  async getAllNewsPosts(): Promise<(NewsPost & { author?: { id: number; fullName: string } })[]> {
+    const posts = await db.select().from(newsPosts).orderBy(desc(newsPosts.createdAt));
+    const result = [];
+    for (const post of posts) {
+      const user = await this.getUser(post.authorId);
+      result.push({ ...post, author: user ? { id: user.id, fullName: user.fullName } : undefined });
+    }
+    return result;
+  }
+  async getPublishedNewsPosts(): Promise<(NewsPost & { author?: { id: number; fullName: string } })[]> {
+    const posts = await db.select().from(newsPosts).where(eq(newsPosts.status, "published")).orderBy(desc(newsPosts.publishedAt));
+    const result = [];
+    for (const post of posts) {
+      const user = await this.getUser(post.authorId);
+      result.push({ ...post, author: user ? { id: user.id, fullName: user.fullName } : undefined });
+    }
+    return result;
+  }
+  async updateNewsPost(id: number, data: Partial<NewsPost>): Promise<NewsPost | undefined> {
+    const updates: any = { ...data, updatedAt: new Date() };
+    if (data.status === "published") {
+      const existing = await this.getNewsPost(id);
+      if (existing && !existing.publishedAt) {
+        updates.publishedAt = new Date();
+      }
+    }
+    const [post] = await db.update(newsPosts).set(updates).where(eq(newsPosts.id, id)).returning();
+    return post;
+  }
+  async deleteNewsPost(id: number): Promise<void> {
+    await db.delete(newsPosts).where(eq(newsPosts.id, id));
   }
 }
 

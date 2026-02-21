@@ -90,6 +90,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     { href: "/app/admin/users", label: "User Management" },
     { href: "/app/admin/dsps", label: "DSP Management" },
     { href: "/app/admin/support", label: "All Tickets" },
+    { href: "/app/admin/news", label: "News" },
     { href: "/app/admin/settings", label: "Platform Settings" },
   ] : [];
 

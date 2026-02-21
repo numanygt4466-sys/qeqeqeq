@@ -28,6 +28,7 @@ import AdminSupport from "@/pages/admin/Support";
 import AdminPayouts from "@/pages/admin/Payouts";
 import AdminDsps from "@/pages/admin/Dsps";
 import AdminSettings from "@/pages/admin/Settings";
+import AdminNews from "@/pages/admin/News";
 import PendingApproval from "@/pages/PendingApproval";
 
 import PublicCatalog from "@/pages/Catalog";
@@ -119,6 +120,7 @@ function Router() {
       <Route path="/app/admin/payouts"><RequireAdmin><AdminPayouts /></RequireAdmin></Route>
       <Route path="/app/admin/dsps"><RequireAdmin><AdminDsps /></RequireAdmin></Route>
       <Route path="/app/admin/settings"><RequireAdmin><AdminSettings /></RequireAdmin></Route>
+      <Route path="/app/admin/news"><RequireAdmin><AdminNews /></RequireAdmin></Route>
 
       <Route path="/dashboard"><Redirect to="/app/dashboard" /></Route>
 
