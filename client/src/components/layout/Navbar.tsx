@@ -1,6 +1,7 @@
 import { Link, useLocation } from "wouter";
 import { Menu, User, Send, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useState, useEffect } from "react";
 import SparkleText from "@/components/SparkleText";
 import blingLogo from "@/assets/images/raw-archives-logo-bling.png";
 import {
@@ -12,8 +13,19 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 
+let hasSpunOnce = false;
+
 export default function Navbar() {
   const [location] = useLocation();
+  const [spinning, setSpinning] = useState(!hasSpunOnce);
+
+  useEffect(() => {
+    if (!hasSpunOnce) {
+      hasSpunOnce = true;
+      const timer = setTimeout(() => setSpinning(false), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   const navItems = [
     { href: "/artists", label: "Artists" },
@@ -69,7 +81,14 @@ export default function Navbar() {
         
         <Link href="/" className="absolute left-1/2 -translate-x-1/2 flex items-center group">
           <SparkleText color="rgba(255,255,255,0.9)" sparkleCount={6}>
-            <img src={blingLogo} alt="Raw Archives Records" className="h-14 md:h-20 object-contain transition-transform group-hover:scale-105" />
+            <img
+              src={blingLogo}
+              alt="Raw Archives Records"
+              className={cn(
+                "h-14 md:h-20 object-contain transition-transform group-hover:scale-105",
+                spinning && "logo-spin-intro"
+              )}
+            />
           </SparkleText>
         </Link>
 
