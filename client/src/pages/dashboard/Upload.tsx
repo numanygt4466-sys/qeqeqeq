@@ -132,6 +132,31 @@ export default function Upload() {
   const handleCoverUpload = async (file: File) => {
     setCoverUploading(true);
     setErrors((prev) => ({ ...prev, cover: "" }));
+
+    const img = new Image();
+    const objectUrl = URL.createObjectURL(file);
+    const dimensionCheck = await new Promise<{ width: number; height: number }>((resolve) => {
+      img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight });
+      img.onerror = () => resolve({ width: 0, height: 0 });
+      img.src = objectUrl;
+    });
+
+    if (dimensionCheck.width < 3000 || dimensionCheck.height < 3000) {
+      setCoverUploading(false);
+      setErrors((prev) => ({ ...prev, cover: `Image must be at least 3000×3000px. Yours is ${dimensionCheck.width}×${dimensionCheck.height}px.` }));
+      toast({ title: "Cover image too small", description: `Minimum 3000×3000px required. Yours: ${dimensionCheck.width}×${dimensionCheck.height}px.`, variant: "destructive" });
+      URL.revokeObjectURL(objectUrl);
+      return;
+    }
+
+    if (dimensionCheck.width !== dimensionCheck.height) {
+      setCoverUploading(false);
+      setErrors((prev) => ({ ...prev, cover: `Image must be square (1:1). Yours is ${dimensionCheck.width}×${dimensionCheck.height}px.` }));
+      toast({ title: "Cover image must be square", description: "Please upload a 1:1 aspect ratio image.", variant: "destructive" });
+      URL.revokeObjectURL(objectUrl);
+      return;
+    }
+
     try {
       const formData = new FormData();
       formData.append("cover", file);
@@ -140,11 +165,12 @@ export default function Upload() {
       const data = await res.json();
       setCoverArtUrl(data.url);
       setCoverFileName(data.fileName);
-      setCoverPreview(URL.createObjectURL(file));
+      setCoverPreview(objectUrl);
       toast({ title: "Cover uploaded successfully" });
     } catch {
       setErrors((prev) => ({ ...prev, cover: "Failed to upload cover image" }));
       toast({ title: "Cover upload failed", variant: "destructive" });
+      URL.revokeObjectURL(objectUrl);
     } finally {
       setCoverUploading(false);
     }
@@ -426,7 +452,7 @@ export default function Upload() {
               <div className="flex-1 space-y-3">
                 <div>
                   <p className="text-sm font-medium text-gray-900">Cover Art</p>
-                  <p className="text-xs text-gray-500 mt-1">JPG or PNG, minimum 3000 x 3000 px, square format.</p>
+                  <p className="text-xs text-gray-500 mt-1">JPG or PNG, minimum 3000 × 3000 px, square format. <span className="text-red-500 font-medium">Required.</span></p>
                 </div>
                 {coverFileName && (
                   <p className="text-xs text-gray-600 bg-gray-50 px-3 py-2 rounded border border-gray-200">{coverFileName}</p>
@@ -519,10 +545,10 @@ export default function Upload() {
                           <div>
                             <label className="cursor-pointer text-indigo-600 hover:text-indigo-700 text-xs font-medium flex items-center gap-1">
                               <UploadCloud className="w-3.5 h-3.5" />
-                              Upload MP3
+                              Upload WAV
                               <input
                                 type="file"
-                                accept="audio/*"
+                                accept=".wav,audio/wav"
                                 className="hidden"
                                 onChange={(e) => {
                                   const file = e.target.files?.[0];

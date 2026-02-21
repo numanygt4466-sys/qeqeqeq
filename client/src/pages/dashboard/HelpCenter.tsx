@@ -54,6 +54,7 @@ export default function HelpCenter() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTicketId, setSelectedTicketId] = useState<number | null>(null);
   const [showCreate, setShowCreate] = useState(false);
+  const [newTopic, setNewTopic] = useState("");
   const [newSubject, setNewSubject] = useState("");
   const [newMessage, setNewMessage] = useState("");
   const [reply, setReply] = useState("");
@@ -75,13 +76,30 @@ export default function HelpCenter() {
     enabled: !!selectedTicketId,
   });
 
+  const topicOptions = [
+    "Release Submission",
+    "Release Takedown",
+    "Metadata Change",
+    "Earnings & Royalties",
+    "Payout Issue",
+    "Account & Login",
+    "Cover Art / Artwork",
+    "Audio Quality",
+    "DSP / Distribution",
+    "Copyright / DMCA",
+    "Technical Issue",
+    "Other",
+  ];
+
   const createMutation = useMutation({
     mutationFn: async () => {
-      await apiRequest("POST", "/api/tickets", { subject: newSubject, message: newMessage });
+      const subject = newTopic ? `[${newTopic}] ${newSubject}` : newSubject;
+      await apiRequest("POST", "/api/tickets", { subject, message: newMessage });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/tickets"] });
       setShowCreate(false);
+      setNewTopic("");
       setNewSubject("");
       setNewMessage("");
       setActiveTab("tickets");
@@ -348,7 +366,21 @@ export default function HelpCenter() {
           </DialogHeader>
           <div className="space-y-4 py-2">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Subject</label>
+              <label className="text-sm font-medium text-gray-700">Topic <span className="text-red-500">*</span></label>
+              <select
+                value={newTopic}
+                onChange={(e) => setNewTopic(e.target.value)}
+                className="w-full border border-gray-300 rounded-md h-10 px-3 text-sm text-gray-900 bg-white focus:border-black focus:outline-none focus:ring-1 focus:ring-black"
+                data-testid="select-ticket-topic"
+              >
+                <option value="">Select a topic...</option>
+                {topicOptions.map((topic) => (
+                  <option key={topic} value={topic}>{topic}</option>
+                ))}
+              </select>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">Subject <span className="text-red-500">*</span></label>
               <Input
                 value={newSubject}
                 onChange={(e) => setNewSubject(e.target.value)}
@@ -357,7 +389,7 @@ export default function HelpCenter() {
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Description</label>
+              <label className="text-sm font-medium text-gray-700">Description <span className="text-red-500">*</span></label>
               <Textarea
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
@@ -371,7 +403,7 @@ export default function HelpCenter() {
             <Button variant="outline" onClick={() => setShowCreate(false)}>Cancel</Button>
             <Button
               onClick={() => createMutation.mutate()}
-              disabled={!newSubject.trim() || !newMessage.trim() || createMutation.isPending}
+              disabled={!newTopic || !newSubject.trim() || !newMessage.trim() || createMutation.isPending}
               className="bg-black hover:bg-gray-900 text-white"
               data-testid="button-submit-ticket"
             >

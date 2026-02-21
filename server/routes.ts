@@ -63,11 +63,11 @@ const audioUpload = multer({
     filename: (_req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`),
   }),
   fileFilter: (_req, file, cb) => {
-    const allowed = [".mp3", ".wav"];
+    const allowed = [".wav"];
     const ext = path.extname(file.originalname).toLowerCase();
     cb(null, allowed.includes(ext));
   },
-  limits: { fileSize: 100 * 1024 * 1024 },
+  limits: { fileSize: 200 * 1024 * 1024 },
 });
 
 const coverUpload = multer({
@@ -167,7 +167,7 @@ export async function registerRoutes(
 
   // ==================== FILE UPLOADS ====================
   app.post("/api/upload/audio", requireApproved, audioUpload.single("audio"), (req: Request, res: Response) => {
-    if (!req.file) return res.status(400).json({ message: "No audio file uploaded or invalid format. Use MP3 or WAV." });
+    if (!req.file) return res.status(400).json({ message: "No audio file uploaded or invalid format. WAV files only (16-bit, 44.1kHz)." });
     res.json({ url: `/uploads/audio/${req.file.filename}`, fileName: req.file.originalname });
   });
 
