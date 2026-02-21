@@ -2,9 +2,10 @@ import { useState } from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Disc, CheckCircle } from "lucide-react";
+import { CheckCircle } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import SparkleText from "@/components/SparkleText";
+import blingLogo from "@/assets/images/raw-archives-logo-bling.png";
 
 export default function Register() {
   const { register, registerError, registerSuccess, clearErrors } = useAuth();
@@ -55,10 +56,9 @@ export default function Register() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4 sm:p-6 py-12 pb-safe">
-      <Link href="/" className="flex items-center gap-2 mb-10">
-        <Disc className="w-7 h-7 text-indigo-600" />
-        <SparkleText color="rgba(0,0,0,0.6)" sparkleCount={4}>
-          <span className="font-bold text-xl tracking-wider uppercase text-gray-900">RAW ARCHIVES</span>
+      <Link href="/" className="mb-10 inline-block">
+        <SparkleText color="rgba(180,160,100,0.8)" sparkleCount={4}>
+          <img src={blingLogo} alt="Raw Archives Records" className="h-14 object-contain" />
         </SparkleText>
       </Link>
 
