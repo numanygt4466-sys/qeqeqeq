@@ -7,7 +7,7 @@ export default function Footer() {
   return (
     <footer className="fixed bottom-0 w-full bg-black border-t border-white/10 flex flex-col md:flex-row items-center justify-between px-6 md:px-12 z-50 text-[9px] tracking-widest uppercase font-bold text-white/40 py-3 md:py-0 md:h-12 gap-3 md:gap-0 pb-[calc(0.75rem+env(safe-area-inset-bottom))] md:pb-0">
       <div className="flex-1 flex items-center justify-center md:justify-start gap-2">
-        <span className="hidden md:inline">&copy; {year} RAW ARCHIVES MUSIC GROUP N.V. ALL RIGHTS RESERVED.</span>
+        <span className="hidden md:inline">&copy; {year} RAW ARCHIVES RECORDS N.V. ALL RIGHTS RESERVED.</span>
         <span className="md:hidden">&copy; {year} RAW ARCHIVES</span>
       </div>
 
