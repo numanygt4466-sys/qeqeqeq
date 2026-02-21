@@ -34,7 +34,7 @@ export default function Navbar() {
                 <SheetTitle className="text-[10px] font-black tracking-[0.4em] uppercase text-white/40">Navigation</SheetTitle>
               </SheetHeader>
               <div className="flex flex-col p-8 gap-8">
-                {navItems.map((item) => (
+                {navItems.filter(item => !item.icon).map((item) => (
                   <SheetClose asChild key={item.href}>
                     <Link 
                       href={item.href} 
@@ -43,6 +43,17 @@ export default function Navbar() {
                         location === item.href ? "text-primary" : "text-white"
                       )}
                     >
+                      {item.label}
+                    </Link>
+                  </SheetClose>
+                ))}
+                {navItems.filter(item => item.icon).map((item) => (
+                  <SheetClose asChild key={item.href}>
+                    <Link 
+                      href={item.href} 
+                      className="mt-2 inline-flex items-center justify-center gap-2 bg-white text-black px-8 py-4 text-sm font-black tracking-[0.2em] uppercase hover:bg-white/90 transition-all"
+                    >
+                      {item.icon && <item.icon className="w-4 h-4" />}
                       {item.label}
                     </Link>
                   </SheetClose>
