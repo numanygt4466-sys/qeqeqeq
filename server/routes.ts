@@ -40,6 +40,21 @@ function requireApproved(req: Request, res: Response, next: NextFunction) {
   });
 }
 
+function requireNotSuspended(req: Request, res: Response, next: NextFunction) {
+  if (!req.session.userId) {
+    return res.status(401).json({ message: "Not authenticated" });
+  }
+  storage.getUser(req.session.userId).then(user => {
+    if (!user || !user.isApproved) {
+      return res.status(403).json({ message: "Account not approved" });
+    }
+    if (user.isSuspended) {
+      return res.status(403).json({ message: "Your account has been suspended" });
+    }
+    next();
+  });
+}
+
 function requireAdmin(req: Request, res: Response, next: NextFunction) {
   if (!req.session.userId) {
     return res.status(401).json({ message: "Not authenticated" });
@@ -175,12 +190,12 @@ export async function registerRoutes(
   });
 
   // ==================== FILE UPLOADS ====================
-  app.post("/api/upload/audio", requireApproved, audioUpload.single("audio"), (req: Request, res: Response) => {
+  app.post("/api/upload/audio", requireNotSuspended, audioUpload.single("audio"), (req: Request, res: Response) => {
     if (!req.file) return res.status(400).json({ message: "No audio file uploaded or invalid format. WAV files only (16-bit, 44.1kHz)." });
     res.json({ url: `/uploads/audio/${req.file.filename}`, fileName: req.file.originalname });
   });
 
-  app.post("/api/upload/cover", requireApproved, coverUpload.single("cover"), (req: Request, res: Response) => {
+  app.post("/api/upload/cover", requireNotSuspended, coverUpload.single("cover"), (req: Request, res: Response) => {
     if (!req.file) return res.status(400).json({ message: "No cover image uploaded or invalid format. Use JPG or PNG." });
     res.json({ url: `/uploads/covers/${req.file.filename}`, fileName: req.file.originalname });
   });
@@ -231,7 +246,7 @@ export async function registerRoutes(
     res.json({ ...release, tracks: relTracks, dspIds });
   });
 
-  app.post("/api/releases", requireApproved, async (req: Request, res: Response) => {
+  app.post("/api/releases", requireNotSuspended, async (req: Request, res: Response) => {
     try {
       const data = insertReleaseSchema.parse(req.body);
       if (!data.coverArtUrl) return res.status(400).json({ message: "Cover art is required" });
@@ -338,6 +353,22 @@ export async function registerRoutes(
     res.json({ message: "User deleted" });
   });
 
+  app.post("/api/admin/users/:id/suspend", requireAdmin, async (req: Request, res: Response) => {
+    const { reason } = req.body;
+    if (!reason || !reason.trim()) return res.status(400).json({ message: "Suspension reason is required" });
+    const user = await storage.updateUser(paramId(req.params.id), { isSuspended: true, suspensionReason: reason.trim() });
+    if (!user) return res.status(404).json({ message: "User not found" });
+    const { password, ...safeUser } = user;
+    res.json(safeUser);
+  });
+
+  app.post("/api/admin/users/:id/unsuspend", requireAdmin, async (req: Request, res: Response) => {
+    const user = await storage.updateUser(paramId(req.params.id), { isSuspended: false, suspensionReason: null });
+    if (!user) return res.status(404).json({ message: "User not found" });
+    const { password, ...safeUser } = user;
+    res.json(safeUser);
+  });
+
   // ==================== ADMIN RELEASES ====================
   app.get("/api/admin/releases", requireAdmin, async (_req: Request, res: Response) => {
     const rels = await storage.getAllReleases();
@@ -421,7 +452,7 @@ export async function registerRoutes(
     res.json(methods);
   });
 
-  app.post("/api/payout-methods", requireApproved, async (req: Request, res: Response) => {
+  app.post("/api/payout-methods", requireNotSuspended, async (req: Request, res: Response) => {
     try {
       const data = insertPayoutMethodSchema.parse(req.body);
       const method = await storage.createPayoutMethod({
@@ -441,7 +472,7 @@ export async function registerRoutes(
     res.json(requests);
   });
 
-  app.post("/api/payouts", requireApproved, async (req: Request, res: Response) => {
+  app.post("/api/payouts", requireNotSuspended, async (req: Request, res: Response) => {
     try {
       const data = insertPayoutRequestSchema.parse(req.body);
       const method = await storage.getPayoutMethod(data.methodId);
@@ -546,7 +577,7 @@ export async function registerRoutes(
     res.json(tix);
   });
 
-  app.post("/api/tickets", requireApproved, async (req: Request, res: Response) => {
+  app.post("/api/tickets", requireNotSuspended, async (req: Request, res: Response) => {
     try {
       const data = insertTicketSchema.parse(req.body);
       const ticket = await storage.createTicket({ userId: req.session.userId!, subject: data.subject, priority: data.priority || "normal" });
@@ -569,7 +600,7 @@ export async function registerRoutes(
     res.json({ ...ticket, messages });
   });
 
-  app.post("/api/tickets/:id/messages", requireApproved, async (req: Request, res: Response) => {
+  app.post("/api/tickets/:id/messages", requireNotSuspended, async (req: Request, res: Response) => {
     try {
       const data = insertTicketMessageSchema.parse(req.body);
       const ticket = await storage.getTicket(paramId(req.params.id));

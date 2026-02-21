@@ -19,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { User, Pencil, Trash2, KeyRound } from "lucide-react";
+import { User, Pencil, Trash2, KeyRound, Ban, ShieldCheck } from "lucide-react";
 
 export default function AdminUsers() {
   const { toast } = useToast();
@@ -28,6 +28,8 @@ export default function AdminUsers() {
   const [resetUser, setResetUser] = useState<any | null>(null);
   const [newPassword, setNewPassword] = useState("");
   const [deleteUser, setDeleteUser] = useState<any | null>(null);
+  const [suspendUser, setSuspendUser] = useState<any | null>(null);
+  const [suspensionReason, setSuspensionReason] = useState("");
 
   const { data: users = [], isLoading } = useQuery<any[]>({
     queryKey: ["/api/admin/users"],
@@ -55,6 +57,34 @@ export default function AdminUsers() {
       setResetUser(null);
       setNewPassword("");
       toast({ title: "Success", description: "Password reset successfully." });
+    },
+    onError: (error: Error) => {
+      toast({ title: "Error", description: error.message });
+    },
+  });
+
+  const suspendMutation = useMutation({
+    mutationFn: async ({ id, reason }: { id: number; reason: string }) => {
+      await apiRequest("POST", `/api/admin/users/${id}/suspend`, { reason });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+      setSuspendUser(null);
+      setSuspensionReason("");
+      toast({ title: "Success", description: "User suspended." });
+    },
+    onError: (error: Error) => {
+      toast({ title: "Error", description: error.message });
+    },
+  });
+
+  const unsuspendMutation = useMutation({
+    mutationFn: async (id: number) => {
+      await apiRequest("POST", `/api/admin/users/${id}/unsuspend`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+      toast({ title: "Success", description: "User unsuspended." });
     },
     onError: (error: Error) => {
       toast({ title: "Error", description: error.message });
@@ -106,8 +136,14 @@ export default function AdminUsers() {
     );
   };
 
-  const statusPill = (isApproved: boolean) => {
-    if (isApproved)
+  const statusPill = (user: any) => {
+    if (user.isSuspended)
+      return (
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+          Suspended
+        </span>
+      );
+    if (user.isApproved)
       return (
         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
           Approved
@@ -162,7 +198,7 @@ export default function AdminUsers() {
                   <td className="px-6 py-4 text-gray-600 hidden md:table-cell" data-testid={`text-user-email-${u.id}`}>{u.email}</td>
                   <td className="px-6 py-4 text-gray-900 hidden md:table-cell" data-testid={`text-user-fullname-${u.id}`}>{u.fullName}</td>
                   <td className="px-3 md:px-6 py-4">{rolePill(u.role)}</td>
-                  <td className="px-6 py-4 hidden md:table-cell">{statusPill(u.isApproved)}</td>
+                  <td className="px-6 py-4 hidden md:table-cell">{statusPill(u)}</td>
                   <td className="px-3 md:px-6 py-4 text-center">
                     <div className="flex items-center justify-center gap-1 md:gap-2 flex-wrap">
                       <Button
@@ -183,6 +219,29 @@ export default function AdminUsers() {
                       >
                         <KeyRound className="w-3 h-3 mr-1" /> Reset
                       </Button>
+                      {u.role !== "label_manager" && (
+                        u.isSuspended ? (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => unsuspendMutation.mutate(u.id)}
+                            className="border-green-300 text-green-600 hover:bg-green-50 rounded-md"
+                            data-testid={`button-unsuspend-user-${u.id}`}
+                          >
+                            <ShieldCheck className="w-3 h-3 mr-1" /> Unsuspend
+                          </Button>
+                        ) : (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setSuspendUser(u)}
+                            className="border-orange-300 text-orange-600 hover:bg-orange-50 rounded-md"
+                            data-testid={`button-suspend-user-${u.id}`}
+                          >
+                            <Ban className="w-3 h-3 mr-1" /> Suspend
+                          </Button>
+                        )
+                      )}
                       {u.role !== "label_manager" && (
                         <Button
                           size="sm"
@@ -300,6 +359,38 @@ export default function AdminUsers() {
               data-testid="button-confirm-reset"
             >
               Reset Password
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!suspendUser} onOpenChange={(open) => { if (!open) { setSuspendUser(null); setSuspensionReason(""); } }}>
+        <DialogContent className="w-[95vw] max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Suspend User</DialogTitle>
+            <DialogDescription>
+              Suspend {suspendUser?.fullName} (@{suspendUser?.username}). They will not be able to upload or perform actions.
+            </DialogDescription>
+          </DialogHeader>
+          <div>
+            <label className="text-sm font-medium text-gray-700 mb-1 block">Reason for Suspension</label>
+            <textarea
+              value={suspensionReason}
+              onChange={(e) => setSuspensionReason(e.target.value)}
+              placeholder="Enter the reason for suspending this account..."
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm min-h-[100px] focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              data-testid="input-suspension-reason"
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => { setSuspendUser(null); setSuspensionReason(""); }}>Cancel</Button>
+            <Button
+              onClick={() => suspendUser && suspendMutation.mutate({ id: suspendUser.id, reason: suspensionReason })}
+              disabled={!suspensionReason.trim()}
+              className="bg-red-600 text-white hover:bg-red-700"
+              data-testid="button-confirm-suspend"
+            >
+              Suspend User
             </Button>
           </DialogFooter>
         </DialogContent>

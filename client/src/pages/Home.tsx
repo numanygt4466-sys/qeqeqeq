@@ -1,4 +1,5 @@
 import { Link } from "wouter";
+import { useQuery } from "@tanstack/react-query";
 import heroEditorial from "@/assets/images/hero-editorial.png";
 import release1 from "@/assets/images/release-1.png";
 import release2 from "@/assets/images/release-2.png";
@@ -7,6 +8,10 @@ import virginMusicLogo from "@assets/Virgin_Music_Group.svg_1771701368920.png";
 import { ChevronRight, Play, Globe, ChevronUp, ChevronDown } from "lucide-react";
 
 export default function Home() {
+  const { data: newsPosts = [] } = useQuery<any[]>({
+    queryKey: ["/api/news"],
+  });
+
   return (
     <div className="bg-black min-h-screen">
       {/* Universal-style Hero Section */}
@@ -44,36 +49,69 @@ export default function Home() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
-          {/* Main News Card */}
-          <div className="md:col-span-8 group cursor-pointer">
-            <div className="aspect-[16/8] overflow-hidden mb-8 bg-[#111]">
-              <img src={release1} className="w-full h-full object-cover grayscale brightness-75 transition-all duration-1000 group-hover:scale-105 group-hover:brightness-100" alt="Global News" />
-            </div>
-            <div className="max-w-2xl">
-              <span className="text-[10px] text-white/40 font-bold uppercase tracking-[0.3em] mb-4 block">Corporate Announcement</span>
-              <h3 className="text-2xl md:text-4xl font-black tracking-tighter uppercase mb-6 leading-tight group-hover:underline underline-offset-8">Raw Archives Music Group Launches Strategic Partnership with Independent Innovators</h3>
-              <p className="text-white/40 text-sm leading-relaxed mb-8">The expansion marks a significant milestone in providing global infrastructure to the independent sector, bridging the gap between artistic freedom and institutional power.</p>
-              <span className="text-[9px] font-black tracking-[0.3em] uppercase text-white pb-1 border-b-2 border-white inline-block">Read Article</span>
-            </div>
-          </div>
-
-          {/* Secondary News Sidebar */}
-          <div className="md:col-span-4 flex flex-col gap-12 border-l-0 pl-0 md:border-l md:border-white/5 md:pl-12">
-            {[
-              { title: "Arcane's 'Void' Certified Platinum in Global Markets", category: "Milestone", img: release2 },
-              { title: "2024 Artist Development Grant Recipients Announced", category: "Community", img: release3 }
-            ].map((news, i) => (
-              <div key={i} className="group cursor-pointer">
-                <div className="aspect-video overflow-hidden mb-6 bg-[#111]">
-                   <img src={news.img} className="w-full h-full object-cover grayscale transition-transform duration-700 group-hover:scale-110" alt={news.title} />
-                </div>
-                <span className="text-[9px] text-white/40 font-bold uppercase tracking-[0.3em] mb-3 block">{news.category}</span>
-                <h3 className="text-lg font-black tracking-tight uppercase leading-tight group-hover:text-white/80 transition-colors">{news.title}</h3>
+        {newsPosts.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
+            <div className="md:col-span-8 group cursor-pointer" data-testid="card-featured-news">
+              <div className="aspect-[16/8] overflow-hidden mb-8 bg-gradient-to-br from-[#1a1a2e] to-[#16213e] flex items-center justify-center">
+                <span className="text-[80px] md:text-[120px] font-black text-white/5 uppercase tracking-tighter select-none">NEWS</span>
               </div>
-            ))}
+              <div className="max-w-2xl">
+                <span className="text-[10px] text-white/40 font-bold uppercase tracking-[0.3em] mb-4 block">
+                  {newsPosts[0].publishedAt ? new Date(newsPosts[0].publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'News'}
+                </span>
+                <h3 className="text-2xl md:text-4xl font-black tracking-tighter uppercase mb-6 leading-tight group-hover:underline underline-offset-8" data-testid="text-featured-news-title">
+                  {newsPosts[0].title}
+                </h3>
+                <p className="text-white/40 text-sm leading-relaxed mb-8">
+                  {newsPosts[0].excerpt || newsPosts[0].content?.substring(0, 200) + '...'}
+                </p>
+                <span className="text-[9px] font-black tracking-[0.3em] uppercase text-white pb-1 border-b-2 border-white inline-block">Read Article</span>
+              </div>
+            </div>
+
+            <div className="md:col-span-4 flex flex-col gap-12 border-l-0 pl-0 md:border-l md:border-white/5 md:pl-12">
+              {newsPosts.slice(1, 3).map((post: any, i: number) => (
+                <div key={post.id} className="group cursor-pointer" data-testid={`card-news-${post.id}`}>
+                  <div className="aspect-video overflow-hidden mb-6 bg-gradient-to-br from-[#0f0f23] to-[#1a1a2e] flex items-center justify-center">
+                    <span className="text-[40px] font-black text-white/5 uppercase tracking-tighter select-none">{String(i + 1).padStart(2, '0')}</span>
+                  </div>
+                  <span className="text-[9px] text-white/40 font-bold uppercase tracking-[0.3em] mb-3 block">
+                    {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'News'}
+                  </span>
+                  <h3 className="text-lg font-black tracking-tight uppercase leading-tight group-hover:text-white/80 transition-colors">{post.title}</h3>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
+            <div className="md:col-span-8 group cursor-pointer">
+              <div className="aspect-[16/8] overflow-hidden mb-8 bg-[#111]">
+                <img src={release1} className="w-full h-full object-cover grayscale brightness-75 transition-all duration-1000 group-hover:scale-105 group-hover:brightness-100" alt="Global News" />
+              </div>
+              <div className="max-w-2xl">
+                <span className="text-[10px] text-white/40 font-bold uppercase tracking-[0.3em] mb-4 block">Corporate Announcement</span>
+                <h3 className="text-2xl md:text-4xl font-black tracking-tighter uppercase mb-6 leading-tight group-hover:underline underline-offset-8">Raw Archives Music Group Launches Strategic Partnership with Independent Innovators</h3>
+                <p className="text-white/40 text-sm leading-relaxed mb-8">The expansion marks a significant milestone in providing global infrastructure to the independent sector, bridging the gap between artistic freedom and institutional power.</p>
+                <span className="text-[9px] font-black tracking-[0.3em] uppercase text-white pb-1 border-b-2 border-white inline-block">Read Article</span>
+              </div>
+            </div>
+            <div className="md:col-span-4 flex flex-col gap-12 border-l-0 pl-0 md:border-l md:border-white/5 md:pl-12">
+              {[
+                { title: "Arcane's 'Void' Certified Platinum in Global Markets", category: "Milestone", img: release2 },
+                { title: "2024 Artist Development Grant Recipients Announced", category: "Community", img: release3 }
+              ].map((news, i) => (
+                <div key={i} className="group cursor-pointer">
+                  <div className="aspect-video overflow-hidden mb-6 bg-[#111]">
+                    <img src={news.img} className="w-full h-full object-cover grayscale transition-transform duration-700 group-hover:scale-110" alt={news.title} />
+                  </div>
+                  <span className="text-[9px] text-white/40 font-bold uppercase tracking-[0.3em] mb-3 block">{news.category}</span>
+                  <h3 className="text-lg font-black tracking-tight uppercase leading-tight group-hover:text-white/80 transition-colors">{news.title}</h3>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </section>
 
       {/* Corporate Capabilities - UMG Philosophy */}

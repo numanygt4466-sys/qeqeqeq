@@ -30,6 +30,7 @@ import AdminDsps from "@/pages/admin/Dsps";
 import AdminSettings from "@/pages/admin/Settings";
 import AdminNews from "@/pages/admin/News";
 import PendingApproval from "@/pages/PendingApproval";
+import SuspendedAccount from "@/pages/SuspendedAccount";
 
 import PublicCatalog from "@/pages/Catalog";
 import PublicArtists from "@/pages/Artists";
@@ -66,6 +67,10 @@ function RequireAuth({ children }: { children: React.ReactNode }) {
     return <PendingApproval />;
   }
 
+  if (user.isSuspended) {
+    return <SuspendedAccount reason={user.suspensionReason} />;
+  }
+
   return <AppLayout>{children}</AppLayout>;
 }
 
@@ -82,6 +87,7 @@ function RequireAdmin({ children }: { children: React.ReactNode }) {
 
   if (!user) return <Redirect to="/login" />;
   if (!user.isApproved) return <PendingApproval />;
+  if (user.isSuspended) return <SuspendedAccount reason={user.suspensionReason} />;
   if (user.role !== "label_manager") return <Redirect to="/app/dashboard" />;
 
   return <AppLayout>{children}</AppLayout>;

@@ -10,6 +10,8 @@ type User = {
   labelName: string | null;
   role: string;
   isApproved: boolean;
+  isSuspended: boolean;
+  suspensionReason: string | null;
   country: string | null;
   timezone: string | null;
   createdAt: string;
