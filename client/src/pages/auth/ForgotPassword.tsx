@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { Disc, ArrowLeft, CheckCircle } from "lucide-react";
+import { ArrowLeft, CheckCircle } from "lucide-react";
+import blingLogo from "@/assets/images/raw-archives-logo-bling.png";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -18,9 +19,8 @@ export default function ForgotPassword() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6">
-      <Link href="/" className="flex items-center gap-2 mb-10">
-        <Disc className="w-6 h-6 text-indigo-600" />
-        <span className="font-bold text-lg tracking-wider uppercase text-gray-900">RAW ARCHIVES</span>
+      <Link href="/" className="mb-10 logo-shine inline-block">
+        <img src={blingLogo} alt="Raw Archives Records" className="h-12 object-contain" />
       </Link>
 
       <div className="w-full max-w-md bg-white border border-gray-200 rounded-lg shadow-sm p-8">

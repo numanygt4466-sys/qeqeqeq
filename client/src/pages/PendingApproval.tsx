@@ -1,5 +1,6 @@
 import { Clock, LogOut } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
+import blingLogo from "@/assets/images/raw-archives-logo-bling.png";
 
 export default function PendingApproval() {
   const { logout, user } = useAuth();
@@ -7,8 +8,7 @@ export default function PendingApproval() {
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6">
       <div className="flex flex-col items-center gap-1 mb-10">
-        <span className="font-bold text-xl tracking-widest uppercase text-gray-900">RAW ARCHIVES</span>
-        <span className="text-xs text-gray-400 tracking-wider">Music Distribution</span>
+        <span className="logo-shine inline-block"><img src={blingLogo} alt="Raw Archives Records" className="h-12 object-contain" /></span>
       </div>
 
       <div className="w-full max-w-md bg-white border border-gray-200 rounded-lg shadow-sm p-8 text-center">

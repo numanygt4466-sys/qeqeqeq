@@ -57,7 +57,7 @@ export default function Navbar() {
                 </div>
               </div>
               <div className="absolute bottom-8 left-8 pb-[env(safe-area-inset-bottom)]">
-                <img src={blingLogo} alt="Raw Archives Records" className="h-10 object-contain" />
+                <img src={blingLogo} alt="Raw Archives Records" className="h-10 object-contain logo-shine" />
               </div>
             </SheetContent>
           </Sheet>
@@ -65,7 +65,7 @@ export default function Navbar() {
         </div>
         
         <Link href="/" className="absolute left-1/2 -translate-x-1/2 flex items-center group">
-          <img src={blingLogo} alt="Raw Archives Records" className="h-10 md:h-14 object-contain transition-transform group-hover:scale-105" />
+          <span className="logo-shine"><img src={blingLogo} alt="Raw Archives Records" className="h-10 md:h-14 object-contain transition-transform group-hover:scale-105" /></span>
         </Link>
 
         <div className="flex items-center gap-6">

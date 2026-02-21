@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { Eye, EyeOff } from "lucide-react";
+import blingLogo from "@/assets/images/raw-archives-logo-bling.png";
 
 function FloatingInput({
   id,
@@ -82,11 +83,8 @@ export default function Login() {
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6">
       <div className="w-full max-w-[400px]">
-        <div className="text-center mb-10">
-          <h1 className="text-[22px] font-bold tracking-[0.2em] uppercase text-gray-900" data-testid="text-login-brand">
-            RAW ARCHIVES
-          </h1>
-          <div className="w-12 h-[2px] bg-black mx-auto mt-3" />
+        <div className="text-center mb-10" data-testid="text-login-brand">
+          <span className="logo-shine inline-block"><img src={blingLogo} alt="Raw Archives Records" className="h-12 object-contain mx-auto" /></span>
         </div>
 
         {loginError && (
