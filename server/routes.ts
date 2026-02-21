@@ -144,9 +144,9 @@ export async function registerRoutes(
     try {
       const data = loginSchema.parse(req.body);
       const user = await storage.getUserByUsername(data.username);
-      if (!user) return res.status(401).json({ message: "Invalid credentials" });
+      if (!user) return res.status(401).json({ message: "Incorrect username or password" });
       const validPassword = await bcrypt.compare(data.password, user.password);
-      if (!validPassword) return res.status(401).json({ message: "Invalid credentials" });
+      if (!validPassword) return res.status(401).json({ message: "Incorrect username or password" });
 
       req.session.userId = user.id;
       req.session.save((err) => {
