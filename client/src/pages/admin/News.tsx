@@ -28,6 +28,7 @@ type NewsPost = {
   title: string;
   content: string;
   excerpt: string | null;
+  imageUrl: string | null;
   status: string;
   authorId: number;
   publishedAt: string | null;
@@ -42,7 +43,7 @@ export default function AdminNews() {
   const [editPost, setEditPost] = useState<NewsPost | null>(null);
   const [deletePost, setDeletePost] = useState<NewsPost | null>(null);
   const [previewPost, setPreviewPost] = useState<NewsPost | null>(null);
-  const [form, setForm] = useState({ title: "", content: "", excerpt: "", status: "draft" });
+  const [form, setForm] = useState({ title: "", content: "", excerpt: "", imageUrl: "", status: "draft" });
 
   const { data: posts = [], isLoading } = useQuery<NewsPost[]>({
     queryKey: ["/api/admin/news"],
@@ -93,7 +94,7 @@ export default function AdminNews() {
   const resetForm = () => {
     setShowForm(false);
     setEditPost(null);
-    setForm({ title: "", content: "", excerpt: "", status: "draft" });
+    setForm({ title: "", content: "", excerpt: "", imageUrl: "", status: "draft" });
   };
 
   const openEdit = (post: NewsPost) => {
@@ -102,6 +103,7 @@ export default function AdminNews() {
       title: post.title,
       content: post.content,
       excerpt: post.excerpt || "",
+      imageUrl: post.imageUrl || "",
       status: post.status,
     });
     setShowForm(true);
@@ -109,7 +111,7 @@ export default function AdminNews() {
 
   const openCreate = () => {
     setEditPost(null);
-    setForm({ title: "", content: "", excerpt: "", status: "draft" });
+    setForm({ title: "", content: "", excerpt: "", imageUrl: "", status: "draft" });
     setShowForm(true);
   };
 
@@ -171,10 +173,21 @@ export default function AdminNews() {
               {posts.map((post) => (
                 <tr key={post.id} className="hover:bg-gray-50 transition-colors" data-testid={`row-news-${post.id}`}>
                   <td className="px-4 py-3">
-                    <div className="font-medium text-gray-900 truncate max-w-[280px]" data-testid={`text-news-title-${post.id}`}>{post.title}</div>
-                    {post.excerpt && (
-                      <div className="text-gray-400 text-xs mt-0.5 truncate max-w-[280px]">{post.excerpt}</div>
-                    )}
+                    <div className="flex items-center gap-3">
+                      {post.imageUrl ? (
+                        <img src={post.imageUrl} alt="" className="w-16 h-9 object-cover rounded shrink-0" />
+                      ) : (
+                        <div className="w-16 h-9 bg-gray-100 rounded shrink-0 flex items-center justify-center">
+                          <FileText className="w-4 h-4 text-gray-300" />
+                        </div>
+                      )}
+                      <div>
+                        <div className="font-medium text-gray-900 truncate max-w-[220px]" data-testid={`text-news-title-${post.id}`}>{post.title}</div>
+                        {post.excerpt && (
+                          <div className="text-gray-400 text-xs mt-0.5 truncate max-w-[220px]">{post.excerpt}</div>
+                        )}
+                      </div>
+                    </div>
                   </td>
                   <td className="px-4 py-3 text-gray-600 hidden md:table-cell">
                     {post.author?.fullName || "Unknown"}
@@ -247,6 +260,61 @@ export default function AdminNews() {
               />
             </div>
             <div className="space-y-1.5">
+              <label className="text-sm font-medium text-gray-700">Article Image <span className="text-red-500">*</span></label>
+              <p className="text-xs text-gray-500 mb-2">Required dimensions: <strong>1200 × 630 pixels</strong> (JPG or PNG)</p>
+              {form.imageUrl ? (
+                <div className="relative">
+                  <img src={form.imageUrl} alt="Article preview" className="w-full h-48 object-cover rounded-md border border-gray-200" data-testid="img-news-preview" />
+                  <button
+                    type="button"
+                    onClick={() => setForm({ ...form, imageUrl: "" })}
+                    className="absolute top-2 right-2 bg-black/70 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-black"
+                    data-testid="button-remove-image"
+                  >
+                    ×
+                  </button>
+                </div>
+              ) : (
+                <div className="border-2 border-dashed border-gray-300 rounded-md p-6 text-center">
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      const img = new Image();
+                      img.onload = async () => {
+                        if (img.width !== 1200 || img.height !== 630) {
+                          toast({ title: "Invalid dimensions", description: `Image must be exactly 1200×630px. Your image is ${img.width}×${img.height}px.`, variant: "destructive" });
+                          URL.revokeObjectURL(img.src);
+                          return;
+                        }
+                        URL.revokeObjectURL(img.src);
+                        const formData = new FormData();
+                        formData.append("cover", file);
+                        try {
+                          const res = await fetch("/api/upload/cover", { method: "POST", body: formData, credentials: "include" });
+                          if (!res.ok) throw new Error("Upload failed");
+                          const data = await res.json();
+                          setForm(prev => ({ ...prev, imageUrl: data.url }));
+                        } catch {
+                          toast({ title: "Upload failed", description: "Could not upload image. Please try again.", variant: "destructive" });
+                        }
+                      };
+                      img.src = URL.createObjectURL(file);
+                    }}
+                    className="hidden"
+                    id="news-image-upload"
+                    data-testid="input-news-image"
+                  />
+                  <label htmlFor="news-image-upload" className="cursor-pointer text-sm text-gray-500 hover:text-gray-700">
+                    <span className="block mb-1 font-medium">Click to upload image</span>
+                    <span className="text-xs text-gray-400">1200 × 630px, JPG or PNG</span>
+                  </label>
+                </div>
+              )}
+            </div>
+            <div className="space-y-1.5">
               <label className="text-sm font-medium text-gray-700">Excerpt</label>
               <Input
                 value={form.excerpt}
@@ -287,7 +355,7 @@ export default function AdminNews() {
             </Button>
             <Button
               onClick={handleSubmit}
-              disabled={isPending || !form.title || !form.content}
+              disabled={isPending || !form.title || !form.content || !form.imageUrl}
               className="bg-black hover:bg-gray-800 text-white rounded-md"
               data-testid="button-save-post"
             >
@@ -336,6 +404,9 @@ export default function AdminNews() {
               {previewPost?.status === "published" ? "Published" : "Draft"}
             </DialogDescription>
           </DialogHeader>
+          {previewPost?.imageUrl && (
+            <img src={previewPost.imageUrl} alt={previewPost.title} className="w-full h-48 object-cover rounded-md mt-4" data-testid="img-preview-image" />
+          )}
           <div className="py-4">
             {previewPost?.excerpt && (
               <p className="text-gray-600 italic mb-4 pb-4 border-b border-gray-200">{previewPost.excerpt}</p>

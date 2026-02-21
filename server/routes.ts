@@ -655,6 +655,7 @@ export async function registerRoutes(
         title: data.title,
         content: data.content,
         excerpt: data.excerpt || null,
+        imageUrl: data.imageUrl || null,
         status: data.status || "draft",
         authorId: req.session.userId!,
       });
@@ -672,6 +673,7 @@ export async function registerRoutes(
         title: data.title,
         content: data.content,
         excerpt: data.excerpt || null,
+        imageUrl: data.imageUrl || null,
         status: data.status || "draft",
       });
       if (!post) return res.status(404).json({ message: "Not found" });

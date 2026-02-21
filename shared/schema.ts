@@ -129,6 +129,7 @@ export const newsPosts = pgTable("news_posts", {
   title: text("title").notNull(),
   content: text("content").notNull(),
   excerpt: text("excerpt"),
+  imageUrl: text("image_url"),
   status: text("status").notNull().default("draft"),
   authorId: integer("author_id").notNull().references(() => users.id),
   publishedAt: timestamp("published_at"),
@@ -207,6 +208,7 @@ export const insertNewsPostSchema = z.object({
   title: z.string().min(1, "Title is required"),
   content: z.string().min(1, "Content is required"),
   excerpt: z.string().optional(),
+  imageUrl: z.string().optional(),
   status: z.enum(["draft", "published"]).default("draft"),
 });
 

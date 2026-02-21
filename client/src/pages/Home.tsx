@@ -52,8 +52,14 @@ export default function Home() {
         {newsPosts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
             <div className="md:col-span-8 group cursor-pointer" data-testid="card-featured-news">
-              <div className="aspect-[16/8] overflow-hidden mb-8 bg-gradient-to-br from-[#1a1a2e] to-[#16213e] flex items-center justify-center">
-                <span className="text-[80px] md:text-[120px] font-black text-white/5 uppercase tracking-tighter select-none">NEWS</span>
+              <div className="aspect-[16/8] overflow-hidden mb-8 bg-[#111]">
+                {newsPosts[0].imageUrl ? (
+                  <img src={newsPosts[0].imageUrl} className="w-full h-full object-cover grayscale brightness-75 transition-all duration-1000 group-hover:scale-105 group-hover:brightness-100" alt={newsPosts[0].title} />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-[#1a1a2e] to-[#16213e] flex items-center justify-center">
+                    <span className="text-[80px] md:text-[120px] font-black text-white/5 uppercase tracking-tighter select-none">NEWS</span>
+                  </div>
+                )}
               </div>
               <div className="max-w-2xl">
                 <span className="text-[10px] text-white/40 font-bold uppercase tracking-[0.3em] mb-4 block">
@@ -72,8 +78,14 @@ export default function Home() {
             <div className="md:col-span-4 flex flex-col gap-12 border-l-0 pl-0 md:border-l md:border-white/5 md:pl-12">
               {newsPosts.slice(1, 3).map((post: any, i: number) => (
                 <div key={post.id} className="group cursor-pointer" data-testid={`card-news-${post.id}`}>
-                  <div className="aspect-video overflow-hidden mb-6 bg-gradient-to-br from-[#0f0f23] to-[#1a1a2e] flex items-center justify-center">
-                    <span className="text-[40px] font-black text-white/5 uppercase tracking-tighter select-none">{String(i + 1).padStart(2, '0')}</span>
+                  <div className="aspect-video overflow-hidden mb-6 bg-[#111]">
+                    {post.imageUrl ? (
+                      <img src={post.imageUrl} className="w-full h-full object-cover grayscale transition-transform duration-700 group-hover:scale-110" alt={post.title} />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-[#0f0f23] to-[#1a1a2e] flex items-center justify-center">
+                        <span className="text-[40px] font-black text-white/5 uppercase tracking-tighter select-none">{String(i + 1).padStart(2, '0')}</span>
+                      </div>
+                    )}
                   </div>
                   <span className="text-[9px] text-white/40 font-bold uppercase tracking-[0.3em] mb-3 block">
                     {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'News'}
@@ -91,7 +103,7 @@ export default function Home() {
               </div>
               <div className="max-w-2xl">
                 <span className="text-[10px] text-white/40 font-bold uppercase tracking-[0.3em] mb-4 block">Corporate Announcement</span>
-                <h3 className="text-2xl md:text-4xl font-black tracking-tighter uppercase mb-6 leading-tight group-hover:underline underline-offset-8">Raw Archives Music Group Launches Strategic Partnership with Independent Innovators</h3>
+                <h3 className="text-2xl md:text-4xl font-black tracking-tighter uppercase mb-6 leading-tight group-hover:underline underline-offset-8">Raw Archives Records Launches Strategic Partnership with Independent Innovators</h3>
                 <p className="text-white/40 text-sm leading-relaxed mb-8">The expansion marks a significant milestone in providing global infrastructure to the independent sector, bridging the gap between artistic freedom and institutional power.</p>
                 <span className="text-[9px] font-black tracking-[0.3em] uppercase text-white pb-1 border-b-2 border-white inline-block">Read Article</span>
               </div>
@@ -127,7 +139,7 @@ export default function Home() {
            </div>
            <div className="col-span-12 md:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-px bg-white/5 border border-white/5">
               {[
-                { title: 'Distribution', stat: '120+ Markets' },
+                { title: 'Distribution', stat: '60 Markets' },
                 { title: 'Publishing', stat: 'Direct Admin' },
                 { title: 'Technology', stat: 'Real-time API' },
                 { title: 'Marketing', stat: 'Global Strategy' }

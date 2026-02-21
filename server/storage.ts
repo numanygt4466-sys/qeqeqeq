@@ -253,7 +253,7 @@ export class DatabaseStorage {
     return db.select().from(platformSettings);
   }
 
-  async createNewsPost(data: { title: string; content: string; excerpt?: string | null; status: string; authorId: number }): Promise<NewsPost> {
+  async createNewsPost(data: { title: string; content: string; excerpt?: string | null; imageUrl?: string | null; status: string; authorId: number }): Promise<NewsPost> {
     const publishedAt = data.status === "published" ? new Date() : null;
     const [post] = await db.insert(newsPosts).values({ ...data, publishedAt }).returning();
     return post;
