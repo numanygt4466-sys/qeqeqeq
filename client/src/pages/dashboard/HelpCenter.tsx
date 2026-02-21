@@ -184,7 +184,7 @@ export default function HelpCenter() {
 
   return (
     <div className="space-y-6">
-      <div className="bg-[#1a1a2e] rounded-xl px-6 py-10 text-center">
+      <div className="bg-black rounded-xl px-6 py-10 text-center">
         <h1 className="text-2xl font-bold text-white mb-2" data-testid="text-help-title">How can we help?</h1>
         <p className="text-gray-400 text-sm mb-6">Search our knowledge base or submit a support ticket</p>
         <div className="relative max-w-lg mx-auto">

@@ -105,7 +105,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-[#f5f6f8]">
-      <nav className="bg-[#1a1a2e] shrink-0">
+      <nav className="bg-black shrink-0">
         <div className="max-w-[1400px] mx-auto px-4 md:px-6 flex items-center h-[52px]">
           <Link href="/app/dashboard" className="font-bold text-[13px] tracking-[0.18em] uppercase text-white mr-8 shrink-0" data-testid="nav-brand">
             RAW ARCHIVES
@@ -184,7 +184,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         </div>
 
         {mobileMenuOpen && (
-          <div className="md:hidden border-t border-gray-700 px-4 py-2 space-y-0.5 bg-[#1a1a2e]">
+          <div className="md:hidden border-t border-gray-700 px-4 py-2 space-y-0.5 bg-black">
             {allMobileItems.map((item) => (
               <Link
                 key={item.href}
