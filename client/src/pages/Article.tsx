@@ -1,9 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { useParams, Link } from "wouter";
+import { useParams, Link, useLocation } from "wouter";
 import { Globe, ArrowLeft } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Article() {
   const params = useParams<{ id: string }>();
+  const [, setLocation] = useLocation();
   const { data: article, isLoading, error } = useQuery({
     queryKey: ["/api/news", params.id],
     queryFn: async () => {
@@ -12,6 +14,11 @@ export default function Article() {
       return res.json();
     },
   });
+
+  const handleBack = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setLocation("/");
+  };
 
   if (isLoading) {
     return (
@@ -25,10 +32,14 @@ export default function Article() {
           </div>
         </header>
         <div className="pt-16 flex items-center justify-center min-h-screen">
-          <div className="flex flex-col items-center gap-4">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex flex-col items-center gap-4"
+          >
             <div className="w-8 h-8 border-2 border-white/20 border-t-white rounded-full animate-spin" />
             <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-white/40">Loading</span>
-          </div>
+          </motion.div>
         </div>
       </div>
     );
@@ -45,35 +56,55 @@ export default function Article() {
             </Link>
           </div>
         </header>
-        <div className="pt-16 flex flex-col items-center justify-center min-h-screen gap-6">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="pt-16 flex flex-col items-center justify-center min-h-screen gap-6"
+        >
           <span className="text-[120px] font-black text-white/5 leading-none">404</span>
           <h1 className="text-2xl font-black tracking-tighter uppercase">Article Not Found</h1>
           <p className="text-white/40 text-sm">The article you're looking for doesn't exist or has been removed.</p>
-          <Link href="/" className="mt-4 text-[9px] font-black tracking-[0.3em] uppercase text-white pb-1 border-b-2 border-white inline-block hover:text-white/80 transition-colors" data-testid="link-back-home">
+          <a href="/" onClick={handleBack} className="mt-4 text-[9px] font-black tracking-[0.3em] uppercase text-white pb-1 border-b-2 border-white inline-block hover:text-white/80 transition-colors" data-testid="link-back-home">
             Back to Home
-          </Link>
-        </div>
+          </a>
+        </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="bg-black min-h-screen text-white">
-      <header className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-sm border-b border-white/5">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="bg-black min-h-screen text-white"
+    >
+      <motion.header
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+        className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-sm border-b border-white/5"
+      >
         <div className="px-6 md:px-24 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 group">
             <Globe className="w-5 h-5 text-white/60 group-hover:text-white transition-colors" />
             <span className="text-[11px] font-black tracking-[0.4em] uppercase">Raw Archives</span>
           </Link>
-          <Link href="/" className="flex items-center gap-2 text-[9px] font-bold tracking-[0.2em] uppercase text-white/40 hover:text-white transition-colors">
+          <a href="/" onClick={handleBack} className="flex items-center gap-2 text-[9px] font-bold tracking-[0.2em] uppercase text-white/40 hover:text-white transition-colors">
             <ArrowLeft className="w-3 h-3" />
             Back
-          </Link>
+          </a>
         </div>
-      </header>
+      </motion.header>
 
       {article.imageUrl && (
-        <div className="w-full h-[60vh] md:h-[70vh] relative overflow-hidden">
+        <motion.div
+          initial={{ scale: 1.1, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+          className="w-full h-[60vh] md:h-[70vh] relative overflow-hidden"
+        >
           <img
             src={article.imageUrl}
             alt={article.title}
@@ -81,12 +112,20 @@ export default function Article() {
             data-testid="img-article-hero"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black" />
-        </div>
+        </motion.div>
       )}
 
       <article className={`max-w-3xl mx-auto px-6 md:px-8 ${article.imageUrl ? '-mt-32 relative z-10' : 'pt-32'} pb-24`}>
-        <div className="mb-12">
-          <span
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          className="mb-12"
+        >
+          <motion.span
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.5 }}
             className="text-[10px] text-white/40 font-bold uppercase tracking-[0.3em] mb-6 block"
             data-testid="text-article-date"
           >
@@ -97,17 +136,25 @@ export default function Article() {
                   day: 'numeric',
                 })
               : 'News'}
-          </span>
+          </motion.span>
 
-          <h1
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
             className="text-3xl md:text-5xl lg:text-6xl font-black tracking-tighter uppercase leading-[0.95] mb-8"
             data-testid="text-article-title"
           >
             {article.title}
-          </h1>
+          </motion.h1>
 
           {article.author?.fullName && (
-            <div className="flex items-center gap-3 border-t border-white/10 pt-6">
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.6 }}
+              className="flex items-center gap-3 border-t border-white/10 pt-6"
+            >
               <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
                 <span className="text-[10px] font-black uppercase">
                   {article.author.fullName.charAt(0)}
@@ -117,39 +164,45 @@ export default function Article() {
                 <span className="text-[11px] font-bold tracking-wide">{article.author.fullName}</span>
                 <span className="text-[9px] text-white/30 font-bold uppercase tracking-[0.2em] block">Author</span>
               </div>
-            </div>
+            </motion.div>
           )}
-        </div>
+        </motion.div>
 
-        <div
-          className="prose prose-invert prose-lg max-w-none"
-          data-testid="text-article-content"
-        >
+        <div data-testid="text-article-content">
           {article.content?.split('\n').map((paragraph: string, index: number) => {
             const trimmed = paragraph.trim();
             if (!trimmed) return null;
             return (
-              <p
+              <motion.p
                 key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.7 + index * 0.08, ease: [0.22, 1, 0.36, 1] }}
                 className="text-white/70 text-base md:text-lg leading-relaxed mb-6 font-light"
               >
                 {trimmed}
-              </p>
+              </motion.p>
             );
           })}
         </div>
 
-        <div className="mt-20 pt-12 border-t border-white/10">
-          <Link
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 1.2 }}
+          className="mt-20 pt-12 border-t border-white/10"
+        >
+          <a
             href="/"
-            className="inline-flex items-center gap-3 text-[9px] font-black tracking-[0.3em] uppercase text-white pb-1 border-b-2 border-white hover:text-white/80 hover:border-white/80 transition-colors"
+            onClick={handleBack}
+            className="inline-flex items-center gap-3 text-[9px] font-black tracking-[0.3em] uppercase text-white pb-1 border-b-2 border-white hover:text-white/80 hover:border-white/80 transition-all duration-300 group"
             data-testid="link-back-home"
           >
-            <ArrowLeft className="w-3 h-3" />
+            <ArrowLeft className="w-3 h-3 transition-transform duration-300 group-hover:-translate-x-1" />
             Back to Home
-          </Link>
-        </div>
+          </a>
+        </motion.div>
       </article>
-    </div>
+    </motion.div>
   );
 }
