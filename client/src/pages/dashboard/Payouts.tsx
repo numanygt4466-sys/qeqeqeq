@@ -5,7 +5,6 @@ import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
@@ -23,11 +22,48 @@ import {
 } from "@/components/ui/select";
 import { DollarSign, Plus, CreditCard, Building } from "lucide-react";
 
+interface BankDetails {
+  bankName: string;
+  branchName: string;
+  branchAddress: string;
+  swiftBic: string;
+  iban: string;
+  accountHolderName: string;
+  accountNumber: string;
+  routingNumber: string;
+}
+
+interface CryptoDetails {
+  walletAddress: string;
+  network: string;
+  currency: string;
+  memo: string;
+}
+
+const defaultBankDetails: BankDetails = {
+  bankName: "",
+  branchName: "",
+  branchAddress: "",
+  swiftBic: "",
+  iban: "",
+  accountHolderName: "",
+  accountNumber: "",
+  routingNumber: "",
+};
+
+const defaultCryptoDetails: CryptoDetails = {
+  walletAddress: "",
+  network: "",
+  currency: "",
+  memo: "",
+};
+
 export default function Payouts() {
   const { toast } = useToast();
   const [showAddMethod, setShowAddMethod] = useState(false);
   const [methodType, setMethodType] = useState("");
-  const [methodDetails, setMethodDetails] = useState("");
+  const [bankDetails, setBankDetails] = useState<BankDetails>({ ...defaultBankDetails });
+  const [cryptoDetails, setCryptoDetails] = useState<CryptoDetails>({ ...defaultCryptoDetails });
   const [payoutAmount, setPayoutAmount] = useState("");
   const [payoutMethodId, setPayoutMethodId] = useState("");
 
@@ -43,18 +79,48 @@ export default function Payouts() {
     queryKey: ["/api/payouts"],
   });
 
+  const buildDetailsString = () => {
+    if (methodType === "bank_transfer") {
+      return JSON.stringify(bankDetails);
+    }
+    if (methodType === "crypto") {
+      return JSON.stringify(cryptoDetails);
+    }
+    return "";
+  };
+
+  const getDetailsSummary = (type: string, details: string) => {
+    try {
+      const parsed = JSON.parse(details);
+      if (type === "bank_transfer") {
+        return `${parsed.bankName || "Bank"} — ${parsed.accountHolderName || ""}`.trim();
+      }
+      if (type === "crypto") {
+        return `${parsed.currency || "Crypto"} (${parsed.network || ""}) — ${(parsed.walletAddress || "").substring(0, 12)}...`;
+      }
+    } catch {
+      return details.substring(0, 30);
+    }
+    return details.substring(0, 30);
+  };
+
+  const isBankValid = bankDetails.bankName.trim() && bankDetails.swiftBic.trim() && bankDetails.iban.trim() && bankDetails.accountHolderName.trim();
+  const isCryptoValid = cryptoDetails.walletAddress.trim() && cryptoDetails.network && cryptoDetails.currency;
+  const isMethodFormValid = methodType === "bank_transfer" ? isBankValid : methodType === "crypto" ? isCryptoValid : false;
+
   const addMethodMutation = useMutation({
     mutationFn: async () => {
       await apiRequest("POST", "/api/payout-methods", {
         type: methodType,
-        details: methodDetails,
+        details: buildDetailsString(),
       });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/payout-methods"] });
       setShowAddMethod(false);
       setMethodType("");
-      setMethodDetails("");
+      setBankDetails({ ...defaultBankDetails });
+      setCryptoDetails({ ...defaultCryptoDetails });
       toast({ title: "Payment method submitted for approval" });
     },
     onError: (err: Error) => {
@@ -149,7 +215,7 @@ export default function Payouts() {
                   <SelectContent>
                     {approvedMethods.map((m: any) => (
                       <SelectItem key={m.id} value={String(m.id)}>
-                        {m.type === "crypto" ? "Crypto" : "Bank Transfer"} — {m.details.substring(0, 20)}...
+                        {m.type === "crypto" ? "Crypto" : "Bank Transfer"} — {getDetailsSummary(m.type, m.details)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -219,7 +285,7 @@ export default function Payouts() {
                       <p className="text-sm font-medium text-gray-900">
                         {m.type === "crypto" ? "Crypto Wallet" : "Bank Transfer"}
                       </p>
-                      <p className="text-xs text-gray-400">{m.details}</p>
+                      <p className="text-xs text-gray-400">{getDetailsSummary(m.type, m.details)}</p>
                     </div>
                   </div>
                   <Badge variant={statusVariant(m.status)} data-testid={`status-method-${m.id}`}>
@@ -279,49 +345,192 @@ export default function Payouts() {
       </Card>
 
       <Dialog open={showAddMethod} onOpenChange={setShowAddMethod}>
-        <DialogContent className="bg-white rounded-md">
+        <DialogContent className="bg-white rounded-md max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-gray-900">Add Payment Method</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-2">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Type</label>
-              <Select value={methodType} onValueChange={setMethodType}>
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium text-gray-700">Payment Type <span className="text-red-500">*</span></label>
+              <Select value={methodType} onValueChange={(v) => { setMethodType(v); }}>
                 <SelectTrigger className="rounded-md" data-testid="select-method-type">
-                  <SelectValue placeholder="Select type" />
+                  <SelectValue placeholder="Select payment type" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="crypto">Crypto</SelectItem>
                   <SelectItem value="bank_transfer">Bank Transfer</SelectItem>
+                  <SelectItem value="crypto">Cryptocurrency</SelectItem>
                 </SelectContent>
               </Select>
             </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Details</label>
-              <Textarea
-                value={methodDetails}
-                onChange={(e) => setMethodDetails(e.target.value)}
-                placeholder={
-                  methodType === "crypto"
-                    ? "Enter wallet address..."
-                    : "Enter bank account details..."
-                }
-                className="rounded-md"
-                data-testid="input-method-details"
-              />
-            </div>
+
+            {methodType === "bank_transfer" && (
+              <div className="space-y-3 border-t border-gray-100 pt-4">
+                <p className="text-xs text-gray-500 font-medium uppercase tracking-wider">Bank Account Details</p>
+                <div className="space-y-1.5">
+                  <label className="text-sm font-medium text-gray-700">Account Holder Name <span className="text-red-500">*</span></label>
+                  <Input
+                    value={bankDetails.accountHolderName}
+                    onChange={(e) => setBankDetails(d => ({ ...d, accountHolderName: e.target.value }))}
+                    placeholder="Full name as it appears on the account"
+                    className="rounded-md"
+                    data-testid="input-bank-holder-name"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-sm font-medium text-gray-700">Bank Name <span className="text-red-500">*</span></label>
+                  <Input
+                    value={bankDetails.bankName}
+                    onChange={(e) => setBankDetails(d => ({ ...d, bankName: e.target.value }))}
+                    placeholder="e.g. Chase, HSBC, Barclays"
+                    className="rounded-md"
+                    data-testid="input-bank-name"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-medium text-gray-700">Branch Name</label>
+                    <Input
+                      value={bankDetails.branchName}
+                      onChange={(e) => setBankDetails(d => ({ ...d, branchName: e.target.value }))}
+                      placeholder="Branch name"
+                      className="rounded-md"
+                      data-testid="input-bank-branch-name"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-medium text-gray-700">Branch Address</label>
+                    <Input
+                      value={bankDetails.branchAddress}
+                      onChange={(e) => setBankDetails(d => ({ ...d, branchAddress: e.target.value }))}
+                      placeholder="Branch address"
+                      className="rounded-md"
+                      data-testid="input-bank-branch-address"
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-medium text-gray-700">SWIFT / BIC Code <span className="text-red-500">*</span></label>
+                    <Input
+                      value={bankDetails.swiftBic}
+                      onChange={(e) => setBankDetails(d => ({ ...d, swiftBic: e.target.value.toUpperCase() }))}
+                      placeholder="e.g. CHASUS33"
+                      className="rounded-md uppercase"
+                      data-testid="input-bank-swift"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-medium text-gray-700">IBAN <span className="text-red-500">*</span></label>
+                    <Input
+                      value={bankDetails.iban}
+                      onChange={(e) => setBankDetails(d => ({ ...d, iban: e.target.value.toUpperCase() }))}
+                      placeholder="e.g. GB29NWBK60161331926819"
+                      className="rounded-md uppercase"
+                      data-testid="input-bank-iban"
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-medium text-gray-700">Account Number</label>
+                    <Input
+                      value={bankDetails.accountNumber}
+                      onChange={(e) => setBankDetails(d => ({ ...d, accountNumber: e.target.value }))}
+                      placeholder="Account number"
+                      className="rounded-md"
+                      data-testid="input-bank-account-number"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-medium text-gray-700">Routing Number</label>
+                    <Input
+                      value={bankDetails.routingNumber}
+                      onChange={(e) => setBankDetails(d => ({ ...d, routingNumber: e.target.value }))}
+                      placeholder="Routing / Sort code"
+                      className="rounded-md"
+                      data-testid="input-bank-routing"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {methodType === "crypto" && (
+              <div className="space-y-3 border-t border-gray-100 pt-4">
+                <p className="text-xs text-gray-500 font-medium uppercase tracking-wider">Cryptocurrency Wallet Details</p>
+                <div className="space-y-1.5">
+                  <label className="text-sm font-medium text-gray-700">Wallet Address <span className="text-red-500">*</span></label>
+                  <Input
+                    value={cryptoDetails.walletAddress}
+                    onChange={(e) => setCryptoDetails(d => ({ ...d, walletAddress: e.target.value }))}
+                    placeholder="e.g. 0x742d35Cc6634C0532925a3b844..."
+                    className="rounded-md font-mono text-xs"
+                    data-testid="input-crypto-wallet"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-medium text-gray-700">Network <span className="text-red-500">*</span></label>
+                    <Select value={cryptoDetails.network} onValueChange={(v) => setCryptoDetails(d => ({ ...d, network: v }))}>
+                      <SelectTrigger className="rounded-md" data-testid="select-crypto-network">
+                        <SelectValue placeholder="Select network" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="ERC20">ERC-20 (Ethereum)</SelectItem>
+                        <SelectItem value="TRC20">TRC-20 (Tron)</SelectItem>
+                        <SelectItem value="BEP20">BEP-20 (BNB Smart Chain)</SelectItem>
+                        <SelectItem value="SOL">Solana (SPL)</SelectItem>
+                        <SelectItem value="BTC">Bitcoin (BTC)</SelectItem>
+                        <SelectItem value="POLYGON">Polygon</SelectItem>
+                        <SelectItem value="ARBITRUM">Arbitrum</SelectItem>
+                        <SelectItem value="AVAX">Avalanche (C-Chain)</SelectItem>
+                        <SelectItem value="BASE">Base</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-medium text-gray-700">Currency <span className="text-red-500">*</span></label>
+                    <Select value={cryptoDetails.currency} onValueChange={(v) => setCryptoDetails(d => ({ ...d, currency: v }))}>
+                      <SelectTrigger className="rounded-md" data-testid="select-crypto-currency">
+                        <SelectValue placeholder="Select currency" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="USDT">USDT (Tether)</SelectItem>
+                        <SelectItem value="USDC">USDC (USD Coin)</SelectItem>
+                        <SelectItem value="BTC">BTC (Bitcoin)</SelectItem>
+                        <SelectItem value="ETH">ETH (Ethereum)</SelectItem>
+                        <SelectItem value="BNB">BNB</SelectItem>
+                        <SelectItem value="SOL">SOL (Solana)</SelectItem>
+                        <SelectItem value="DAI">DAI</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-sm font-medium text-gray-700">Memo / Tag</label>
+                  <Input
+                    value={cryptoDetails.memo}
+                    onChange={(e) => setCryptoDetails(d => ({ ...d, memo: e.target.value }))}
+                    placeholder="Optional memo or destination tag"
+                    className="rounded-md"
+                    data-testid="input-crypto-memo"
+                  />
+                  <p className="text-xs text-gray-400">Required for some networks. Leave blank if not applicable.</p>
+                </div>
+              </div>
+            )}
           </div>
           <DialogFooter>
             <Button
               variant="outline"
-              onClick={() => setShowAddMethod(false)}
+              onClick={() => { setShowAddMethod(false); setMethodType(""); setBankDetails({ ...defaultBankDetails }); setCryptoDetails({ ...defaultCryptoDetails }); }}
               className="rounded-md"
             >
               Cancel
             </Button>
             <Button
               onClick={() => addMethodMutation.mutate()}
-              disabled={!methodType || !methodDetails.trim() || addMethodMutation.isPending}
+              disabled={!isMethodFormValid || addMethodMutation.isPending}
               className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-md"
               data-testid="button-submit-method"
             >
