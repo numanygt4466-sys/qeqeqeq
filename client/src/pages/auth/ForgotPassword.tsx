@@ -22,7 +22,7 @@ export default function ForgotPassword() {
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6">
       <Link href="/" className="mb-10 inline-block">
         <SparkleText color="rgba(180,160,100,0.8)" sparkleCount={4}>
-          <img src={blingLogo} alt="Raw Archives Records" className="h-14 object-contain" />
+          <img src={blingLogo} alt="Raw Archives Records" className="h-18 object-contain" />
         </SparkleText>
       </Link>
 

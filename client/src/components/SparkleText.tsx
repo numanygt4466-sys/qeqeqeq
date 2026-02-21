@@ -7,6 +7,8 @@ interface Sparkle {
   size: number;
   delay: number;
   duration: number;
+  rotateY: number;
+  rotateX: number;
 }
 
 function StarSVG({ size, style }: { size: number; style: React.CSSProperties }) {
@@ -45,9 +47,11 @@ export default function SparkleText({
       id,
       x: Math.random() * 100,
       y: Math.random() * 100,
-      size: Math.random() * 8 + 4,
+      size: Math.random() * 4 + 2,
       delay: Math.random() * 3,
-      duration: Math.random() * 1.5 + 1,
+      duration: Math.random() * 1.2 + 0.8,
+      rotateY: Math.random() * 60 - 30,
+      rotateX: Math.random() * 60 - 30,
     };
   }, []);
 
@@ -61,9 +65,11 @@ export default function SparkleText({
           ...s,
           x: Math.random() * 100,
           y: Math.random() * 100,
-          size: Math.random() * 8 + 4,
+          size: Math.random() * 4 + 2,
           delay: 0,
-          duration: Math.random() * 1.5 + 1,
+          duration: Math.random() * 1.2 + 0.8,
+          rotateY: Math.random() * 60 - 30,
+          rotateX: Math.random() * 60 - 30,
         }))
       );
     }, 3000);
@@ -72,7 +78,7 @@ export default function SparkleText({
   }, [sparkleCount, generateSparkle]);
 
   return (
-    <span className={`relative inline-block ${className}`} style={{ color }}>
+    <span className={`relative inline-block ${className}`} style={{ color, perspective: "200px" }}>
       {sparkles.map((sparkle) => (
         <StarSVG
           key={sparkle.id}
@@ -83,7 +89,9 @@ export default function SparkleText({
             color,
             animation: `sparkle-pop ${sparkle.duration}s ease-in-out ${sparkle.delay}s infinite`,
             zIndex: 10,
-            filter: `drop-shadow(0 0 2px ${color})`,
+            filter: `drop-shadow(0 0 1px ${color})`,
+            transform: `rotateX(${sparkle.rotateX}deg) rotateY(${sparkle.rotateY}deg)`,
+            transformStyle: "preserve-3d",
           }}
         />
       ))}

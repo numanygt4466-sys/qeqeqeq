@@ -59,7 +59,7 @@ export default function Navbar() {
               </div>
               <div className="absolute bottom-8 left-8 pb-[env(safe-area-inset-bottom)]">
                 <SparkleText color="rgba(255,255,255,0.9)" sparkleCount={4}>
-                  <img src={blingLogo} alt="Raw Archives Records" className="h-10 object-contain" />
+                  <img src={blingLogo} alt="Raw Archives Records" className="h-12 object-contain" />
                 </SparkleText>
               </div>
             </SheetContent>
@@ -69,7 +69,7 @@ export default function Navbar() {
         
         <Link href="/" className="absolute left-1/2 -translate-x-1/2 flex items-center group">
           <SparkleText color="rgba(255,255,255,0.9)" sparkleCount={6}>
-            <img src={blingLogo} alt="Raw Archives Records" className="h-12 md:h-16 object-contain transition-transform group-hover:scale-105" />
+            <img src={blingLogo} alt="Raw Archives Records" className="h-14 md:h-20 object-contain transition-transform group-hover:scale-105" />
           </SparkleText>
         </Link>
 
