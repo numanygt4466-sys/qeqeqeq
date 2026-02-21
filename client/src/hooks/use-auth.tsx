@@ -53,8 +53,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const res = await apiRequest("POST", "/api/auth/login", { username, password });
       return res.json();
     },
-    onSuccess: (data: { user: User }) => {
-      queryClient.setQueryData(["/api/auth/me"], data);
+    onSuccess: () => {
+      window.location.href = "/app/dashboard";
     },
   });
 

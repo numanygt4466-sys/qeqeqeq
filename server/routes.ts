@@ -101,8 +101,8 @@ export async function registerRoutes(
     cookie: {
       maxAge: 30 * 24 * 60 * 60 * 1000,
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      secure: process.env.REPLIT_DEPLOYMENT === "1",
+      sameSite: process.env.REPLIT_DEPLOYMENT === "1" ? "none" as const : "lax" as const,
     },
   }));
 
