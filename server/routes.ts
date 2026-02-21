@@ -126,7 +126,11 @@ export async function registerRoutes(
         country: data.country || null,
         timezone: data.timezone || null,
       });
-      await storage.createApplication(user.id);
+      await storage.createApplication(user.id, {
+        spotifyLink: data.spotifyLink,
+        catalogSize: data.catalogSize,
+        currentRevenue: data.currentRevenue,
+      });
       res.json({ message: "Application submitted. Awaiting admin approval." });
     } catch (e: any) {
       if (e instanceof z.ZodError) return res.status(400).json({ message: e.errors[0].message });

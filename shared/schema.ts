@@ -23,6 +23,9 @@ export const applications = pgTable("applications", {
   status: text("status").notNull().default("pending"),
   rejectionReason: text("rejection_reason"),
   notes: text("notes"),
+  spotifyLink: text("spotify_link"),
+  catalogSize: text("catalog_size"),
+  currentRevenue: text("current_revenue"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   reviewedAt: timestamp("reviewed_at"),
 });
@@ -133,6 +136,9 @@ export const registerSchema = z.object({
   labelName: z.string().optional(),
   country: z.string().optional(),
   timezone: z.string().optional(),
+  spotifyLink: z.string().min(1, "Spotify link is required"),
+  catalogSize: z.string().min(1, "Catalog size is required"),
+  currentRevenue: z.string().min(1, "Current revenue is required"),
 });
 
 export const loginSchema = z.object({

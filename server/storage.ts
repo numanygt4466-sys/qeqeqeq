@@ -48,8 +48,8 @@ export class DatabaseStorage {
     return db.select().from(users).orderBy(desc(users.createdAt));
   }
 
-  async createApplication(userId: number): Promise<Application> {
-    const [app] = await db.insert(applications).values({ userId }).returning();
+  async createApplication(userId: number, extra?: { spotifyLink?: string; catalogSize?: string; currentRevenue?: string }): Promise<Application> {
+    const [app] = await db.insert(applications).values({ userId, ...extra }).returning();
     return app;
   }
   async getApplication(id: number): Promise<Application | undefined> {
