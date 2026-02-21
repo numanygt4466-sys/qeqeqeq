@@ -8,6 +8,8 @@ import Home from "@/pages/Home";
 import Catalog from "@/pages/Catalog";
 import Artists from "@/pages/Artists";
 import Submissions from "@/pages/Submissions";
+import Login from "@/pages/Login";
+import Dashboard from "@/pages/Dashboard";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
@@ -18,6 +20,8 @@ function Router() {
       <Route path="/catalog" component={Catalog} />
       <Route path="/artists" component={Artists} />
       <Route path="/submissions" component={Submissions} />
+      <Route path="/login" component={Login} />
+      <Route path="/dashboard" component={Dashboard} />
       <Route component={NotFound} />
     </Switch>
   );
