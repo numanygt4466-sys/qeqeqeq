@@ -1,121 +1,131 @@
 import { Link } from "wouter";
-import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
-import heroImage from "@/assets/images/hero-virgin.png";
+import heroEditorial from "@/assets/images/hero-editorial.png";
+import release1 from "@/assets/images/release-1.png";
+import release2 from "@/assets/images/release-2.png";
+import release3 from "@/assets/images/release-3.png";
+import { ChevronRight, Play } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="flex flex-col">
-      {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
+    <div className="bg-black min-h-screen pt-20">
+      {/* Universal-style Hero Slider Section */}
+      <section className="relative w-full aspect-[21/9] min-h-[600px] overflow-hidden group">
         <div className="absolute inset-0 z-0">
           <img 
-            src={heroImage} 
-            alt="RAW ARCHIVES Visual" 
-            className="w-full h-full object-cover grayscale opacity-40 scale-105"
+            src={heroEditorial} 
+            alt="Featured Artist" 
+            className="w-full h-full object-cover grayscale transition-transform duration-[20s] scale-100 group-hover:scale-110"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
-          <div className="absolute inset-0 bg-cinematic" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/20 to-transparent" />
         </div>
-        
-        <div className="container mx-auto px-6 relative z-10 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <h1 className="text-7xl md:text-[10rem] font-display font-black tracking-tighter leading-none mb-4 uppercase text-gradient">
-              RAW<br/>ARCHIVES
-            </h1>
-            <p className="text-xl md:text-2xl font-light text-white/60 tracking-widest uppercase mb-12 max-w-3xl mx-auto">
-              Independent Music. Global Infrastructure.
+
+        <div className="relative z-10 w-full h-full flex flex-col justify-center px-6 md:px-24">
+          <div className="max-w-2xl">
+            <div className="flex items-center gap-3 mb-6">
+               <span className="w-12 h-[1px] bg-white/40"></span>
+               <span className="text-[10px] tracking-[0.5em] font-bold text-white/60 uppercase">Featured Spotlight</span>
+            </div>
+            <h2 className="text-6xl md:text-8xl font-black tracking-tighter uppercase mb-8 leading-[0.85]">ARCANE</h2>
+            <p className="text-sm md:text-lg text-white/60 max-w-lg mb-10 leading-relaxed font-medium">
+              Global independent tour dates announced. Experience the evolution of the independent frontier.
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-white rounded-none px-10 h-14 text-sm font-bold tracking-[0.2em] uppercase" data-testid="button-hero-submit">
-                <Link href="/submissions">Submit Your Music</Link>
-              </Button>
-              <Button asChild variant="outline" size="lg" className="border-white/10 hover:bg-white hover:text-black rounded-none px-10 h-14 text-sm font-bold tracking-[0.2em] uppercase transition-all" data-testid="button-hero-partner">
-                <Link href="/about">Partner With Us</Link>
-              </Button>
-              <Button asChild variant="ghost" className="text-white/60 hover:text-white uppercase tracking-widest text-xs font-bold" data-testid="button-hero-catalog">
-                <Link href="/catalog">Explore Catalog</Link>
-              </Button>
-            </div>
-          </motion.div>
-        </div>
-
-        <div className="absolute bottom-10 left-10 flex items-center gap-4 animate-pulse">
-          <div className="w-2 h-2 bg-primary rounded-full"></div>
-          <span className="text-[10px] font-mono tracking-widest text-white/40 uppercase">Global Node: Active</span>
-        </div>
-      </section>
-
-      {/* About Section */}
-      <section className="py-32 bg-background relative border-y border-white/5">
-        <div className="container mx-auto px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-            <div>
-              <span className="text-primary font-bold tracking-[0.3em] uppercase text-xs mb-6 block">Our Mission</span>
-              <h2 className="text-4xl md:text-6xl font-display font-bold mb-8 leading-tight">
-                Empowering the Underground with Global Scale.
-              </h2>
-              <p className="text-lg text-white/50 leading-relaxed mb-8">
-                RAW ARCHIVES is a next-generation music company bridging the gap between artistic freedom and industrial power. We provide independent artists with the global infrastructure typically reserved for major labels, without compromising the raw, creative essence of their sound.
-              </p>
-              <div className="grid grid-cols-2 gap-8 font-display">
-                <div>
-                  <div className="text-3xl font-bold mb-2">100%</div>
-                  <div className="text-xs text-white/40 uppercase tracking-widest">Artist Ownership</div>
-                </div>
-                <div>
-                  <div className="text-3xl font-bold mb-2">24/7</div>
-                  <div className="text-xs text-white/40 uppercase tracking-widest">Global Support</div>
-                </div>
-              </div>
-            </div>
-            <div className="glass-card p-12 aspect-square flex flex-col justify-center">
-              <h3 className="text-2xl font-bold mb-6">The RAW Edge</h3>
-              <ul className="space-y-6">
-                {[
-                  "Global DSP distribution in 120+ territories",
-                  "Direct-to-Artist rights management",
-                  "Advanced publishing & sync licensing",
-                  "Real-time analytics & transparency",
-                ].map((item, i) => (
-                  <li key={i} className="flex items-start gap-4">
-                    <div className="w-5 h-5 mt-1 border border-primary flex items-center justify-center text-[10px] text-primary">✓</div>
-                    <span className="text-white/70">{item}</span>
-                  </li>
-                ))}
-              </ul>
+            <div className="flex items-center gap-6">
+              <button className="flex items-center gap-3 bg-white text-black px-8 py-4 text-[11px] font-black tracking-[0.2em] uppercase hover:bg-white/90 transition-all">
+                Learn More <ChevronRight className="w-4 h-4" />
+              </button>
+              <button className="flex items-center gap-3 border border-white/20 text-white px-8 py-4 text-[11px] font-black tracking-[0.2em] uppercase hover:bg-white/5 transition-all">
+                <Play className="w-4 h-4 fill-current" /> Watch Trailer
+              </button>
             </div>
           </div>
         </div>
+
+        {/* Pager Dots */}
+        <div className="absolute bottom-10 right-24 flex gap-3 z-20">
+           {[0, 1, 2, 3].map((i) => (
+             <button key={i} className={`w-2 h-2 rounded-full transition-all ${i === 0 ? 'bg-white w-8' : 'bg-white/20 hover:bg-white/40'}`} />
+           ))}
+        </div>
       </section>
 
-      {/* Services Section */}
-      <section className="py-32 bg-muted/30">
-        <div className="container mx-auto px-6">
-          <div className="text-center max-w-3xl mx-auto mb-20">
-            <h2 className="text-3xl md:text-5xl font-display font-bold mb-6">Full-Spectrum Label Services</h2>
-            <p className="text-white/40">From distribution to global branding, we provide a complete ecosystem for the modern independent label.</p>
+      {/* Editorial News Grid - UMG Style */}
+      <section className="py-24 px-6 md:px-24">
+        <div className="flex justify-between items-center mb-16 border-b border-white/10 pb-8">
+          <h2 className="text-4xl font-black tracking-tighter uppercase">Latest News</h2>
+          <Link href="/news" className="flex items-center gap-2 text-[10px] font-black tracking-[0.25em] uppercase group">
+            All News <ChevronRight className="w-4 h-4 text-white/40 group-hover:translate-x-1 transition-transform" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
+          {/* Main News Card */}
+          <div className="md:col-span-8 group cursor-pointer">
+            <div className="aspect-[16/8] overflow-hidden mb-8 bg-[#111]">
+              <img src={release1} className="w-full h-full object-cover grayscale brightness-75 transition-all duration-1000 group-hover:scale-105 group-hover:brightness-100" alt="Global News" />
+            </div>
+            <div className="max-w-2xl">
+              <span className="text-[10px] text-white/40 font-bold uppercase tracking-[0.3em] mb-4 block">Corporate Announcement</span>
+              <h3 className="text-4xl font-black tracking-tighter uppercase mb-6 leading-tight group-hover:underline underline-offset-8">Raw Archives Music Group Launches Strategic Partnership with Independent Innovators</h3>
+              <p className="text-white/40 text-sm leading-relaxed mb-8">The expansion marks a significant milestone in providing global infrastructure to the independent sector, bridging the gap between artistic freedom and institutional power.</p>
+              <span className="text-[9px] font-black tracking-[0.3em] uppercase text-white pb-1 border-b-2 border-white inline-block">Read Article</span>
+            </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+
+          {/* Secondary News Sidebar */}
+          <div className="md:col-span-4 flex flex-col gap-12 border-l border-white/5 pl-12">
             {[
-              { title: "Music Distribution", desc: "Global DSP delivery to Spotify, Apple, Tidal and 100+ others.", icon: "🌐" },
-              { title: "Royalty Dashboard", desc: "Advanced real-time analytics and transparent metadata control.", icon: "📊" },
-              { title: "Rights Management", desc: "Total control over your intellectual property and publishing.", icon: "⚖️" },
-              { title: "Artist Development", desc: "Cinematic branding and strategic growth marketing.", icon: "⚡" }
-            ].map((service, i) => (
-              <div key={i} className="glass-card p-8 group hover:bg-primary/10 transition-colors">
-                <div className="text-4xl mb-6 grayscale group-hover:grayscale-0 transition-all">{service.icon}</div>
-                <h3 className="text-xl font-bold mb-4">{service.title}</h3>
-                <p className="text-sm text-white/40 leading-relaxed">{service.desc}</p>
+              { title: "Arcane's 'Void' Certified Platinum in Global Markets", category: "Milestone", img: release2 },
+              { title: "2024 Artist Development Grant Recipients Announced", category: "Community", img: release3 }
+            ].map((news, i) => (
+              <div key={i} className="group cursor-pointer">
+                <div className="aspect-video overflow-hidden mb-6 bg-[#111]">
+                   <img src={news.img} className="w-full h-full object-cover grayscale transition-transform duration-700 group-hover:scale-110" alt={news.title} />
+                </div>
+                <span className="text-[9px] text-white/40 font-bold uppercase tracking-[0.3em] mb-3 block">{news.category}</span>
+                <h3 className="text-lg font-black tracking-tight uppercase leading-tight group-hover:text-white/80 transition-colors">{news.title}</h3>
               </div>
             ))}
           </div>
         </div>
       </section>
+
+      {/* Corporate Capabilities - UMG Philosophy */}
+      <section className="py-32 px-6 md:px-24 bg-[#050505] border-t border-white/5">
+        <div className="editorial-grid">
+           <div className="col-span-12 md:col-span-5">
+              <span className="text-[10px] tracking-[0.5em] font-bold text-white/40 uppercase mb-8 block">Our Leadership</span>
+              <h2 className="text-5xl font-black tracking-tighter uppercase mb-8 leading-[0.9]">The Power of Independence.</h2>
+              <p className="text-white/40 leading-relaxed mb-12 max-w-md">We define the future of music through transparency, technology, and unconditional support for independent visionaries worldwide.</p>
+              <button className="border-2 border-white px-10 py-4 text-[10px] font-black tracking-[0.3em] uppercase hover:bg-white hover:text-black transition-all">
+                About the Group
+              </button>
+           </div>
+           <div className="col-span-12 md:col-span-7 grid grid-cols-2 gap-px bg-white/5 border border-white/5">
+              {[
+                { title: 'Distribution', stat: '120+ Markets' },
+                { title: 'Publishing', stat: 'Direct Admin' },
+                { title: 'Technology', stat: 'Real-time API' },
+                { title: 'Marketing', stat: 'Global Strategy' }
+              ].map((item) => (
+                <div key={item.title} className="bg-black p-12 hover:bg-[#111] transition-all group cursor-pointer">
+                   <span className="text-[9px] font-black tracking-[0.4em] uppercase text-white/40 mb-4 block group-hover:text-white transition-colors">{item.title}</span>
+                   <div className="text-2xl font-black tracking-tighter uppercase">{item.stat}</div>
+                </div>
+              ))}
+           </div>
+        </div>
+      </section>
+
+      {/* Global Presence Banner */}
+      <section className="h-[40vh] relative flex items-center justify-center border-t border-white/5 overflow-hidden">
+         <div className="absolute inset-0 bg-[#080808] opacity-50" />
+         <div className="relative z-10 flex flex-col items-center">
+            <Globe className="w-12 h-12 text-white/20 mb-6 animate-pulse" />
+            <h4 className="text-[10px] font-black tracking-[0.6em] uppercase text-white/40">Global Headquarters: New York • London • Berlin • Tokyo</h4>
+         </div>
+      </section>
+      
+      <div className="h-12"></div>
     </div>
   );
 }
