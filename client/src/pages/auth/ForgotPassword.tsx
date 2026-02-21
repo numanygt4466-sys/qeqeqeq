@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Globe, ArrowLeft } from "lucide-react";
+import { Disc, ArrowLeft, CheckCircle } from "lucide-react";
 
 export default function ForgotPassword() {
+  const [email, setEmail] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -18,57 +17,58 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="min-h-screen bg-black flex flex-col items-center justify-center p-6">
-      <Link href="/" className="flex flex-col items-center gap-0 mb-12 group">
-        <Globe className="w-8 h-8 text-white mb-2 transition-transform group-hover:rotate-12" />
-        <span className="font-black text-2xl tracking-[0.3em] uppercase leading-none text-white">RAW ARCHIVES</span>
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6">
+      <Link href="/" className="flex items-center gap-2 mb-10">
+        <Disc className="w-6 h-6 text-indigo-600" />
+        <span className="font-bold text-lg tracking-wider uppercase text-gray-900">RAW ARCHIVES</span>
       </Link>
 
-      <div className="w-full max-w-md bg-[#050505] border border-white/10 p-8 md:p-12">
+      <div className="w-full max-w-md bg-white border border-gray-200 rounded-lg shadow-sm p-8">
         {!isSubmitted ? (
           <>
-            <div className="text-center mb-8">
-              <h1 className="text-2xl font-black tracking-tighter uppercase mb-2">Reset Password</h1>
-              <p className="text-xs text-white/40 uppercase tracking-widest">Enter your email to receive instructions</p>
+            <div className="text-center mb-6">
+              <h1 className="text-xl font-bold text-gray-900 mb-1" data-testid="text-forgot-title">Reset Password</h1>
+              <p className="text-sm text-gray-500">Enter your email address and we'll send you instructions to reset your password.</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-2">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-white/60">Email Address</label>
-                <Input 
-                  type="email" 
-                  required 
-                  className="bg-black border-white/10 rounded-none h-12 text-sm focus:border-white focus:ring-0" 
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-1.5">
+                <label className="text-sm font-medium text-gray-700">Email Address</label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  required
+                  className="w-full h-11 px-3 border border-gray-300 rounded-md text-sm bg-white text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                   placeholder="name@label.com"
+                  data-testid="input-forgot-email"
                 />
               </div>
-              
-              <Button 
-                type="submit" 
+
+              <button
+                type="submit"
                 disabled={isLoading}
-                className="w-full bg-white text-black hover:bg-white/90 rounded-none h-14 text-xs font-black tracking-[0.3em] uppercase transition-all mt-4"
+                className="w-full h-11 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white text-sm font-medium rounded-md transition-colors"
+                data-testid="button-send-reset"
               >
                 {isLoading ? "Sending..." : "Send Reset Link"}
-              </Button>
+              </button>
             </form>
           </>
         ) : (
-          <div className="text-center py-8">
-            <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6">
-              <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-            </div>
-            <h2 className="text-xl font-black tracking-tighter uppercase mb-4">Check Your Email</h2>
-            <p className="text-xs text-white/40 uppercase tracking-widest leading-relaxed mb-8">
-              We've sent password reset instructions to your email address.
+          <div className="text-center py-4">
+            <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-4" />
+            <h2 className="text-xl font-bold text-gray-900 mb-2" data-testid="text-check-email">Check Your Email</h2>
+            <p className="text-sm text-gray-500 mb-6">
+              We've sent password reset instructions to <strong>{email}</strong>. Please check your inbox and follow the link to reset your password.
             </p>
+            <p className="text-xs text-gray-400">Didn't receive the email? Check your spam folder or try again.</p>
           </div>
         )}
 
-        <div className="mt-8 pt-8 border-t border-white/5 text-center">
-          <Link href="/login" className="inline-flex items-center gap-2 text-[10px] text-white/40 hover:text-white uppercase tracking-widest transition-colors">
-            <ArrowLeft className="w-3 h-3" /> Back to Login
+        <div className="mt-6 pt-6 border-t border-gray-100 text-center">
+          <Link href="/login" className="inline-flex items-center gap-2 text-sm text-indigo-600 hover:text-indigo-700 font-medium transition-colors">
+            <ArrowLeft className="w-4 h-4" /> Back to Login
           </Link>
         </div>
       </div>

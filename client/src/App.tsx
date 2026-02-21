@@ -33,6 +33,10 @@ import PendingApproval from "@/pages/PendingApproval";
 import PublicCatalog from "@/pages/Catalog";
 import PublicArtists from "@/pages/Artists";
 import PublicSubmissions from "@/pages/Submissions";
+import ForgotPassword from "@/pages/auth/ForgotPassword";
+import TermsOfService from "@/pages/legal/TermsOfService";
+import PrivacyPolicy from "@/pages/legal/PrivacyPolicy";
+import CookieChoices from "@/pages/legal/CookieChoices";
 
 const PublicLayout = ({ children }: { children: React.ReactNode }) => (
   <div className="flex flex-col min-h-screen selection:bg-primary/30">
@@ -94,6 +98,10 @@ function Router() {
     <Switch>
       <Route path="/login"><RedirectIfAuth><Login /></RedirectIfAuth></Route>
       <Route path="/register"><RedirectIfAuth><Register /></RedirectIfAuth></Route>
+      <Route path="/forgot-password"><ForgotPassword /></Route>
+      <Route path="/terms-of-service"><TermsOfService /></Route>
+      <Route path="/privacy-policy"><PrivacyPolicy /></Route>
+      <Route path="/cookie-choices"><CookieChoices /></Route>
 
       <Route path="/app/dashboard"><RequireAuth><Dashboard /></RequireAuth></Route>
       <Route path="/app/catalog"><RequireAuth><Catalog /></RequireAuth></Route>

@@ -137,13 +137,13 @@ export default function Login() {
           </FloatingInput>
 
           <div className="text-right">
-            <button
-              type="button"
+            <Link
+              href="/forgot-password"
               className="text-[13px] font-medium text-gray-600 hover:text-black transition-colors underline"
               data-testid="link-forgot-password"
             >
               Forgot Password?
-            </button>
+            </Link>
           </div>
 
           <button

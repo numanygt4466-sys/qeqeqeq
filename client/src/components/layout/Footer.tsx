@@ -1,4 +1,5 @@
 import { Facebook, Twitter, Instagram, Mail, Search } from "lucide-react";
+import { Link } from "wouter";
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -18,9 +19,9 @@ export default function Footer() {
       </div>
 
       <div className="flex-1 flex justify-end gap-6">
-        <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
-        <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-        <a href="#" className="hover:text-white transition-colors">Cookie Choices</a>
+        <Link href="/terms-of-service" className="hover:text-white transition-colors" data-testid="link-terms">Terms of Service</Link>
+        <Link href="/privacy-policy" className="hover:text-white transition-colors" data-testid="link-privacy">Privacy Policy</Link>
+        <Link href="/cookie-choices" className="hover:text-white transition-colors" data-testid="link-cookies">Cookie Choices</Link>
       </div>
     </footer>
   );
