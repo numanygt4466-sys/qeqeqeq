@@ -1,67 +1,85 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { DollarSign, Download, TrendingUp, BarChart3 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { DollarSign, Loader2 } from "lucide-react";
 
 export default function Earnings() {
-  const summary = [
-    { label: "Total Revenue", value: "$42,504.00", trend: "+12.5%", period: "Lifetime" },
-    { label: "This Month", value: "$4,120.50", trend: "+8.2%", period: "Nov 2024" },
-    { label: "Pending Payout", value: "$1,250.00", trend: "Ready", period: "Available Now" },
-    { label: "Avg. eCPM", value: "$0.0042", trend: "+0.0001", period: "Per Stream" },
-  ];
+  const { data: balanceData, isLoading: balanceLoading } = useQuery<{ balance: number }>({
+    queryKey: ["/api/balance"],
+  });
+
+  const { data: earnings = [], isLoading: earningsLoading } = useQuery<any[]>({
+    queryKey: ["/api/earnings"],
+  });
+
+  const balance = balanceData?.balance ?? 0;
 
   return (
-    <div className="space-y-8 max-w-[1600px] mx-auto">
-      <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div>
-          <span className="text-primary font-bold tracking-[0.4em] uppercase text-[10px] mb-2 block">Financial Intelligence</span>
-          <h1 className="text-3xl md:text-5xl font-black tracking-tighter uppercase leading-none">Earnings</h1>
-        </div>
-        <Button className="bg-white text-black hover:bg-white/90 rounded-none h-12 px-6 text-xs font-black tracking-[0.2em] uppercase flex items-center gap-2">
-          <Download className="w-4 h-4" /> Export CSV
-        </Button>
-      </header>
-
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {summary.map((item, i) => (
-          <Card key={i} className="bg-black border-white/5 rounded-none group hover:border-white/20 transition-all">
-            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-              <CardTitle className="text-[9px] font-black tracking-[0.2em] uppercase text-white/40">
-                {item.label}
-              </CardTitle>
-              <DollarSign className="w-4 h-4 text-white/20 group-hover:text-primary transition-colors" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-black tracking-tighter mb-1 text-white">{item.value}</div>
-              <div className="flex items-center justify-between mt-2">
-                <span className="text-[10px] text-green-500 font-bold flex items-center gap-1">
-                  <TrendingUp className="w-3 h-3" /> {item.trend}
-                </span>
-                <span className="text-[9px] text-white/40 uppercase tracking-widest">{item.period}</span>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold text-gray-900">Earnings</h1>
+        <p className="text-gray-600 mt-1">Track your revenue and payouts</p>
       </div>
 
-      <Card className="bg-black border-white/5 rounded-none">
-        <CardHeader className="border-b border-white/5 pb-4 flex flex-row items-center justify-between">
-          <CardTitle className="text-xs font-black tracking-[0.3em] uppercase">Revenue Breakdown</CardTitle>
-          <div className="flex gap-2">
-             <select className="bg-transparent border border-white/10 rounded-none h-8 px-3 text-[10px] font-bold uppercase tracking-widest text-white focus:outline-none focus:border-white">
-                <option className="bg-black">All Time</option>
-                <option className="bg-black">This Year</option>
-                <option className="bg-black">Last 6 Months</option>
-             </select>
+      <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6">
+        <div className="flex items-center gap-3 mb-1">
+          <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center">
+            <DollarSign className="w-5 h-5 text-indigo-600" />
           </div>
-        </CardHeader>
-        <CardContent className="pt-12 pb-12 flex flex-col items-center justify-center">
-          <BarChart3 className="w-16 h-16 text-white/10 mb-4" />
-          <h3 className="text-xl font-black uppercase tracking-tight mb-2">Chart Visualization Unavailable</h3>
-          <p className="text-xs text-white/40 uppercase tracking-widest max-w-md text-center">Connect charting library to visualize revenue data across DSPs and territories.</p>
-        </CardContent>
-      </Card>
+          <div>
+            <p className="text-sm font-medium text-gray-400">Available Balance</p>
+            {balanceLoading ? (
+              <Loader2 className="w-5 h-5 animate-spin text-gray-400 mt-1" />
+            ) : (
+              <p className="text-3xl font-bold text-gray-900" data-testid="text-balance">${Number(balance).toFixed(2)}</p>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
+        <div className="px-6 py-4 border-b border-gray-100">
+          <h2 className="text-lg font-semibold text-gray-900">Earnings History</h2>
+        </div>
+
+        {earningsLoading ? (
+          <div className="p-12 text-center text-gray-400 text-sm">Loading...</div>
+        ) : earnings.length === 0 ? (
+          <div className="p-12 text-center">
+            <DollarSign className="w-10 h-10 text-gray-300 mx-auto mb-3" />
+            <p className="text-gray-600">No earnings yet</p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-gray-100 text-xs font-medium text-gray-400 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left">Date</th>
+                  <th className="px-6 py-3 text-left">Description</th>
+                  <th className="px-6 py-3 text-left">Release</th>
+                  <th className="px-6 py-3 text-right">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                {earnings.map((earning: any) => (
+                  <tr key={earning.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors" data-testid={`row-earning-${earning.id}`}>
+                    <td className="px-6 py-3 text-gray-600">
+                      {new Date(earning.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="px-6 py-3 text-gray-900 font-medium">
+                      {earning.description || "—"}
+                    </td>
+                    <td className="px-6 py-3 text-gray-600">
+                      {earning.releaseId ? `#${earning.releaseId}` : "—"}
+                    </td>
+                    <td className="px-6 py-3 text-right font-medium text-gray-900">
+                      ${Number(earning.amount).toFixed(2)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

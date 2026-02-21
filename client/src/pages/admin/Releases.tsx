@@ -1,94 +1,183 @@
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, XCircle, Clock, Music } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { CheckCircle, XCircle, Clock, Music, Eye, Edit } from "lucide-react";
 
 export default function AdminReleases() {
-  const queryClient = useQueryClient();
+  const { toast } = useToast();
   const [rejectionId, setRejectionId] = useState<number | null>(null);
   const [rejectionReason, setRejectionReason] = useState("");
+  const [editRelease, setEditRelease] = useState<any | null>(null);
+  const [editForm, setEditForm] = useState<any>({});
 
   const { data: releases = [], isLoading } = useQuery<any[]>({
     queryKey: ["/api/admin/releases"],
   });
 
-  const mutation = useMutation({
-    mutationFn: async ({ id, status, rejectionReason }: { id: number; status: string; rejectionReason?: string }) => {
-      await apiRequest("PATCH", `/api/admin/releases/${id}`, { status, rejectionReason });
+  const statusMutation = useMutation({
+    mutationFn: async ({
+      id,
+      status,
+      rejectionReason,
+    }: {
+      id: number;
+      status: string;
+      rejectionReason?: string;
+    }) => {
+      await apiRequest("PATCH", `/api/admin/releases/${id}`, {
+        status,
+        rejectionReason,
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/releases"] });
       setRejectionId(null);
       setRejectionReason("");
+      toast({ title: "Success", description: "Release status updated." });
+    },
+    onError: (error: Error) => {
+      toast({ title: "Error", description: error.message });
     },
   });
 
-  const statusIcon = (status: string) => {
-    if (status === "approved") return <CheckCircle className="w-3 h-3 text-green-500" />;
-    if (status === "rejected") return <XCircle className="w-3 h-3 text-red-500" />;
-    return <Clock className="w-3 h-3 text-yellow-500" />;
+  const editMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: number; data: any }) => {
+      await apiRequest("PUT", `/api/admin/releases/${id}`, data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/releases"] });
+      setEditRelease(null);
+      toast({ title: "Success", description: "Release updated successfully." });
+    },
+    onError: (error: Error) => {
+      toast({ title: "Error", description: error.message });
+    },
+  });
+
+  const openEditDialog = (release: any) => {
+    setEditRelease(release);
+    setEditForm({
+      title: release.title || "",
+      primaryArtist: release.primaryArtist || "",
+      releaseType: release.releaseType || "",
+      genre: release.genre || "",
+      releaseDate: release.releaseDate || "",
+    });
+  };
+
+  const statusPill = (status: string) => {
+    if (status === "approved")
+      return (
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+          <CheckCircle className="w-3 h-3 mr-1" /> Approved
+        </span>
+      );
+    if (status === "rejected")
+      return (
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+          <XCircle className="w-3 h-3 mr-1" /> Rejected
+        </span>
+      );
+    return (
+      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+        <Clock className="w-3 h-3 mr-1" /> Pending
+      </span>
+    );
   };
 
   return (
-    <div className="space-y-8 max-w-[1400px] mx-auto">
-      <header>
-        <span className="text-primary font-bold tracking-[0.4em] uppercase text-[10px] mb-2 block">Admin</span>
-        <h1 className="text-3xl md:text-5xl font-black tracking-tighter uppercase leading-none" data-testid="text-admin-releases-title">Release Queue</h1>
-      </header>
+    <div className="space-y-6 max-w-[1400px] mx-auto">
+      <h1 className="text-2xl font-bold text-gray-900" data-testid="text-admin-releases-title">
+        Release Queue
+      </h1>
 
-      <Card className="bg-black border-white/5 rounded-none">
-        <CardHeader className="border-b border-white/5">
-          <CardTitle className="text-xs font-black tracking-[0.3em] uppercase">All Releases</CardTitle>
-        </CardHeader>
-        <CardContent className="p-0">
-          {isLoading ? (
-            <div className="p-8 text-center text-white/40 text-xs uppercase tracking-widest">Loading...</div>
-          ) : releases.length === 0 ? (
-            <div className="p-8 text-center text-white/40 text-xs uppercase tracking-widest">No releases found</div>
-          ) : (
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="border-b border-white/5 text-[10px] font-black tracking-[0.2em] uppercase text-white/40">
-                  <th className="p-4 font-medium">Release</th>
-                  <th className="p-4 font-medium">Artist</th>
-                  <th className="p-4 font-medium">Type</th>
-                  <th className="p-4 font-medium">Status</th>
-                  <th className="p-4 font-medium">Date</th>
-                  <th className="p-4 font-medium text-center">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="text-sm">
-                {releases.map((release: any) => (
-                  <tr key={release.id} className="border-b border-white/5 hover:bg-white/5 transition-colors" data-testid={`row-release-${release.id}`}>
-                    <td className="p-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-[#111] border border-white/10 flex items-center justify-center">
-                          <Music className="w-4 h-4 text-white/20" />
-                        </div>
-                        <div>
-                          <div className="font-bold uppercase tracking-tight">{release.title}</div>
-                          <div className="text-[10px] text-white/40 font-mono">ID-{release.id}</div>
-                        </div>
+      <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+        {isLoading ? (
+          <div className="p-8 text-center text-gray-400 text-sm">Loading...</div>
+        ) : releases.length === 0 ? (
+          <div className="p-8 text-center text-gray-400 text-sm">No releases found</div>
+        ) : (
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-gray-100 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left">Cover</th>
+                <th className="px-6 py-3 text-left">Title</th>
+                <th className="px-6 py-3 text-left">Artist</th>
+                <th className="px-6 py-3 text-left">Type</th>
+                <th className="px-6 py-3 text-left">Date</th>
+                <th className="px-6 py-3 text-left">Status</th>
+                <th className="px-6 py-3 text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {releases.map((release: any) => (
+                <tr
+                  key={release.id}
+                  className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
+                  data-testid={`row-release-${release.id}`}
+                >
+                  <td className="px-6 py-4">
+                    {release.coverArtUrl ? (
+                      <img
+                        src={release.coverArtUrl}
+                        alt={release.title}
+                        className="w-10 h-10 rounded object-cover"
+                        data-testid={`img-cover-${release.id}`}
+                      />
+                    ) : (
+                      <div className="w-10 h-10 bg-gray-100 rounded flex items-center justify-center">
+                        <Music className="w-4 h-4 text-gray-400" />
                       </div>
-                    </td>
-                    <td className="p-4 uppercase tracking-widest text-[11px] text-white/80">{release.primaryArtist}</td>
-                    <td className="p-4 text-[10px] tracking-widest uppercase text-white/60">{release.releaseType}</td>
-                    <td className="p-4">
-                      <div className="inline-flex items-center gap-2 px-2 py-1 border border-white/10 text-[9px] font-bold tracking-widest uppercase">
-                        {statusIcon(release.status)}
-                        {release.status}
-                      </div>
-                    </td>
-                    <td className="p-4 text-[11px] text-white/60">{release.releaseDate}</td>
-                    <td className="p-4 text-center">
+                    )}
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="font-medium text-gray-900" data-testid={`text-release-title-${release.id}`}>
+                      {release.title}
+                    </div>
+                    <div className="text-xs text-gray-500">ID: {release.id}</div>
+                  </td>
+                  <td className="px-6 py-4 text-gray-600" data-testid={`text-release-artist-${release.id}`}>
+                    {release.primaryArtist}
+                  </td>
+                  <td className="px-6 py-4 text-gray-500 capitalize">{release.releaseType}</td>
+                  <td className="px-6 py-4 text-gray-500">{release.releaseDate}</td>
+                  <td className="px-6 py-4">{statusPill(release.status)}</td>
+                  <td className="px-6 py-4 text-center">
+                    <div className="flex items-center justify-center gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => openEditDialog(release)}
+                        className="rounded-md"
+                        data-testid={`button-edit-release-${release.id}`}
+                      >
+                        <Eye className="w-3 h-3 mr-1" /> View
+                      </Button>
                       {release.status === "pending" && (
-                        <div className="flex items-center justify-center gap-2">
+                        <>
                           <Button
                             size="sm"
-                            onClick={() => mutation.mutate({ id: release.id, status: "approved" })}
-                            className="bg-green-600 hover:bg-green-700 text-white rounded-none h-8 px-3 text-[9px] font-bold uppercase tracking-widest"
+                            onClick={() => statusMutation.mutate({ id: release.id, status: "approved" })}
+                            className="bg-indigo-600 text-white hover:bg-indigo-700 rounded-md"
                             data-testid={`button-approve-release-${release.id}`}
                           >
                             Approve
@@ -97,56 +186,159 @@ export default function AdminReleases() {
                             size="sm"
                             variant="outline"
                             onClick={() => setRejectionId(release.id)}
-                            className="border-red-500/30 text-red-500 hover:bg-red-500 hover:text-white rounded-none h-8 px-3 text-[9px] font-bold uppercase tracking-widest"
+                            className="border-red-300 text-red-600 hover:bg-red-50 rounded-md"
                             data-testid={`button-reject-release-${release.id}`}
                           >
                             Reject
                           </Button>
-                        </div>
+                        </>
                       )}
-                      {release.status === "rejected" && release.rejectionReason && (
-                        <span className="text-[10px] text-red-400 italic">{release.rejectionReason}</span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </CardContent>
-      </Card>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
 
-      {rejectionId && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-6">
-          <div className="bg-[#050505] border border-white/10 p-8 w-full max-w-md">
-            <h3 className="text-lg font-black uppercase tracking-tight mb-4">Rejection Reason</h3>
-            <textarea
-              value={rejectionReason}
-              onChange={e => setRejectionReason(e.target.value)}
-              placeholder="Provide a reason for rejection..."
-              className="w-full bg-black border border-white/10 rounded-none p-3 text-sm text-white h-32 focus:border-white focus:outline-none mb-4"
-              data-testid="input-release-rejection-reason"
-            />
-            <div className="flex gap-2">
-              <Button
-                onClick={() => { setRejectionId(null); setRejectionReason(""); }}
-                variant="outline"
-                className="flex-1 rounded-none border-white/10 h-10 text-xs uppercase tracking-widest"
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={() => mutation.mutate({ id: rejectionId, status: "rejected", rejectionReason })}
-                disabled={!rejectionReason.trim()}
-                className="flex-1 bg-red-600 hover:bg-red-700 text-white rounded-none h-10 text-xs uppercase tracking-widest"
-                data-testid="button-confirm-reject-release"
-              >
-                Confirm Reject
-              </Button>
+      <Dialog open={!!rejectionId} onOpenChange={(open) => { if (!open) { setRejectionId(null); setRejectionReason(""); } }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Reject Release</DialogTitle>
+            <DialogDescription>Provide a reason for rejecting this release.</DialogDescription>
+          </DialogHeader>
+          <Textarea
+            value={rejectionReason}
+            onChange={(e) => setRejectionReason(e.target.value)}
+            placeholder="Enter rejection reason..."
+            className="min-h-[100px]"
+            data-testid="input-release-rejection-reason"
+          />
+          <DialogFooter>
+            <Button variant="outline" onClick={() => { setRejectionId(null); setRejectionReason(""); }}>
+              Cancel
+            </Button>
+            <Button
+              onClick={() => rejectionId && statusMutation.mutate({ id: rejectionId, status: "rejected", rejectionReason })}
+              disabled={!rejectionReason.trim()}
+              className="bg-red-600 text-white hover:bg-red-700"
+              data-testid="button-confirm-reject-release"
+            >
+              Confirm Reject
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!editRelease} onOpenChange={(open) => { if (!open) setEditRelease(null); }}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Release Details</DialogTitle>
+            <DialogDescription>View and edit release information.</DialogDescription>
+          </DialogHeader>
+          {editRelease && (
+            <div className="space-y-4">
+              {editRelease.coverArtUrl && (
+                <img
+                  src={editRelease.coverArtUrl}
+                  alt={editRelease.title}
+                  className="w-32 h-32 rounded-lg object-cover"
+                  data-testid="img-edit-cover"
+                />
+              )}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium text-gray-700 mb-1 block">Title</label>
+                  <Input
+                    value={editForm.title}
+                    onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
+                    data-testid="input-edit-title"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700 mb-1 block">Primary Artist</label>
+                  <Input
+                    value={editForm.primaryArtist}
+                    onChange={(e) => setEditForm({ ...editForm, primaryArtist: e.target.value })}
+                    data-testid="input-edit-artist"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700 mb-1 block">Release Type</label>
+                  <Input
+                    value={editForm.releaseType}
+                    onChange={(e) => setEditForm({ ...editForm, releaseType: e.target.value })}
+                    data-testid="input-edit-type"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700 mb-1 block">Genre</label>
+                  <Input
+                    value={editForm.genre}
+                    onChange={(e) => setEditForm({ ...editForm, genre: e.target.value })}
+                    data-testid="input-edit-genre"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700 mb-1 block">Release Date</label>
+                  <Input
+                    type="date"
+                    value={editForm.releaseDate}
+                    onChange={(e) => setEditForm({ ...editForm, releaseDate: e.target.value })}
+                    data-testid="input-edit-date"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700 mb-1 block">Status</label>
+                  <span>{statusPill(editRelease.status)}</span>
+                </div>
+              </div>
+
+              {editRelease.tracks && editRelease.tracks.length > 0 && (
+                <div>
+                  <label className="text-sm font-medium text-gray-700 mb-2 block">
+                    Tracks ({editRelease.tracks.length})
+                  </label>
+                  <div className="bg-gray-50 rounded-lg p-3 space-y-2">
+                    {editRelease.tracks.map((track: any, i: number) => (
+                      <div key={track.id || i} className="flex items-center gap-3 text-sm text-gray-700" data-testid={`text-track-${i}`}>
+                        <span className="text-gray-400 w-6 text-right">{track.trackNumber || i + 1}.</span>
+                        <span className="flex-1">{track.title}</span>
+                        {track.isExplicit && (
+                          <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-gray-200 text-gray-600">E</span>
+                        )}
+                        {track.duration && <span className="text-gray-400">{track.duration}</span>}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {editRelease.user && (
+                <div className="border-t border-gray-100 pt-4">
+                  <label className="text-sm font-medium text-gray-700 mb-1 block">Submitted by</label>
+                  <p className="text-sm text-gray-600">
+                    {editRelease.user.fullName} (@{editRelease.user.username}) — {editRelease.user.email}
+                  </p>
+                </div>
+              )}
             </div>
-          </div>
-        </div>
-      )}
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditRelease(null)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={() => editRelease && editMutation.mutate({ id: editRelease.id, data: editForm })}
+              className="bg-indigo-600 text-white hover:bg-indigo-700"
+              data-testid="button-save-release"
+            >
+              Save Changes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

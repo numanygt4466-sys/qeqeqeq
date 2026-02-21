@@ -9,7 +9,6 @@ import Home from "@/pages/Home";
 import NotFound from "@/pages/not-found";
 import Login from "@/pages/auth/Login";
 import Register from "@/pages/auth/Register";
-import ForgotPassword from "@/pages/auth/ForgotPassword";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
@@ -19,13 +18,15 @@ import Catalog from "@/pages/dashboard/Catalog";
 import Upload from "@/pages/dashboard/Upload";
 import Earnings from "@/pages/dashboard/Earnings";
 import Payouts from "@/pages/dashboard/Payouts";
-import Artists from "@/pages/dashboard/Artists";
 import Settings from "@/pages/dashboard/Settings";
 import Support from "@/pages/dashboard/Support";
 import AdminApplications from "@/pages/admin/Applications";
 import AdminReleases from "@/pages/admin/Releases";
 import AdminUsers from "@/pages/admin/Users";
 import AdminSupport from "@/pages/admin/Support";
+import AdminPayouts from "@/pages/admin/Payouts";
+import AdminDsps from "@/pages/admin/Dsps";
+import AdminSettings from "@/pages/admin/Settings";
 import PendingApproval from "@/pages/PendingApproval";
 
 import PublicCatalog from "@/pages/Catalog";
@@ -42,12 +43,11 @@ const PublicLayout = ({ children }: { children: React.ReactNode }) => (
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuth();
-  const [, setLocation] = useLocation();
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-white/40 text-xs uppercase tracking-[0.3em]">Loading...</div>
+      <div className="min-h-screen bg-[#f8f9fa] flex items-center justify-center">
+        <div className="text-gray-400 text-sm">Loading...</div>
       </div>
     );
   }
@@ -68,8 +68,8 @@ function RequireAdmin({ children }: { children: React.ReactNode }) {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-white/40 text-xs uppercase tracking-[0.3em]">Loading...</div>
+      <div className="min-h-screen bg-[#f8f9fa] flex items-center justify-center">
+        <div className="text-gray-400 text-sm">Loading...</div>
       </div>
     );
   }
@@ -93,14 +93,12 @@ function Router() {
     <Switch>
       <Route path="/login"><RedirectIfAuth><Login /></RedirectIfAuth></Route>
       <Route path="/register"><RedirectIfAuth><Register /></RedirectIfAuth></Route>
-      <Route path="/forgot-password"><ForgotPassword /></Route>
 
       <Route path="/app/dashboard"><RequireAuth><Dashboard /></RequireAuth></Route>
       <Route path="/app/catalog"><RequireAuth><Catalog /></RequireAuth></Route>
       <Route path="/app/upload"><RequireAuth><Upload /></RequireAuth></Route>
       <Route path="/app/earnings"><RequireAuth><Earnings /></RequireAuth></Route>
       <Route path="/app/payouts"><RequireAuth><Payouts /></RequireAuth></Route>
-      <Route path="/app/artists"><RequireAuth><Artists /></RequireAuth></Route>
       <Route path="/app/settings"><RequireAuth><Settings /></RequireAuth></Route>
       <Route path="/app/support"><RequireAuth><Support /></RequireAuth></Route>
 
@@ -108,6 +106,9 @@ function Router() {
       <Route path="/app/admin/releases"><RequireAdmin><AdminReleases /></RequireAdmin></Route>
       <Route path="/app/admin/users"><RequireAdmin><AdminUsers /></RequireAdmin></Route>
       <Route path="/app/admin/support"><RequireAdmin><AdminSupport /></RequireAdmin></Route>
+      <Route path="/app/admin/payouts"><RequireAdmin><AdminPayouts /></RequireAdmin></Route>
+      <Route path="/app/admin/dsps"><RequireAdmin><AdminDsps /></RequireAdmin></Route>
+      <Route path="/app/admin/settings"><RequireAdmin><AdminSettings /></RequireAdmin></Route>
 
       <Route path="/dashboard"><Redirect to="/app/dashboard" /></Route>
 

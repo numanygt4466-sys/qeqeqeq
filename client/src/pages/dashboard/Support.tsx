@@ -1,14 +1,24 @@
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { MessageCircle, Plus, ArrowLeft, Send, Clock, CheckCircle } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { MessageCircle, Plus, ArrowLeft, Send } from "lucide-react";
 
 export default function Support() {
-  const queryClient = useQueryClient();
-  const [selectedTicket, setSelectedTicket] = useState<number | null>(null);
+  const { toast } = useToast();
+  const [selectedTicketId, setSelectedTicketId] = useState<number | null>(null);
   const [showCreate, setShowCreate] = useState(false);
   const [newSubject, setNewSubject] = useState("");
   const [newMessage, setNewMessage] = useState("");
@@ -19,13 +29,14 @@ export default function Support() {
   });
 
   const { data: ticketDetail } = useQuery<any>({
-    queryKey: ["/api/tickets", selectedTicket],
+    queryKey: ["/api/tickets", selectedTicketId],
     queryFn: async () => {
-      if (!selectedTicket) return null;
-      const res = await fetch(`/api/tickets/${selectedTicket}`, { credentials: "include" });
+      if (!selectedTicketId) return null;
+      const res = await fetch(`/api/tickets/${selectedTicketId}`, { credentials: "include" });
+      if (!res.ok) throw new Error("Failed to load ticket");
       return res.json();
     },
-    enabled: !!selectedTicket,
+    enabled: !!selectedTicketId,
   });
 
   const createMutation = useMutation({
@@ -37,6 +48,10 @@ export default function Support() {
       setShowCreate(false);
       setNewSubject("");
       setNewMessage("");
+      toast({ title: "Ticket created successfully" });
+    },
+    onError: (err: Error) => {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
     },
   });
 
@@ -45,62 +60,96 @@ export default function Support() {
       await apiRequest("POST", `/api/tickets/${ticketId}/messages`, { message });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/tickets", selectedTicket] });
+      queryClient.invalidateQueries({ queryKey: ["/api/tickets", selectedTicketId] });
       setReply("");
+      toast({ title: "Reply sent" });
+    },
+    onError: (err: Error) => {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
     },
   });
 
-  const statusColor = (s: string) => {
-    if (s === "open") return "text-yellow-500 border-yellow-500/20";
-    if (s === "in_progress") return "text-blue-400 border-blue-500/20";
-    return "text-green-500 border-green-500/20";
+  const statusBadge = (status: string) => {
+    const variants: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
+      open: "outline",
+      in_progress: "default",
+      closed: "secondary",
+    };
+    return variants[status] || "outline";
   };
 
-  if (selectedTicket && ticketDetail) {
+  const priorityBadge = (priority: string) => {
+    if (priority === "high" || priority === "urgent") return "destructive";
+    return "secondary";
+  };
+
+  if (selectedTicketId && ticketDetail) {
     return (
-      <div className="space-y-6 max-w-[900px] mx-auto">
-        <button onClick={() => setSelectedTicket(null)} className="flex items-center gap-2 text-white/40 hover:text-white text-xs uppercase tracking-widest transition-colors" data-testid="button-back-support">
-          <ArrowLeft className="w-4 h-4" /> Back
+      <div className="space-y-6 max-w-4xl mx-auto">
+        <button
+          onClick={() => setSelectedTicketId(null)}
+          className="flex items-center gap-2 text-gray-500 hover:text-gray-900 text-sm transition-colors"
+          data-testid="button-back-support"
+        >
+          <ArrowLeft className="w-4 h-4" /> Back to tickets
         </button>
+
         <div>
-          <h2 className="text-2xl font-black uppercase tracking-tight" data-testid="text-ticket-subject">{ticketDetail.subject}</h2>
+          <h2 className="text-xl font-bold text-gray-900" data-testid="text-ticket-subject">
+            {ticketDetail.subject}
+          </h2>
           <div className="flex items-center gap-3 mt-2">
-            <span className={`text-[9px] font-bold uppercase tracking-widest px-2 py-1 border ${statusColor(ticketDetail.status)}`}>
+            <Badge variant={statusBadge(ticketDetail.status)} data-testid="status-ticket">
               {ticketDetail.status.replace("_", " ")}
-            </span>
-            <span className="text-[10px] text-white/40">Ticket #{ticketDetail.id}</span>
+            </Badge>
+            <Badge variant={priorityBadge(ticketDetail.priority)}>
+              {ticketDetail.priority}
+            </Badge>
+            <span className="text-xs text-gray-400">Ticket #{ticketDetail.id}</span>
           </div>
         </div>
 
-        <Card className="bg-black border-white/5 rounded-none">
+        <Card className="bg-white border border-gray-200 rounded-md">
           <CardContent className="p-0">
             <div className="max-h-[400px] overflow-y-auto p-6 space-y-4">
               {ticketDetail.messages?.map((msg: any) => (
-                <div key={msg.id} className="border-b border-white/5 pb-4 last:border-0" data-testid={`message-${msg.id}`}>
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-xs font-bold uppercase tracking-tight">{msg.user?.fullName || "Unknown"}</span>
+                <div
+                  key={msg.id}
+                  className="border-b border-gray-100 pb-4 last:border-0"
+                  data-testid={`message-${msg.id}`}
+                >
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-sm font-medium text-gray-900">
+                      {msg.user?.fullName || "Unknown"}
+                    </span>
                     {msg.user?.role === "admin" && (
-                      <span className="text-[9px] px-1 border text-red-400 border-red-500/20 uppercase tracking-widest">Admin</span>
+                      <Badge variant="destructive" className="text-[10px] px-1.5 py-0">
+                        Admin
+                      </Badge>
                     )}
-                    <span className="text-[10px] text-white/30">{new Date(msg.createdAt).toLocaleString()}</span>
+                    <span className="text-xs text-gray-400">
+                      {new Date(msg.createdAt).toLocaleString()}
+                    </span>
                   </div>
-                  <p className="text-sm text-white/80">{msg.message}</p>
+                  <p className="text-sm text-gray-600">{msg.message}</p>
                 </div>
               ))}
             </div>
             {ticketDetail.status !== "closed" && (
-              <div className="border-t border-white/5 p-4 flex gap-2">
-                <input
+              <div className="border-t border-gray-200 p-4 flex gap-2">
+                <Input
                   value={reply}
-                  onChange={e => setReply(e.target.value)}
-                  placeholder="Type your message..."
-                  className="flex-1 bg-transparent border border-white/10 rounded-none px-4 py-3 text-sm focus:border-white focus:outline-none"
+                  onChange={(e) => setReply(e.target.value)}
+                  placeholder="Type your reply..."
+                  className="flex-1 rounded-md"
                   data-testid="input-reply"
                 />
                 <Button
-                  onClick={() => replyMutation.mutate({ ticketId: selectedTicket, message: reply })}
-                  disabled={!reply.trim()}
-                  className="bg-white text-black hover:bg-white/90 rounded-none px-6"
+                  onClick={() =>
+                    replyMutation.mutate({ ticketId: selectedTicketId, message: reply })
+                  }
+                  disabled={!reply.trim() || replyMutation.isPending}
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-md"
                   data-testid="button-send"
                 >
                   <Send className="w-4 h-4" />
@@ -114,83 +163,65 @@ export default function Support() {
   }
 
   return (
-    <div className="space-y-8 max-w-[1200px] mx-auto">
-      <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+    <div className="space-y-6 max-w-5xl mx-auto">
+      <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <span className="text-primary font-bold tracking-[0.4em] uppercase text-[10px] mb-2 block">Help Center</span>
-          <h1 className="text-3xl md:text-5xl font-black tracking-tighter uppercase leading-none" data-testid="text-support-title">Support</h1>
+          <h1 className="text-2xl font-bold text-gray-900" data-testid="text-support-title">
+            Support
+          </h1>
+          <p className="text-gray-500 text-sm mt-1">Get help with your account and releases</p>
         </div>
-        <Button onClick={() => setShowCreate(true)} className="bg-white text-black hover:bg-white/90 rounded-none h-12 px-6 text-xs font-black tracking-[0.2em] uppercase" data-testid="button-create-ticket">
-          <Plus className="w-4 h-4 mr-2" /> New Ticket
+        <Button
+          onClick={() => setShowCreate(true)}
+          className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-md"
+          data-testid="button-create-ticket"
+        >
+          <Plus className="w-4 h-4 mr-1" /> New Ticket
         </Button>
       </header>
 
-      {showCreate && (
-        <Card className="bg-black border-white/10 rounded-none">
-          <CardHeader className="border-b border-white/5">
-            <CardTitle className="text-xs font-black tracking-[0.3em] uppercase">Create Support Ticket</CardTitle>
-          </CardHeader>
-          <CardContent className="pt-6 space-y-4">
-            <div className="space-y-2">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-white/60">Subject *</label>
-              <Input value={newSubject} onChange={e => setNewSubject(e.target.value)} className="bg-transparent border-white/10 rounded-none h-12 focus:border-white focus:ring-0" placeholder="Brief description of your issue" data-testid="input-ticket-subject" />
-            </div>
-            <div className="space-y-2">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-white/60">Message *</label>
-              <textarea
-                value={newMessage}
-                onChange={e => setNewMessage(e.target.value)}
-                placeholder="Describe your issue in detail..."
-                className="w-full bg-transparent border border-white/10 rounded-none p-3 text-sm text-white h-32 focus:border-white focus:outline-none"
-                data-testid="input-ticket-message"
-              />
-            </div>
-            <div className="flex gap-2 justify-end">
-              <Button onClick={() => setShowCreate(false)} variant="outline" className="rounded-none border-white/10 h-10 px-6 text-xs uppercase tracking-widest">Cancel</Button>
-              <Button
-                onClick={() => createMutation.mutate()}
-                disabled={!newSubject.trim() || !newMessage.trim() || createMutation.isPending}
-                className="bg-white text-black hover:bg-white/90 rounded-none h-10 px-6 text-xs font-black uppercase tracking-widest"
-                data-testid="button-submit-ticket"
-              >
-                {createMutation.isPending ? "Submitting..." : "Submit Ticket"}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      <Card className="bg-black border-white/5 rounded-none">
+      <Card className="bg-white border border-gray-200 rounded-md">
         <CardContent className="p-0">
           {isLoading ? (
-            <div className="p-8 text-center text-white/40 text-xs uppercase tracking-widest">Loading...</div>
+            <div className="p-8 text-center text-gray-400 text-sm">Loading...</div>
           ) : tickets.length === 0 ? (
             <div className="p-12 text-center">
-              <MessageCircle className="w-12 h-12 text-white/10 mx-auto mb-4" />
-              <h3 className="text-lg font-black uppercase tracking-tight mb-2">No Tickets</h3>
-              <p className="text-xs text-white/40 uppercase tracking-widest">Create a support ticket to get help</p>
+              <MessageCircle className="w-12 h-12 text-gray-200 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-gray-900 mb-1">No Tickets</h3>
+              <p className="text-sm text-gray-400">Create a support ticket to get help</p>
             </div>
           ) : (
-            <table className="w-full text-left border-collapse">
+            <table className="w-full text-left" data-testid="table-tickets">
               <thead>
-                <tr className="border-b border-white/5 text-[10px] font-black tracking-[0.2em] uppercase text-white/40">
-                  <th className="p-4 font-medium">#</th>
-                  <th className="p-4 font-medium">Subject</th>
-                  <th className="p-4 font-medium">Status</th>
-                  <th className="p-4 font-medium">Date</th>
+                <tr className="border-b border-gray-200 text-xs text-gray-500 uppercase">
+                  <th className="px-6 py-3 font-medium">#</th>
+                  <th className="px-6 py-3 font-medium">Subject</th>
+                  <th className="px-6 py-3 font-medium">Priority</th>
+                  <th className="px-6 py-3 font-medium">Status</th>
+                  <th className="px-6 py-3 font-medium">Date</th>
                 </tr>
               </thead>
               <tbody className="text-sm">
                 {tickets.map((t: any) => (
-                  <tr key={t.id} onClick={() => setSelectedTicket(t.id)} className="border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer" data-testid={`row-ticket-${t.id}`}>
-                    <td className="p-4 text-white/40 font-mono text-xs">#{t.id}</td>
-                    <td className="p-4 font-bold uppercase tracking-tight">{t.subject}</td>
-                    <td className="p-4">
-                      <span className={`text-[9px] font-bold uppercase tracking-widest px-2 py-1 border ${statusColor(t.status)}`}>
-                        {t.status.replace("_", " ")}
-                      </span>
+                  <tr
+                    key={t.id}
+                    onClick={() => setSelectedTicketId(t.id)}
+                    className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors"
+                    data-testid={`row-ticket-${t.id}`}
+                  >
+                    <td className="px-6 py-4 text-gray-400 text-xs">#{t.id}</td>
+                    <td className="px-6 py-4 font-medium text-gray-900">{t.subject}</td>
+                    <td className="px-6 py-4">
+                      <Badge variant={priorityBadge(t.priority)}>{t.priority}</Badge>
                     </td>
-                    <td className="p-4 text-[11px] text-white/60">{new Date(t.createdAt).toLocaleDateString()}</td>
+                    <td className="px-6 py-4">
+                      <Badge variant={statusBadge(t.status)}>
+                        {t.status.replace("_", " ")}
+                      </Badge>
+                    </td>
+                    <td className="px-6 py-4 text-gray-500">
+                      {new Date(t.createdAt).toLocaleDateString()}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -198,6 +229,49 @@ export default function Support() {
           )}
         </CardContent>
       </Card>
+
+      <Dialog open={showCreate} onOpenChange={setShowCreate}>
+        <DialogContent className="bg-white rounded-md">
+          <DialogHeader>
+            <DialogTitle className="text-gray-900">New Support Ticket</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">Subject</label>
+              <Input
+                value={newSubject}
+                onChange={(e) => setNewSubject(e.target.value)}
+                placeholder="Brief description of your issue"
+                className="rounded-md"
+                data-testid="input-ticket-subject"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">Message</label>
+              <Textarea
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                placeholder="Describe your issue in detail..."
+                className="rounded-md h-32"
+                data-testid="input-ticket-message"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowCreate(false)} className="rounded-md">
+              Cancel
+            </Button>
+            <Button
+              onClick={() => createMutation.mutate()}
+              disabled={!newSubject.trim() || !newMessage.trim() || createMutation.isPending}
+              className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-md"
+              data-testid="button-submit-ticket"
+            >
+              {createMutation.isPending ? "Submitting..." : "Submit Ticket"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -1,12 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart3, Users, Music, ArrowUpRight, Clock, ShieldCheck } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { Link } from "wouter";
+import { Music, Clock, Users, ShieldCheck, ArrowUpRight, Plus } from "lucide-react";
 
 export default function Dashboard() {
   const { user } = useAuth();
-  
+
   const { data: releases = [] } = useQuery<any[]>({ queryKey: ["/api/releases"] });
   const { data: tickets = [] } = useQuery<any[]>({ queryKey: ["/api/tickets"] });
 
@@ -15,96 +14,91 @@ export default function Dashboard() {
   const openTickets = tickets.filter((t: any) => t.status !== "closed").length;
 
   const stats = [
-    { label: "Total Releases", value: String(releases.length), icon: Music, trend: `${approvedReleases} approved` },
-    { label: "Pending Review", value: String(pendingReleases), icon: Clock, trend: "Awaiting admin" },
-    { label: "Open Tickets", value: String(openTickets), icon: Users, trend: `${tickets.length} total` },
-    { label: "Account Role", value: user?.role?.toUpperCase() || "—", icon: ShieldCheck, trend: "Active" },
+    { label: "Total Releases", value: String(releases.length), icon: Music, sub: `${approvedReleases} approved` },
+    { label: "Pending Review", value: String(pendingReleases), icon: Clock, sub: "Awaiting admin" },
+    { label: "Open Tickets", value: String(openTickets), icon: Users, sub: `${tickets.length} total` },
+    { label: "Account Role", value: user?.role?.toUpperCase() || "—", icon: ShieldCheck, sub: "Active" },
   ];
 
-  return (
-    <div className="space-y-8">
-      <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div>
-          <span className="text-primary font-bold tracking-[0.4em] uppercase text-[10px] mb-4 block">Central Command</span>
-          <h1 className="text-4xl md:text-6xl font-black tracking-tighter uppercase leading-none" data-testid="text-dashboard-title">
-            Welcome, {user?.fullName?.split(" ")[0]}
-          </h1>
-        </div>
-        <div className="flex items-center gap-4 border-l border-white/10 pl-6 h-12">
-          <div className="flex flex-col items-end">
-            <span className="text-[9px] font-black tracking-widest text-white/40 uppercase">System Status</span>
-            <span className="text-[11px] font-bold text-green-500 uppercase flex items-center gap-2">
-              <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" /> Operational
-            </span>
-          </div>
-        </div>
-      </header>
+  const getStatusPill = (status: string) => {
+    if (status === "approved") return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Approved</span>;
+    if (status === "rejected") return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Rejected</span>;
+    return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">Pending</span>;
+  };
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold text-gray-900" data-testid="text-dashboard-title">
+          Welcome, {user?.fullName?.split(" ")[0]}
+        </h1>
+        <p className="text-gray-600 mt-1">Here's an overview of your account.</p>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat) => (
-          <Card key={stat.label} className="bg-black border-white/5 rounded-none group hover:border-white/20 transition-all">
-            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-              <CardTitle className="text-[9px] font-black tracking-[0.2em] uppercase text-white/40">
-                {stat.label}
-              </CardTitle>
-              <stat.icon className="w-4 h-4 text-white/20 group-hover:text-primary transition-colors" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-black tracking-tighter mb-1">{stat.value}</div>
-              <p className="text-[10px] text-green-500 font-bold flex items-center gap-1">
-                <ArrowUpRight className="w-3 h-3" /> {stat.trend}
-              </p>
-            </CardContent>
-          </Card>
+          <div key={stat.label} className="bg-white border border-gray-200 rounded-lg shadow-sm p-5">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-sm font-medium text-gray-400">{stat.label}</span>
+              <stat.icon className="w-5 h-5 text-gray-400" />
+            </div>
+            <div className="text-3xl font-bold text-gray-900">{stat.value}</div>
+            <p className="text-sm text-gray-600 mt-1 flex items-center gap-1">
+              <ArrowUpRight className="w-3.5 h-3.5 text-indigo-600" /> {stat.sub}
+            </p>
+          </div>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-8">
-          <Card className="bg-black border-white/5 rounded-none">
-            <CardHeader className="border-b border-white/5">
-              <CardTitle className="text-xs font-black tracking-[0.3em] uppercase">Recent Releases</CardTitle>
-            </CardHeader>
-            <CardContent className="pt-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
+            <div className="px-6 py-4 border-b border-gray-100">
+              <h2 className="text-lg font-semibold text-gray-900">Recent Releases</h2>
+            </div>
+            <div className="p-6">
               {releases.length === 0 ? (
                 <div className="text-center py-8">
-                  <p className="text-xs text-white/40 uppercase tracking-widest mb-4">No releases yet</p>
+                  <Music className="w-10 h-10 text-gray-300 mx-auto mb-3" />
+                  <p className="text-gray-600 mb-4">No releases yet</p>
                   <Link href="/app/upload">
-                    <button className="px-6 py-3 border border-white/10 hover:bg-white hover:text-black text-[10px] font-black uppercase tracking-widest transition-all" data-testid="button-submit-first">
-                      Submit First Release
+                    <button className="bg-indigo-600 text-white hover:bg-indigo-700 rounded-md px-4 py-2 text-sm font-medium" data-testid="button-submit-first">
+                      <Plus className="w-4 h-4 inline mr-1" /> Submit First Release
                     </button>
                   </Link>
                 </div>
               ) : (
-                <div className="space-y-4">
+                <div className="space-y-0">
                   {releases.slice(0, 5).map((rel: any) => (
-                    <div key={rel.id} className="flex items-center justify-between border-b border-white/5 pb-4 last:border-0 last:pb-0">
-                      <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 border border-white/10 flex items-center justify-center">
-                          <Music className="w-4 h-4 text-white/20" />
-                        </div>
+                    <div key={rel.id} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
+                      <div className="flex items-center gap-3">
+                        {rel.coverArtUrl ? (
+                          <img src={rel.coverArtUrl} alt={rel.title} className="w-10 h-10 rounded object-cover" />
+                        ) : (
+                          <div className="w-10 h-10 bg-gray-100 rounded flex items-center justify-center">
+                            <Music className="w-4 h-4 text-gray-400" />
+                          </div>
+                        )}
                         <div>
-                          <div className="text-[11px] font-black uppercase tracking-tight">{rel.title}</div>
-                          <div className="text-[9px] text-white/40 uppercase tracking-widest">{rel.primaryArtist} • {rel.releaseType}</div>
+                          <div className="text-sm font-medium text-gray-900">{rel.title}</div>
+                          <div className="text-xs text-gray-400">{rel.primaryArtist} · {rel.releaseType}</div>
                         </div>
                       </div>
-                      <span className={`text-[9px] font-bold px-2 py-1 border border-white/10 uppercase tracking-widest ${rel.status === 'approved' ? 'text-green-500' : rel.status === 'rejected' ? 'text-red-500' : 'text-yellow-500'}`}>
-                        {rel.status}
-                      </span>
+                      {getStatusPill(rel.status)}
                     </div>
                   ))}
                 </div>
               )}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
 
-        <div className="space-y-8">
-          <Card className="bg-black border-white/5 rounded-none">
-            <CardHeader className="border-b border-white/5">
-              <CardTitle className="text-xs font-black tracking-[0.3em] uppercase">Quick Actions</CardTitle>
-            </CardHeader>
-            <CardContent className="pt-6 space-y-2">
+        <div>
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
+            <div className="px-6 py-4 border-b border-gray-100">
+              <h2 className="text-lg font-semibold text-gray-900">Quick Actions</h2>
+            </div>
+            <div className="p-4 space-y-2">
               {[
                 { label: "Submit Release", href: "/app/upload" },
                 { label: "View Catalog", href: "/app/catalog" },
@@ -116,13 +110,13 @@ export default function Dashboard() {
                 ] : []),
               ].map(action => (
                 <Link key={action.label} href={action.href}>
-                  <button className="w-full text-left p-3 border border-white/10 hover:bg-white hover:text-black text-[10px] font-black uppercase tracking-widest transition-all" data-testid={`button-action-${action.label.toLowerCase().replace(/\s/g, '-')}`}>
+                  <button className="w-full text-left px-4 py-2.5 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 border border-gray-200 transition-colors" data-testid={`button-action-${action.label.toLowerCase().replace(/\s/g, '-')}`}>
                     {action.label}
                   </button>
                 </Link>
               ))}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
       </div>
     </div>

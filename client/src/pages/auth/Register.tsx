@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Globe, CheckCircle } from "lucide-react";
+import { Disc, CheckCircle } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 
 export default function Register() {
@@ -34,13 +34,13 @@ export default function Register() {
 
   if (registerSuccess) {
     return (
-      <div className="min-h-screen bg-black flex flex-col items-center justify-center p-6">
-        <div className="w-full max-w-md bg-[#050505] border border-white/10 p-8 md:p-12 text-center">
-          <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-6" />
-          <h1 className="text-2xl font-black tracking-tighter uppercase mb-4" data-testid="text-register-success">Application Submitted</h1>
-          <p className="text-sm text-white/40 mb-8">Your application has been submitted and is pending admin approval. You will be able to access the dashboard once approved.</p>
+      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6">
+        <div className="w-full max-w-md bg-white border border-gray-200 rounded-lg shadow-sm p-8 text-center">
+          <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-4" />
+          <h1 className="text-xl font-bold text-gray-900 mb-2" data-testid="text-register-success">Application Submitted</h1>
+          <p className="text-sm text-gray-500 mb-6">Your application has been submitted and is pending admin approval. You'll be able to access the dashboard once approved.</p>
           <Link href="/login">
-            <Button className="w-full bg-white text-black hover:bg-white/90 rounded-none h-14 text-xs font-black tracking-[0.3em] uppercase" data-testid="button-go-login">
+            <Button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white h-11 rounded-md font-medium" data-testid="button-go-login">
               Go to Login
             </Button>
           </Link>
@@ -50,71 +50,75 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-screen bg-black flex flex-col items-center justify-center p-6 py-12">
-      <Link href="/" className="flex flex-col items-center gap-0 mb-12 group">
-        <Globe className="w-8 h-8 text-white mb-2 transition-transform group-hover:rotate-12" />
-        <span className="font-black text-2xl tracking-[0.3em] uppercase leading-none text-white">RAW ARCHIVES</span>
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6 py-12">
+      <Link href="/" className="flex items-center gap-2 mb-10">
+        <Disc className="w-6 h-6 text-indigo-600" />
+        <span className="font-bold text-lg tracking-wider uppercase text-gray-900">RAW ARCHIVES</span>
       </Link>
 
-      <div className="w-full max-w-xl bg-[#050505] border border-white/10 p-8 md:p-12">
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-black tracking-tighter uppercase mb-2">Create Account</h1>
-          <p className="text-xs text-white/40 uppercase tracking-widest">Apply for platform access</p>
+      <div className="w-full max-w-xl bg-white border border-gray-200 rounded-lg shadow-sm p-8">
+        <div className="text-center mb-6">
+          <h1 className="text-xl font-bold text-gray-900 mb-1">Create Account</h1>
+          <p className="text-sm text-gray-500">Apply for platform access</p>
         </div>
 
         {registerError && (
-          <div className="mb-6 p-3 border border-red-500/30 bg-red-500/10 text-red-400 text-xs uppercase tracking-widest text-center" data-testid="text-register-error">
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md text-red-700 text-sm text-center" data-testid="text-register-error">
             {registerError}
           </div>
         )}
 
-        <form onSubmit={handleRegister} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-white/60">Username *</label>
-              <Input value={form.username} onChange={e => update("username", e.target.value)} required minLength={3} className="bg-black border-white/10 rounded-none h-12 text-sm focus:border-white focus:ring-0" placeholder="myusername" data-testid="input-reg-username" />
+        <form onSubmit={handleRegister} className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium text-gray-700">Username *</label>
+              <Input value={form.username} onChange={e => update("username", e.target.value)} required minLength={3} className="h-11 border-gray-300 rounded-md" placeholder="myusername" data-testid="input-reg-username" />
             </div>
-            <div className="space-y-2">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-white/60">Full Name *</label>
-              <Input value={form.fullName} onChange={e => update("fullName", e.target.value)} required className="bg-black border-white/10 rounded-none h-12 text-sm focus:border-white focus:ring-0" placeholder="John Doe" data-testid="input-reg-fullname" />
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium text-gray-700">Full Name *</label>
+              <Input value={form.fullName} onChange={e => update("fullName", e.target.value)} required className="h-11 border-gray-300 rounded-md" placeholder="John Doe" data-testid="input-reg-fullname" />
             </div>
           </div>
           
-          <div className="space-y-2">
-            <label className="text-[10px] font-bold uppercase tracking-widest text-white/60">Email Address *</label>
-            <Input type="email" value={form.email} onChange={e => update("email", e.target.value)} required className="bg-black border-white/10 rounded-none h-12 text-sm focus:border-white focus:ring-0" placeholder="name@label.com" data-testid="input-reg-email" />
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium text-gray-700">Email Address *</label>
+            <Input type="email" value={form.email} onChange={e => update("email", e.target.value)} required className="h-11 border-gray-300 rounded-md" placeholder="name@label.com" data-testid="input-reg-email" />
           </div>
 
-          <div className="space-y-2">
-            <label className="text-[10px] font-bold uppercase tracking-widest text-white/60">Password *</label>
-            <Input type="password" value={form.password} onChange={e => update("password", e.target.value)} required minLength={6} className="bg-black border-white/10 rounded-none h-12 text-sm focus:border-white focus:ring-0" placeholder="Min 6 characters" data-testid="input-reg-password" />
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium text-gray-700">Password *</label>
+            <Input type="password" value={form.password} onChange={e => update("password", e.target.value)} required minLength={6} className="h-11 border-gray-300 rounded-md" placeholder="Min 6 characters" data-testid="input-reg-password" />
           </div>
 
-          <div className="space-y-2">
-            <label className="text-[10px] font-bold uppercase tracking-widest text-white/60">Label / Artist Name</label>
-            <Input value={form.labelName} onChange={e => update("labelName", e.target.value)} className="bg-black border-white/10 rounded-none h-12 text-sm focus:border-white focus:ring-0" placeholder="e.g. Void Circuit Records" data-testid="input-reg-label" />
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium text-gray-700">Label / Artist Name</label>
+            <Input value={form.labelName} onChange={e => update("labelName", e.target.value)} className="h-11 border-gray-300 rounded-md" placeholder="e.g. Void Circuit Records" data-testid="input-reg-label" />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-white/60">Country</label>
-              <select value={form.country} onChange={e => update("country", e.target.value)} className="w-full bg-black border border-white/10 rounded-none h-12 px-3 text-sm text-white focus:border-white focus:outline-none" data-testid="select-country">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium text-gray-700">Country</label>
+              <select value={form.country} onChange={e => update("country", e.target.value)} className="w-full h-11 px-3 border border-gray-300 rounded-md text-sm bg-white text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" data-testid="select-country">
                 <option value="">Select Country</option>
                 <option value="us">United States</option>
                 <option value="uk">United Kingdom</option>
                 <option value="de">Germany</option>
                 <option value="tr">Turkey</option>
                 <option value="jp">Japan</option>
+                <option value="kr">South Korea</option>
+                <option value="br">Brazil</option>
+                <option value="fr">France</option>
               </select>
             </div>
-            <div className="space-y-2">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-white/60">Timezone</label>
-              <select value={form.timezone} onChange={e => update("timezone", e.target.value)} className="w-full bg-black border border-white/10 rounded-none h-12 px-3 text-sm text-white focus:border-white focus:outline-none" data-testid="select-timezone">
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium text-gray-700">Timezone</label>
+              <select value={form.timezone} onChange={e => update("timezone", e.target.value)} className="w-full h-11 px-3 border border-gray-300 rounded-md text-sm bg-white text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" data-testid="select-timezone">
                 <option value="">Select Timezone</option>
                 <option value="est">EST (UTC-5)</option>
                 <option value="utc">UTC</option>
                 <option value="cet">CET (UTC+1)</option>
                 <option value="trt">TRT (UTC+3)</option>
+                <option value="jst">JST (UTC+9)</option>
               </select>
             </div>
           </div>
@@ -122,17 +126,17 @@ export default function Register() {
           <Button 
             type="submit" 
             disabled={isLoading}
-            className="w-full bg-white text-black hover:bg-white/90 rounded-none h-14 text-xs font-black tracking-[0.3em] uppercase transition-all mt-4"
+            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white h-11 rounded-md font-medium mt-2"
             data-testid="button-register"
           >
             {isLoading ? "Submitting..." : "Submit Application"}
           </Button>
         </form>
 
-        <div className="mt-8 pt-8 border-t border-white/5 text-center">
-          <p className="text-[10px] text-white/40 uppercase tracking-widest">
+        <div className="mt-6 pt-6 border-t border-gray-100 text-center">
+          <p className="text-sm text-gray-500">
             Already registered?{" "}
-            <Link href="/login" className="text-white hover:underline underline-offset-4">
+            <Link href="/login" className="text-indigo-600 hover:text-indigo-700 font-medium">
               Sign In
             </Link>
           </p>

@@ -1,41 +1,42 @@
-import { Globe, Clock, LogOut } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Clock, LogOut } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 
 export default function PendingApproval() {
   const { logout, user } = useAuth();
 
   return (
-    <div className="min-h-screen bg-black flex flex-col items-center justify-center p-6">
-      <div className="flex flex-col items-center gap-0 mb-12">
-        <Globe className="w-8 h-8 text-white mb-2" />
-        <span className="font-black text-2xl tracking-[0.3em] uppercase leading-none text-white">RAW ARCHIVES</span>
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6">
+      <div className="flex flex-col items-center gap-1 mb-10">
+        <span className="font-bold text-xl tracking-widest uppercase text-gray-900">RAW ARCHIVES</span>
+        <span className="text-xs text-gray-400 tracking-wider">Music Distribution</span>
       </div>
 
-      <div className="w-full max-w-md bg-[#050505] border border-white/10 p-8 md:p-12 text-center">
-        <Clock className="w-12 h-12 text-white/20 mx-auto mb-6" />
-        <h1 className="text-2xl font-black tracking-tighter uppercase mb-4" data-testid="text-pending-title">Application Pending</h1>
-        <p className="text-sm text-white/40 uppercase tracking-widest mb-2">
+      <div className="w-full max-w-md bg-white border border-gray-200 rounded-lg shadow-sm p-8 text-center">
+        <div className="w-14 h-14 rounded-full bg-yellow-50 flex items-center justify-center mx-auto mb-5">
+          <Clock className="w-7 h-7 text-yellow-600" />
+        </div>
+        <h1 className="text-2xl font-bold text-gray-900 mb-2" data-testid="text-pending-title">Application Pending</h1>
+        <p className="text-sm text-gray-600 mb-1">
           Your application is under review.
         </p>
-        <p className="text-xs text-white/30 mb-8">
+        <p className="text-sm text-gray-400 mb-6">
           An administrator will review your application shortly. You will receive access once approved.
         </p>
         {user && (
-          <div className="border border-white/10 p-4 mb-8 text-left">
-            <div className="text-[10px] text-white/40 uppercase tracking-widest mb-1">Logged in as</div>
-            <div className="text-sm font-bold" data-testid="text-pending-username">{user.username}</div>
-            <div className="text-xs text-white/40">{user.email}</div>
+          <div className="border border-gray-200 rounded-md p-4 mb-6 text-left">
+            <div className="text-xs text-gray-400 mb-1">Logged in as</div>
+            <div className="text-sm font-medium text-gray-900" data-testid="text-pending-username">{user.username}</div>
+            <div className="text-sm text-gray-400">{user.email}</div>
           </div>
         )}
-        <Button 
+        <button
           onClick={() => logout()}
-          className="w-full bg-white text-black hover:bg-white/90 rounded-none h-12 text-xs font-black tracking-[0.3em] uppercase"
+          className="w-full bg-indigo-600 text-white hover:bg-indigo-700 rounded-md h-10 text-sm font-medium inline-flex items-center justify-center gap-2"
           data-testid="button-logout"
         >
-          <LogOut className="w-4 h-4 mr-2" />
+          <LogOut className="w-4 h-4" />
           Sign Out
-        </Button>
+        </button>
       </div>
     </div>
   );

@@ -1,8 +1,8 @@
 import { Link, useLocation } from "wouter";
 import { 
   LayoutDashboard, Music, UploadCloud, DollarSign, CreditCard, 
-  Users, Settings, HelpCircle, Bell, Search, LogOut,
-  User as UserIcon, ShieldCheck, FileCheck, ClipboardList, MessageSquare
+  Users, Settings, HelpCircle, LogOut, ChevronDown,
+  ShieldCheck, FileCheck, ClipboardList, MessageSquare, Disc, Radio
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -22,44 +22,47 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   const mainItems = [
     { href: "/app/dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/app/catalog", label: "Catalog", icon: Music },
-    { href: "/app/upload", label: "Upload", icon: UploadCloud },
+    { href: "/app/catalog", label: "Releases", icon: Music },
+    { href: "/app/upload", label: "Create Product", icon: UploadCloud },
     { href: "/app/earnings", label: "Earnings", icon: DollarSign },
     { href: "/app/payouts", label: "Payouts", icon: CreditCard },
-    { href: "/app/artists", label: "Artists", icon: Users },
-    { href: "/app/settings", label: "Settings", icon: Settings },
     { href: "/app/support", label: "Support", icon: HelpCircle },
+    { href: "/app/settings", label: "Settings", icon: Settings },
   ];
 
   const adminItems = user?.role === "admin" ? [
     { href: "/app/admin/applications", label: "Applications", icon: ClipboardList },
     { href: "/app/admin/releases", label: "Release Queue", icon: FileCheck },
-    { href: "/app/admin/users", label: "User Mgmt", icon: ShieldCheck },
+    { href: "/app/admin/payouts", label: "Payouts Queue", icon: CreditCard },
+    { href: "/app/admin/users", label: "User Management", icon: ShieldCheck },
+    { href: "/app/admin/dsps", label: "DSP Management", icon: Radio },
     { href: "/app/admin/support", label: "All Tickets", icon: MessageSquare },
+    { href: "/app/admin/settings", label: "Platform Settings", icon: Settings },
   ] : [];
 
   const initials = user?.fullName?.split(" ").map(n => n[0]).join("").substring(0, 2).toUpperCase() || "??";
 
   return (
-    <div className="flex h-screen overflow-hidden bg-background text-foreground">
-      <aside className="w-64 border-r border-white/5 bg-[#050505] hidden md:flex flex-col">
-        <div className="h-16 flex items-center px-6 border-b border-white/5">
-          <Link href="/" className="font-black text-xl tracking-[0.2em] uppercase text-white">
+    <div className="flex h-screen overflow-hidden bg-[#f8f9fa]">
+      <aside className="w-[220px] bg-white border-r border-gray-200 hidden md:flex flex-col shrink-0">
+        <div className="h-14 flex items-center px-5 border-b border-gray-200">
+          <Link href="/" className="font-bold text-sm tracking-wider uppercase text-gray-900 flex items-center gap-2">
+            <Disc className="w-5 h-5 text-indigo-600" />
             RAW ARCHIVES
           </Link>
         </div>
-        <div className="flex-1 overflow-y-auto py-6 flex flex-col gap-1 px-4">
+        <div className="flex-1 overflow-y-auto py-3 flex flex-col gap-0.5 px-3">
           {mainItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-all duration-200",
+                "flex items-center gap-2.5 px-3 py-2 rounded-md text-[13px] font-medium transition-all",
                 location === item.href 
-                  ? "bg-white/10 text-white" 
-                  : "text-white/40 hover:bg-white/5 hover:text-white"
+                  ? "bg-indigo-50 text-indigo-700" 
+                  : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
               )}
-              data-testid={`nav-${item.label.toLowerCase()}`}
+              data-testid={`nav-${item.label.toLowerCase().replace(/\s/g, '-')}`}
             >
               <item.icon className="w-4 h-4" />
               {item.label}
@@ -68,7 +71,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
           {adminItems.length > 0 && (
             <>
-              <div className="mt-6 mb-2 px-4 text-[9px] font-black tracking-[0.3em] uppercase text-white/20">
+              <div className="mt-4 mb-1.5 px-3 text-[10px] font-semibold tracking-wider uppercase text-gray-400">
                 Admin
               </div>
               {adminItems.map((item) => (
@@ -76,10 +79,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-all duration-200",
+                    "flex items-center gap-2.5 px-3 py-2 rounded-md text-[13px] font-medium transition-all",
                     location === item.href 
-                      ? "bg-white/10 text-white" 
-                      : "text-white/40 hover:bg-white/5 hover:text-white"
+                      ? "bg-indigo-50 text-indigo-700" 
+                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                   )}
                   data-testid={`nav-admin-${item.label.toLowerCase().replace(/\s/g, '-')}`}
                 >
@@ -90,59 +93,45 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             </>
           )}
         </div>
-        <div className="p-4 border-t border-white/5">
-          <button 
-            onClick={() => logout()}
-            className="flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium text-white/40 hover:bg-white/5 hover:text-white transition-all duration-200 w-full"
-            data-testid="button-sidebar-logout"
-          >
-            <LogOut className="w-4 h-4" />
-            Logout
-          </button>
-        </div>
       </aside>
 
       <main className="flex-1 flex flex-col overflow-hidden">
-        <header className="h-16 border-b border-white/5 bg-[#050505] flex items-center justify-between px-6">
+        <header className="h-14 border-b border-gray-200 bg-white flex items-center justify-between px-6 shrink-0">
           <div className="flex items-center gap-4 flex-1">
-            <div className="relative w-64 hidden sm:block">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
-              <input 
-                type="text" 
-                placeholder="Search catalog, artists..." 
-                className="w-full bg-white/5 border border-white/10 rounded-md pl-10 pr-4 py-2 text-sm text-white placeholder:text-white/40 focus:outline-none focus:border-white/20"
-              />
-            </div>
+            <span className="text-sm font-medium text-gray-500 hidden sm:block">
+              {user?.labelName || "Dashboard"}
+            </span>
           </div>
-          <div className="flex items-center gap-6">
-            <button className="relative text-white/40 hover:text-white transition-colors">
-              <Bell className="w-5 h-5" />
-            </button>
+          <div className="flex items-center gap-4">
             <DropdownMenu>
-              <DropdownMenuTrigger className="outline-none">
-                <Avatar className="w-8 h-8 border border-white/10 cursor-pointer">
-                  <AvatarFallback className="bg-white/10 text-xs">{initials}</AvatarFallback>
+              <DropdownMenuTrigger className="outline-none flex items-center gap-2">
+                <Avatar className="w-8 h-8 border border-gray-200 cursor-pointer">
+                  <AvatarFallback className="bg-indigo-100 text-indigo-700 text-xs font-semibold">{initials}</AvatarFallback>
                 </Avatar>
+                <div className="hidden sm:block text-left">
+                  <p className="text-sm font-medium text-gray-900" data-testid="text-user-name">{user?.fullName}</p>
+                </div>
+                <ChevronDown className="w-4 h-4 text-gray-400" />
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 bg-[#111] border-white/10 text-white rounded-md p-1 mt-2 shadow-2xl">
+              <DropdownMenuContent align="end" className="w-56 bg-white border-gray-200 rounded-lg shadow-lg mt-1">
                 <DropdownMenuLabel className="font-normal p-3">
                   <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none" data-testid="text-user-name">{user?.fullName}</p>
-                    <p className="text-xs text-white/40 leading-none">{user?.email}</p>
-                    <p className="text-[9px] text-white/30 uppercase tracking-widest mt-1">{user?.role}</p>
+                    <p className="text-sm font-medium text-gray-900">{user?.fullName}</p>
+                    <p className="text-xs text-gray-500">{user?.email}</p>
+                    <p className="text-[10px] text-gray-400 uppercase tracking-wider mt-1">{user?.role}</p>
                   </div>
                 </DropdownMenuLabel>
-                <DropdownMenuSeparator className="bg-white/10" />
-                <DropdownMenuItem asChild className="p-3 text-sm cursor-pointer hover:bg-white/10 focus:bg-white/10 focus:text-white">
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild className="cursor-pointer">
                   <Link href="/app/settings" className="flex items-center w-full">
                     <Settings className="mr-2 h-4 w-4" />
                     <span>Settings</span>
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuSeparator className="bg-white/10" />
+                <DropdownMenuSeparator />
                 <DropdownMenuItem 
                   onClick={() => logout()}
-                  className="p-3 text-sm cursor-pointer hover:bg-white/10 focus:bg-white/10 focus:text-white text-red-400 focus:text-red-400"
+                  className="cursor-pointer text-red-600 focus:text-red-600"
                 >
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Log out</span>
@@ -152,7 +141,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           </div>
         </header>
 
-        <div className="flex-1 overflow-y-auto bg-black p-6 md:p-8">
+        <div className="flex-1 overflow-y-auto p-6">
           {children}
         </div>
       </main>
