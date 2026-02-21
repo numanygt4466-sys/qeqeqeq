@@ -87,6 +87,8 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+  app.set("trust proxy", 1);
+
   const PgStore = connectPgSimple(session);
   app.use(session({
     store: new PgStore({
@@ -99,7 +101,7 @@ export async function registerRoutes(
     cookie: {
       maxAge: 30 * 24 * 60 * 60 * 1000,
       httpOnly: true,
-      secure: false,
+      secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
     },
   }));
@@ -147,8 +149,11 @@ export async function registerRoutes(
       if (!validPassword) return res.status(401).json({ message: "Invalid credentials" });
 
       req.session.userId = user.id;
-      const { password, ...safeUser } = user;
-      res.json({ user: safeUser });
+      req.session.save((err) => {
+        if (err) return res.status(500).json({ message: "Session error" });
+        const { password, ...safeUser } = user;
+        res.json({ user: safeUser });
+      });
     } catch (e: any) {
       if (e instanceof z.ZodError) return res.status(400).json({ message: e.errors[0].message });
       res.status(500).json({ message: e.message });
