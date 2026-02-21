@@ -48,7 +48,7 @@ export default function ForgotPassword() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full h-11 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white text-sm font-medium rounded-md transition-colors"
+                className="w-full h-11 bg-black hover:bg-gray-900 disabled:opacity-60 text-white text-sm font-medium rounded-md transition-colors"
                 data-testid="button-send-reset"
               >
                 {isLoading ? "Sending..." : "Send Reset Link"}
