@@ -3,6 +3,7 @@ import heroEditorial from "@/assets/images/hero-editorial.png";
 import release1 from "@/assets/images/release-1.png";
 import release2 from "@/assets/images/release-2.png";
 import release3 from "@/assets/images/release-3.png";
+import virginMusicLogo from "@assets/Virgin_Music_Group.svg_1771701368920.png";
 import { ChevronRight, Play, Globe, ChevronUp, ChevronDown } from "lucide-react";
 
 export default function Home() {
@@ -111,6 +112,18 @@ export default function Home() {
          </div>
       </section>
       
+      <section className="py-20 px-6 md:px-24 border-t border-white/5">
+        <div className="flex flex-col items-center text-center">
+          <span className="text-[10px] font-bold tracking-[0.5em] uppercase text-white/40 mb-8">Our Official Distribution Partner</span>
+          <img
+            src={virginMusicLogo}
+            alt="Virgin Music Group"
+            className="h-20 object-contain opacity-80 hover:opacity-100 transition-opacity"
+            data-testid="img-distribution-partner"
+          />
+        </div>
+      </section>
+
       <div className="h-12"></div>
     </div>
   );
