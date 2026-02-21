@@ -1,6 +1,7 @@
 import { Link, useLocation } from "wouter";
-import { Menu, Globe, User, LayoutDashboard, Send, X } from "lucide-react";
+import { Menu, User, LayoutDashboard, Send, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import blingLogo from "@/assets/images/raw-archives-logo-bling.png";
 import {
   Sheet,
   SheetContent,
@@ -56,22 +57,15 @@ export default function Navbar() {
                 </div>
               </div>
               <div className="absolute bottom-8 left-8 pb-[env(safe-area-inset-bottom)]">
-                <div className="flex flex-col gap-1">
-                  <span className="font-black text-xl tracking-[0.3em] uppercase leading-none text-white">RAW ARCHIVES</span>
-                  <span className="text-[7px] tracking-[0.6em] font-bold text-white/40 uppercase mt-1">Records</span>
-                </div>
+                <img src={blingLogo} alt="Raw Archives Records" className="h-10 object-contain" />
               </div>
             </SheetContent>
           </Sheet>
           
         </div>
         
-        <Link href="/" className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center group">
-          <div className="flex flex-col items-center gap-0">
-            <Globe className="w-5 h-5 md:w-6 md:h-6 text-white mb-1 transition-transform group-hover:rotate-12" />
-            <span className="font-black text-sm md:text-xl tracking-[0.2em] md:tracking-[0.3em] uppercase leading-none">RAW ARCHIVES</span>
-            <span className="text-[7px] tracking-[0.6em] font-bold text-white/40 uppercase mt-1 hidden sm:block">Records</span>
-          </div>
+        <Link href="/" className="absolute left-1/2 -translate-x-1/2 flex items-center group">
+          <img src={blingLogo} alt="Raw Archives Records" className="h-10 md:h-14 object-contain transition-transform group-hover:scale-105" />
         </Link>
 
         <div className="flex items-center gap-6">
