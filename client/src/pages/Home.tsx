@@ -3,7 +3,7 @@ import heroEditorial from "@/assets/images/hero-editorial.png";
 import release1 from "@/assets/images/release-1.png";
 import release2 from "@/assets/images/release-2.png";
 import release3 from "@/assets/images/release-3.png";
-import { ChevronRight, Play } from "lucide-react";
+import { ChevronRight, Play, Globe } from "lucide-react";
 
 export default function Home() {
   return (
