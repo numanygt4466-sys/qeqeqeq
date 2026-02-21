@@ -3,48 +3,34 @@ import heroEditorial from "@/assets/images/hero-editorial.png";
 import release1 from "@/assets/images/release-1.png";
 import release2 from "@/assets/images/release-2.png";
 import release3 from "@/assets/images/release-3.png";
-import { ChevronRight, Play, Globe } from "lucide-react";
+import { ChevronRight, Play, Globe, ChevronUp, ChevronDown } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="bg-black min-h-screen pt-20">
-      {/* Universal-style Hero Slider Section */}
-      <section className="relative w-full aspect-[21/9] min-h-[600px] overflow-hidden group">
+    <div className="bg-black min-h-screen">
+      {/* Universal-style Hero Section */}
+      <section className="relative w-full h-screen overflow-hidden group">
         <div className="absolute inset-0 z-0">
           <img 
             src={heroEditorial} 
             alt="Featured Artist" 
             className="w-full h-full object-cover grayscale transition-transform duration-[20s] scale-100 group-hover:scale-110"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/20 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/60" />
         </div>
 
-        <div className="relative z-10 w-full h-full flex flex-col justify-center px-6 md:px-24">
-          <div className="max-w-2xl">
-            <div className="flex items-center gap-3 mb-6">
-               <span className="w-12 h-[1px] bg-white/40"></span>
-               <span className="text-[10px] tracking-[0.5em] font-bold text-white/60 uppercase">Featured Spotlight</span>
-            </div>
-            <h2 className="text-6xl md:text-8xl font-black tracking-tighter uppercase mb-8 leading-[0.85]">ARCANE</h2>
-            <p className="text-sm md:text-lg text-white/60 max-w-lg mb-10 leading-relaxed font-medium">
-              Global independent tour dates announced. Experience the evolution of the independent frontier.
-            </p>
-            <div className="flex items-center gap-6">
-              <button className="flex items-center gap-3 bg-white text-black px-8 py-4 text-[11px] font-black tracking-[0.2em] uppercase hover:bg-white/90 transition-all">
-                Learn More <ChevronRight className="w-4 h-4" />
-              </button>
-              <button className="flex items-center gap-3 border border-white/20 text-white px-8 py-4 text-[11px] font-black tracking-[0.2em] uppercase hover:bg-white/5 transition-all">
-                <Play className="w-4 h-4 fill-current" /> Watch Trailer
-              </button>
-            </div>
-          </div>
+        {/* Right Side Navigation Arrows */}
+        <div className="absolute right-0 top-1/2 -translate-y-1/2 z-20 flex flex-col gap-px">
+          <button className="w-12 h-12 bg-black flex items-center justify-center hover:bg-white hover:text-black transition-all">
+            <ChevronUp className="w-5 h-5" />
+          </button>
+          <button className="w-12 h-12 bg-black flex items-center justify-center hover:bg-white hover:text-black transition-all">
+            <ChevronDown className="w-5 h-5" />
+          </button>
         </div>
 
-        {/* Pager Dots */}
-        <div className="absolute bottom-10 right-24 flex gap-3 z-20">
-           {[0, 1, 2, 3].map((i) => (
-             <button key={i} className={`w-2 h-2 rounded-full transition-all ${i === 0 ? 'bg-white w-8' : 'bg-white/20 hover:bg-white/40'}`} />
-           ))}
+        <div className="relative z-10 w-full h-full flex flex-col justify-end items-center pb-24">
+          <h2 className="text-xl font-bold tracking-[0.2em] uppercase text-[#00AEEF] drop-shadow-sm">ARCANE</h2>
         </div>
       </section>
 
