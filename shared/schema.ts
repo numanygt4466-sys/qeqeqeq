@@ -12,6 +12,8 @@ export const users = pgTable("users", {
   labelName: text("label_name"),
   role: text("role").notNull().default("artist"),
   isApproved: boolean("is_approved").notNull().default(false),
+  isSuspended: boolean("is_suspended").notNull().default(false),
+  suspensionReason: text("suspension_reason"),
   country: text("country"),
   timezone: text("timezone"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
