@@ -1,0 +1,167 @@
+ou already rebuilt routing and added placeholder pages, but the app logic is currently not correct. Fix the platform so it behaves like a real white-label label dashboard.
+
+A) Access Control (Hard Requirement)
+
+Portal access: Only authenticated users can access anything under /app/*.
+
+No account = no login: The login endpoint must validate credentials against the database. If user does not exist, login must fail.
+
+Public site: Anything outside /app/* is public marketing pages. Do NOT render dashboard content in the middle of public pages.
+
+Auth guard: Implement a proper RequireAuth route guard (or middleware) that redirects to /login when not authenticated.
+
+Role-based access: Add roles: admin, label_manager, artist. Enforce restrictions:
+
+admin can approve/reject releases, delete users, view all applications, manage platform.
+
+label_manager can submit releases and manage artists inside their label.
+
+artist can view their own releases/earnings only.
+
+B) Database Reset + Clean Seed
+
+Wipe database (development only): remove all existing records so everything is clean.
+
+Seed a test admin user:
+
+username/email: admin
+
+password: 123
+
+role: admin
+Store password hashed.
+
+Seed minimal dummy data only if needed (optional), but keep the system mostly empty so we can test flows from scratch.
+
+If the project uses Prisma: add a reset script (e.g. prisma migrate reset --force) and a seed.ts that creates the admin user.
+
+C) Release Submission MUST be Realistic
+
+Right now submissions accept empty fields. Fix this:
+
+Release Wizard validation
+
+Add required fields per step (cannot proceed until valid).
+
+Disable Next/Submit if required fields missing.
+
+Show clear error messages under inputs.
+
+Required fields minimum
+
+Release Info: title (required), primary artist (required), release type (required), genre (required), language (required), release date (required)
+
+Tracks: at least 1 track required
+
+Track fields: track title (required), explicit flag (required boolean default false), audio file (required; mock allowed but must be present)
+
+Distribution: at least 1 DSP selected (required)
+
+Submission outcome
+
+On submit, create a Release record with status = pending.
+
+Only admin can move a release to approved or rejected.
+
+If rejected: require a rejection reason field.
+
+D) Application/Intake Flow (Admin Review Queue)
+
+Build a simple “applications go to admin” logic:
+
+Register does NOT auto-grant dashboard access:
+
+When someone registers, create an Application or PendingAccount record with status pending.
+
+They can login, but only see a “Waiting for approval” screen (no dashboard access) until approved.
+
+Alternatively, block login entirely until approved (choose one and implement consistently).
+
+Admin Panel pages
+Add admin-only pages (can be within /app/admin/*):
+
+/app/admin/applications list: approve / reject applications
+
+/app/admin/releases queue: approve / reject pending releases
+
+/app/admin/users manage users: delete user, change role, disable account
+
+Approval rules
+
+Approving an application converts it into an active user (or flips isApproved=true).
+
+Only approved users can access dashboard content.
+
+E) Support System (Minimal but Working)
+
+Support currently missing. Implement a simple ticket system:
+
+User can create ticket: subject (required), message (required)
+
+Ticket states: open / in_progress / closed
+
+Admin can reply and change status
+
+Both user and admin can view ticket thread
+
+Routes:
+
+/app/support (user list + create)
+
+/app/admin/support (admin list + manage)
+
+F) Remove Random/Incorrect UI
+
+Remove any portal/dashboard components that appear on public marketing pages.
+
+Keep a clean separation: PublicLayout vs AppLayout.
+
+Ensure navigation + sidebars reflect access:
+
+if not logged in → only public pages
+
+if logged in but not approved → only “Pending Approval” screen + logout
+
+if logged in approved → normal dashboard
+
+G) Deliverables
+
+Update database schema (User, Release, Track, Application, Ticket, TicketMessage).
+
+Implement backend endpoints (or mock service layer) for:
+
+auth login/register
+
+application approve/reject
+
+release submit + status transitions
+
+ticket creation + replies
+
+user delete
+
+Update frontend:
+
+route guards
+
+validation on wizard
+
+admin screens
+
+Provide a short checklist on how to test flows:
+
+login as admin (admin/123)
+
+register a new user → shows pending approval
+
+admin approves user → user accesses dashboard
+
+user submits release → pending
+
+admin approves/rejects release
+
+user creates support ticket → admin replies
+
+Do NOT leave placeholder-only pages. Minimum viable but real logic.
+
+Ek not (kanka önemli)
