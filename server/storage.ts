@@ -91,12 +91,17 @@ export class DatabaseStorage implements IStorage {
     const [app] = await db.select().from(applications).where(eq(applications.userId, userId));
     return app;
   }
-  async getAllApplications(): Promise<(Application & { user?: User })[]> {
+  async getAllApplications(): Promise<(Application & { user?: Omit<User, "password"> })[]> {
     const apps = await db.select().from(applications).orderBy(desc(applications.createdAt));
     const result = [];
     for (const app of apps) {
       const user = await this.getUser(app.userId);
-      result.push({ ...app, user });
+      if (user) {
+        const { password, ...safeUser } = user;
+        result.push({ ...app, user: safeUser });
+      } else {
+        result.push({ ...app });
+      }
     }
     return result;
   }
@@ -146,12 +151,17 @@ export class DatabaseStorage implements IStorage {
   async getTicketsByUser(userId: number): Promise<Ticket[]> {
     return db.select().from(tickets).where(eq(tickets.userId, userId)).orderBy(desc(tickets.createdAt));
   }
-  async getAllTickets(): Promise<(Ticket & { user?: User })[]> {
+  async getAllTickets(): Promise<(Ticket & { user?: Omit<User, "password"> })[]> {
     const allTickets = await db.select().from(tickets).orderBy(desc(tickets.createdAt));
     const result = [];
     for (const t of allTickets) {
       const user = await this.getUser(t.userId);
-      result.push({ ...t, user });
+      if (user) {
+        const { password, ...safeUser } = user;
+        result.push({ ...t, user: safeUser });
+      } else {
+        result.push({ ...t });
+      }
     }
     return result;
   }
@@ -165,12 +175,17 @@ export class DatabaseStorage implements IStorage {
     const [msg] = await db.insert(ticketMessages).values(data).returning();
     return msg;
   }
-  async getMessagesByTicket(ticketId: number): Promise<(TicketMessage & { user?: User })[]> {
+  async getMessagesByTicket(ticketId: number): Promise<(TicketMessage & { user?: Omit<User, "password"> })[]> {
     const msgs = await db.select().from(ticketMessages).where(eq(ticketMessages.ticketId, ticketId)).orderBy(ticketMessages.createdAt);
     const result = [];
     for (const msg of msgs) {
       const user = await this.getUser(msg.userId);
-      result.push({ ...msg, user });
+      if (user) {
+        const { password, ...safeUser } = user;
+        result.push({ ...msg, user: safeUser });
+      } else {
+        result.push({ ...msg });
+      }
     }
     return result;
   }

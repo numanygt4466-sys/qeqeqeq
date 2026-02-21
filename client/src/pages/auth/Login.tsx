@@ -1,20 +1,26 @@
 import { useState } from "react";
-import { Link, useLocation } from "wouter";
+import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Globe, Lock } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
 
 export default function Login() {
-  const [, setLocation] = useLocation();
+  const { login, loginError, clearErrors } = useAuth();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    clearErrors();
     setIsLoading(true);
-    setTimeout(() => {
+    try {
+      await login(username, password);
+    } catch {
+    } finally {
       setIsLoading(false);
-      setLocation("/app/dashboard");
-    }, 1000);
+    }
   };
 
   return (
@@ -31,14 +37,23 @@ export default function Login() {
           <p className="text-xs text-white/40 uppercase tracking-widest">Access your dashboard</p>
         </div>
 
+        {loginError && (
+          <div className="mb-6 p-3 border border-red-500/30 bg-red-500/10 text-red-400 text-xs uppercase tracking-widest text-center" data-testid="text-login-error">
+            {loginError}
+          </div>
+        )}
+
         <form onSubmit={handleLogin} className="space-y-6">
           <div className="space-y-2">
-            <label className="text-[10px] font-bold uppercase tracking-widest text-white/60">Email Address</label>
+            <label className="text-[10px] font-bold uppercase tracking-widest text-white/60">Username</label>
             <Input 
-              type="email" 
+              type="text"
+              value={username}
+              onChange={e => setUsername(e.target.value)}
               required 
               className="bg-black border-white/10 rounded-none h-12 text-sm focus:border-white focus:ring-0" 
-              placeholder="name@label.com"
+              placeholder="admin"
+              data-testid="input-username"
             />
           </div>
           <div className="space-y-2">
@@ -50,24 +65,23 @@ export default function Login() {
             </div>
             <div className="relative">
               <Input 
-                type="password" 
+                type="password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
                 required 
                 className="bg-black border-white/10 rounded-none h-12 text-sm focus:border-white focus:ring-0 pr-10" 
                 placeholder="••••••••"
+                data-testid="input-password"
               />
               <Lock className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
             </div>
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <input type="checkbox" id="remember" className="bg-black border-white/20 rounded-none w-4 h-4 checked:bg-white" />
-            <label htmlFor="remember" className="text-[10px] text-white/60 uppercase tracking-widest cursor-pointer">Remember me</label>
           </div>
 
           <Button 
             type="submit" 
             disabled={isLoading}
             className="w-full bg-white text-black hover:bg-white/90 rounded-none h-14 text-xs font-black tracking-[0.3em] uppercase transition-all mt-4"
+            data-testid="button-login"
           >
             {isLoading ? "Authenticating..." : "Sign In"}
           </Button>

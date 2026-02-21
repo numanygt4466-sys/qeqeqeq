@@ -13,6 +13,10 @@ declare module "express-session" {
   }
 }
 
+function paramId(param: string | string[]): number {
+  return parseInt(Array.isArray(param) ? param[0] : param);
+}
+
 function requireAuth(req: Request, res: Response, next: NextFunction) {
   if (!req.session.userId) {
     return res.status(401).json({ message: "Not authenticated" });
@@ -135,7 +139,7 @@ export async function registerRoutes(
   });
 
   app.get("/api/releases/:id", requireApproved, async (req: Request, res: Response) => {
-    const release = await storage.getRelease(parseInt(req.params.id));
+    const release = await storage.getRelease(paramId(req.params.id));
     if (!release) return res.status(404).json({ message: "Not found" });
     const user = await storage.getUser(req.session.userId!);
     if (user!.role === "artist" && release.userId !== user!.id) {
@@ -186,7 +190,7 @@ export async function registerRoutes(
     if (status === "rejected" && !rejectionReason) {
       return res.status(400).json({ message: "Rejection reason required" });
     }
-    const release = await storage.updateRelease(parseInt(req.params.id), {
+    const release = await storage.updateRelease(paramId(req.params.id), {
       status,
       rejectionReason: rejectionReason || null,
     });
@@ -204,7 +208,7 @@ export async function registerRoutes(
     if (!["approved", "rejected"].includes(status)) {
       return res.status(400).json({ message: "Invalid status" });
     }
-    const application = await storage.getApplication(parseInt(req.params.id));
+    const application = await storage.getApplication(paramId(req.params.id));
     if (!application) return res.status(404).json({ message: "Not found" });
 
     await storage.updateApplication(application.id, {
@@ -231,14 +235,14 @@ export async function registerRoutes(
     const updates: any = {};
     if (role) updates.role = role;
     if (typeof isApproved === "boolean") updates.isApproved = isApproved;
-    const user = await storage.updateUser(parseInt(req.params.id), updates);
+    const user = await storage.updateUser(paramId(req.params.id), updates);
     if (!user) return res.status(404).json({ message: "User not found" });
     const { password, ...safeUser } = user;
     res.json(safeUser);
   });
 
   app.delete("/api/admin/users/:id", requireAdmin, async (req: Request, res: Response) => {
-    await storage.deleteUser(parseInt(req.params.id));
+    await storage.deleteUser(paramId(req.params.id));
     res.json({ message: "User deleted" });
   });
 
@@ -265,7 +269,7 @@ export async function registerRoutes(
   });
 
   app.get("/api/tickets/:id", requireApproved, async (req: Request, res: Response) => {
-    const ticket = await storage.getTicket(parseInt(req.params.id));
+    const ticket = await storage.getTicket(paramId(req.params.id));
     if (!ticket) return res.status(404).json({ message: "Not found" });
     const user = await storage.getUser(req.session.userId!);
     if (user!.role !== "admin" && ticket.userId !== user!.id) {
@@ -278,7 +282,7 @@ export async function registerRoutes(
   app.post("/api/tickets/:id/messages", requireApproved, async (req: Request, res: Response) => {
     try {
       const data = insertTicketMessageSchema.parse(req.body);
-      const ticket = await storage.getTicket(parseInt(req.params.id));
+      const ticket = await storage.getTicket(paramId(req.params.id));
       if (!ticket) return res.status(404).json({ message: "Not found" });
       const user = await storage.getUser(req.session.userId!);
       if (user!.role !== "admin" && ticket.userId !== user!.id) {
@@ -297,7 +301,7 @@ export async function registerRoutes(
     if (!["open", "in_progress", "closed"].includes(status)) {
       return res.status(400).json({ message: "Invalid status" });
     }
-    const ticket = await storage.updateTicket(parseInt(req.params.id), { status });
+    const ticket = await storage.updateTicket(paramId(req.params.id), { status });
     res.json(ticket);
   });
 
