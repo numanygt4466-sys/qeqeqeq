@@ -4,60 +4,45 @@ import release2 from "@/assets/images/release-2.png";
 import release3 from "@/assets/images/release-3.png";
 
 const RELEASES = [
-  { id: "RAW-004", title: "MACHINE LEARNING", artist: "VOID CIRCUIT", format: "12\" VINYL / DIGITAL", image: release1, date: "NOV 2024", genre: "INDUSTRIAL TECHNO" },
-  { id: "RAW-003", title: "CONCRETE PULSE", artist: "V/A", format: "DIGITAL COMPILATION", image: release1, date: "OCT 2024", genre: "EXPERIMENTAL" },
-  { id: "RAW-002", title: "STATIC DECAY", artist: "NIHIL", format: "CASSETTE / DIGITAL", image: release2, date: "SEP 2024", genre: "DARK AMBIENT" },
-  { id: "RAW-001", title: "FIRST IMPACT", artist: "KREDENCE", format: "12\" VINYL / DIGITAL", image: release3, date: "JUL 2024", genre: "HARD TECHNO" },
+  { id: "RAW-004", title: "Global Expansion", category: "Corporate", image: release1, date: "NOV 2024", summary: "Raw Archives partners with major streaming platforms for enhanced artist visibility." },
+  { id: "RAW-003", title: "New Studio Opening", category: "Infrastructure", image: release1, date: "OCT 2024", summary: "State-of-the-art recording facilities now available for our global roster." },
+  { id: "RAW-002", title: "Tech Innovation", category: "Technology", image: release2, date: "SEP 2024", summary: "Launching our proprietary analytics dashboard for independent labels." },
+  { id: "RAW-001", title: "Artist Spotlight", category: "Talent", image: release3, date: "JUL 2024", summary: "Celebrating the chart-topping success of our latest independent signings." },
 ];
 
 export default function Releases() {
   return (
-    <div className="min-h-screen pb-24 bg-grain">
-      <header className="py-20 border-b border-border bg-card">
-        <div className="container mx-auto px-4">
-          <h1 className="text-5xl md:text-7xl font-black tracking-tighter uppercase mb-4">RELEASES</h1>
-          <p className="font-mono text-muted-foreground">THE COMPLETE ARCHIVE [ {RELEASES.length} ENTRIES ]</p>
+    <div className="min-h-screen pb-24 bg-white">
+      <header className="py-24 border-b border-border bg-secondary">
+        <div className="container mx-auto px-6">
+          <h1 className="text-5xl md:text-7xl font-display font-bold tracking-tight mb-4">News & Updates</h1>
+          <p className="text-xl text-muted-foreground max-w-2xl">The latest from Raw Archives Music Group — global insights, artist news, and corporate updates.</p>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+      <main className="container mx-auto px-6 py-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           {RELEASES.map((release) => (
-            <article key={release.id} className="group grid grid-cols-1 md:grid-cols-2 gap-8 border border-transparent hover:border-border p-4 transition-colors" data-testid={`release-item-${release.id}`}>
-              <div className="relative aspect-square bg-muted overflow-hidden">
+            <article key={release.id} className="group cursor-pointer" data-testid={`news-item-${release.id}`}>
+              <div className="relative aspect-[16/9] overflow-hidden rounded-2xl mb-6">
                 <img 
                   src={release.image} 
                   alt={release.title}
-                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
+                <div className="absolute top-4 left-4">
+                  <span className="bg-primary text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                    {release.category}
+                  </span>
+                </div>
               </div>
-              <div className="flex flex-col justify-between py-2">
-                <div>
-                  <div className="flex justify-between items-start mb-6">
-                    <span className="font-mono text-sm bg-foreground text-background px-2 py-0.5">{release.id}</span>
-                    <span className="font-mono text-xs text-muted-foreground">{release.date}</span>
-                  </div>
-                  <h2 className="text-3xl font-bold tracking-tighter mb-1 uppercase">{release.title}</h2>
-                  <h3 className="text-xl text-muted-foreground font-medium mb-6">{release.artist}</h3>
-                  
-                  <div className="space-y-2 font-mono text-xs text-muted-foreground mb-8">
-                    <p className="flex justify-between border-b border-border/50 pb-1">
-                      <span>FORMAT:</span> <span>{release.format}</span>
-                    </p>
-                    <p className="flex justify-between border-b border-border/50 pb-1">
-                      <span>GENRE:</span> <span>{release.genre}</span>
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex gap-4">
-                  <a href="#" className="font-mono text-sm underline decoration-1 underline-offset-4 hover:text-muted-foreground transition-colors" data-testid={`link-listen-${release.id}`}>
-                    LISTEN
-                  </a>
-                  <a href="#" className="font-mono text-sm underline decoration-1 underline-offset-4 hover:text-muted-foreground transition-colors" data-testid={`link-buy-${release.id}`}>
-                    PURCHASE
-                  </a>
-                </div>
+              <div>
+                <span className="font-semibold text-primary text-sm mb-2 block">{release.date}</span>
+                <h2 className="text-3xl font-display font-bold mb-4 group-hover:text-primary transition-colors">{release.title}</h2>
+                <p className="text-muted-foreground text-lg leading-relaxed mb-6">{release.summary}</p>
+                <Link href="#" className="font-bold text-sm inline-flex items-center gap-2 group-hover:gap-3 transition-all">
+                  READ MORE <span className="text-primary">→</span>
+                </Link>
               </div>
             </article>
           ))}
