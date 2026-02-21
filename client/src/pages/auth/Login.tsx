@@ -104,7 +104,7 @@ export default function Login() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full h-11 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 disabled:cursor-not-allowed text-white text-[13px] font-bold tracking-[0.15em] uppercase rounded transition-colors"
+            className="w-full h-11 bg-black hover:bg-gray-900 disabled:opacity-60 disabled:cursor-not-allowed text-white text-[13px] font-bold tracking-[0.15em] uppercase rounded transition-colors"
             data-testid="button-login"
           >
             {isLoading ? "Signing in..." : "SIGN IN"}
