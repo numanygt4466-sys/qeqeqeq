@@ -16,6 +16,9 @@ export default function Register() {
     labelName: "",
     country: "",
     timezone: "",
+    spotifyLink: "",
+    catalogSize: "",
+    currentRevenue: "",
   });
 
   const update = (field: string, value: string) => setForm(prev => ({ ...prev, [field]: value }));
@@ -93,6 +96,37 @@ export default function Register() {
           <div className="space-y-1.5">
             <label className="text-sm font-medium text-gray-700">Label / Artist Name</label>
             <Input value={form.labelName} onChange={e => update("labelName", e.target.value)} className="h-11 border-gray-300 rounded-md" placeholder="e.g. Void Circuit Records" data-testid="input-reg-label" />
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium text-gray-700">Spotify Artist Link *</label>
+            <Input value={form.spotifyLink} onChange={e => update("spotifyLink", e.target.value)} required className="h-11 border-gray-300 rounded-md" placeholder="https://open.spotify.com/artist/..." data-testid="input-reg-spotify" />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium text-gray-700">Total Catalog Size *</label>
+              <select value={form.catalogSize} onChange={e => update("catalogSize", e.target.value)} required className="w-full h-11 px-3 border border-gray-300 rounded-md text-sm bg-white text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" data-testid="select-catalog-size">
+                <option value="">Select catalog size</option>
+                <option value="1-5">1–5 releases</option>
+                <option value="6-20">6–20 releases</option>
+                <option value="21-50">21–50 releases</option>
+                <option value="51-100">51–100 releases</option>
+                <option value="100+">100+ releases</option>
+              </select>
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium text-gray-700">Current Monthly Revenue *</label>
+              <select value={form.currentRevenue} onChange={e => update("currentRevenue", e.target.value)} required className="w-full h-11 px-3 border border-gray-300 rounded-md text-sm bg-white text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" data-testid="select-revenue">
+                <option value="">Select revenue range</option>
+                <option value="$0-$100">$0 – $100</option>
+                <option value="$100-$500">$100 – $500</option>
+                <option value="$500-$1,000">$500 – $1,000</option>
+                <option value="$1,000-$5,000">$1,000 – $5,000</option>
+                <option value="$5,000-$10,000">$5,000 – $10,000</option>
+                <option value="$10,000+">$10,000+</option>
+              </select>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

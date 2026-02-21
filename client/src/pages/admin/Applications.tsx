@@ -20,13 +20,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CheckCircle, XCircle, Clock, User } from "lucide-react";
+import { CheckCircle, XCircle, Clock, User, ChevronDown, ChevronUp, ExternalLink, Music, DollarSign, Archive } from "lucide-react";
 
 export default function AdminApplications() {
   const { toast } = useToast();
   const [statusFilter, setStatusFilter] = useState("all");
   const [rejectionId, setRejectionId] = useState<number | null>(null);
   const [rejectionReason, setRejectionReason] = useState("");
+  const [expandedId, setExpandedId] = useState<number | null>(null);
 
   const { data: applications = [], isLoading } = useQuery<any[]>({
     queryKey: ["/api/admin/applications"],
@@ -120,6 +121,7 @@ export default function AdminApplications() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-100 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left w-8"></th>
                 <th className="px-6 py-3 text-left">Applicant</th>
                 <th className="px-6 py-3 text-left">Email</th>
                 <th className="px-6 py-3 text-left">Label</th>
@@ -130,11 +132,16 @@ export default function AdminApplications() {
             </thead>
             <tbody>
               {filtered.map((app: any) => (
+                <>
                 <tr
                   key={app.id}
-                  className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
+                  className="border-b border-gray-100 hover:bg-gray-50 transition-colors cursor-pointer"
                   data-testid={`row-application-${app.id}`}
+                  onClick={() => setExpandedId(expandedId === app.id ? null : app.id)}
                 >
+                  <td className="px-3 py-4 text-gray-400">
+                    {expandedId === app.id ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                  </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
@@ -158,7 +165,7 @@ export default function AdminApplications() {
                     {new Date(app.createdAt).toLocaleDateString()}
                   </td>
                   <td className="px-6 py-4">{statusPill(app.status)}</td>
-                  <td className="px-6 py-4 text-center">
+                  <td className="px-6 py-4 text-center" onClick={e => e.stopPropagation()}>
                     {app.status === "pending" && (
                       <div className="flex items-center justify-center gap-2">
                         <Button
@@ -182,6 +189,48 @@ export default function AdminApplications() {
                     )}
                   </td>
                 </tr>
+                {expandedId === app.id && (
+                  <tr key={`detail-${app.id}`} className="border-b border-gray-100 bg-gray-50">
+                    <td colSpan={7} className="px-6 py-4">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="flex items-start gap-3 p-3 bg-white rounded-lg border border-gray-200">
+                          <Music className="w-5 h-5 text-indigo-500 mt-0.5 shrink-0" />
+                          <div>
+                            <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Spotify Link</div>
+                            {app.spotifyLink ? (
+                              <a href={app.spotifyLink} target="_blank" rel="noopener noreferrer" className="text-sm text-indigo-600 hover:text-indigo-700 flex items-center gap-1" data-testid={`link-spotify-${app.id}`}>
+                                View Profile <ExternalLink className="w-3 h-3" />
+                              </a>
+                            ) : (
+                              <span className="text-sm text-gray-400">Not provided</span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-3 p-3 bg-white rounded-lg border border-gray-200">
+                          <Archive className="w-5 h-5 text-indigo-500 mt-0.5 shrink-0" />
+                          <div>
+                            <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Catalog Size</div>
+                            <div className="text-sm text-gray-900 font-medium" data-testid={`text-catalog-${app.id}`}>{app.catalogSize || "Not provided"}</div>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-3 p-3 bg-white rounded-lg border border-gray-200">
+                          <DollarSign className="w-5 h-5 text-indigo-500 mt-0.5 shrink-0" />
+                          <div>
+                            <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Current Revenue</div>
+                            <div className="text-sm text-gray-900 font-medium" data-testid={`text-revenue-${app.id}`}>{app.currentRevenue || "Not provided"}</div>
+                          </div>
+                        </div>
+                      </div>
+                      {app.user?.country && (
+                        <div className="mt-3 text-xs text-gray-500">
+                          Country: <span className="text-gray-700">{app.user.country.toUpperCase()}</span>
+                          {app.user?.timezone && <> · Timezone: <span className="text-gray-700">{app.user.timezone.toUpperCase()}</span></>}
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                )}
+                </>
               ))}
             </tbody>
           </table>
