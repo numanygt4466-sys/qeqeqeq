@@ -85,8 +85,8 @@ export default function Login() {
     <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6">
       <div className="w-full max-w-[400px]">
         <div className="text-center mb-10" data-testid="text-login-brand">
-          <SparkleText color="rgba(180,160,100,0.8)" sparkleCount={5}>
-            <img src={blingLogo} alt="Raw Archives Records" className="h-18 object-contain mx-auto" />
+          <SparkleText color="rgba(180,160,100,0.5)" sparkleCount={6}>
+            <img src={blingLogo} alt="Raw Archives Records" className="h-32 md:h-40 object-contain mx-auto opacity-40" />
           </SparkleText>
         </div>
 
