@@ -53,13 +53,13 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6 py-12">
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4 sm:p-6 py-12 pb-safe">
       <Link href="/" className="flex items-center gap-2 mb-10">
         <Disc className="w-6 h-6 text-indigo-600" />
         <span className="font-bold text-lg tracking-wider uppercase text-gray-900">RAW ARCHIVES</span>
       </Link>
 
-      <div className="w-full max-w-xl bg-white border border-gray-200 rounded-lg shadow-sm p-8">
+      <div className="w-full max-w-xl bg-white border border-gray-200 rounded-lg shadow-sm p-4 sm:p-8">
         <div className="text-center mb-6">
           <h1 className="text-xl font-bold text-gray-900 mb-1">Create Account</h1>
           <p className="text-sm text-gray-500">Apply for platform access</p>

@@ -102,14 +102,15 @@ export default function AdminPayouts() {
           ) : methods.length === 0 ? (
             <div className="p-8 text-center text-gray-400 text-sm">No payout method applications</div>
           ) : (
+            <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-gray-100 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  <th className="px-6 py-3 text-left">User</th>
-                  <th className="px-6 py-3 text-left">Type</th>
-                  <th className="px-6 py-3 text-left">Details</th>
-                  <th className="px-6 py-3 text-left">Status</th>
-                  <th className="px-6 py-3 text-center">Actions</th>
+                  <th className="px-3 md:px-6 py-3 text-left">User</th>
+                  <th className="px-3 md:px-6 py-3 text-left">Type</th>
+                  <th className="px-6 py-3 text-left hidden md:table-cell">Details</th>
+                  <th className="px-3 md:px-6 py-3 text-left">Status</th>
+                  <th className="px-3 md:px-6 py-3 text-center">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -119,19 +120,19 @@ export default function AdminPayouts() {
                     className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
                     data-testid={`row-method-${m.id}`}
                   >
-                    <td className="px-6 py-4 text-gray-900 font-medium" data-testid={`text-method-user-${m.id}`}>
-                      {m.user?.fullName || m.user?.username || `User #${m.userId}`}
+                    <td className="px-3 md:px-6 py-4 text-gray-900 font-medium" data-testid={`text-method-user-${m.id}`}>
+                      <span className="truncate block max-w-[100px] md:max-w-none">{m.user?.fullName || m.user?.username || `User #${m.userId}`}</span>
                     </td>
-                    <td className="px-6 py-4 text-gray-600 capitalize" data-testid={`text-method-type-${m.id}`}>
+                    <td className="px-3 md:px-6 py-4 text-gray-600 capitalize" data-testid={`text-method-type-${m.id}`}>
                       {m.type?.replace("_", " ")}
                     </td>
-                    <td className="px-6 py-4 text-gray-600 max-w-[300px] truncate" data-testid={`text-method-details-${m.id}`}>
+                    <td className="px-6 py-4 text-gray-600 max-w-[300px] truncate hidden md:table-cell" data-testid={`text-method-details-${m.id}`}>
                       {m.details}
                     </td>
-                    <td className="px-6 py-4">{statusPill(m.status)}</td>
-                    <td className="px-6 py-4 text-center">
+                    <td className="px-3 md:px-6 py-4">{statusPill(m.status)}</td>
+                    <td className="px-3 md:px-6 py-4 text-center">
                       {m.status === "pending" && (
-                        <div className="flex items-center justify-center gap-2">
+                        <div className="flex items-center justify-center gap-1 md:gap-2">
                           <Button
                             size="sm"
                             onClick={() => methodMutation.mutate({ id: m.id, status: "approved" })}
@@ -156,6 +157,7 @@ export default function AdminPayouts() {
                 ))}
               </tbody>
             </table>
+            </div>
           )}
         </div>
       </div>
@@ -170,15 +172,16 @@ export default function AdminPayouts() {
           ) : payouts.length === 0 ? (
             <div className="p-8 text-center text-gray-400 text-sm">No payout requests</div>
           ) : (
+            <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-gray-100 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  <th className="px-6 py-3 text-left">User</th>
-                  <th className="px-6 py-3 text-left">Amount</th>
-                  <th className="px-6 py-3 text-left">Method</th>
-                  <th className="px-6 py-3 text-left">Status</th>
-                  <th className="px-6 py-3 text-left">Date</th>
-                  <th className="px-6 py-3 text-center">Actions</th>
+                  <th className="px-3 md:px-6 py-3 text-left">User</th>
+                  <th className="px-3 md:px-6 py-3 text-left">Amount</th>
+                  <th className="px-6 py-3 text-left hidden md:table-cell">Method</th>
+                  <th className="px-3 md:px-6 py-3 text-left">Status</th>
+                  <th className="px-6 py-3 text-left hidden md:table-cell">Date</th>
+                  <th className="px-3 md:px-6 py-3 text-center">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -188,22 +191,22 @@ export default function AdminPayouts() {
                     className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
                     data-testid={`row-payout-${p.id}`}
                   >
-                    <td className="px-6 py-4 text-gray-900 font-medium" data-testid={`text-payout-user-${p.id}`}>
-                      {p.user?.fullName || p.user?.username || `User #${p.userId}`}
+                    <td className="px-3 md:px-6 py-4 text-gray-900 font-medium" data-testid={`text-payout-user-${p.id}`}>
+                      <span className="truncate block max-w-[100px] md:max-w-none">{p.user?.fullName || p.user?.username || `User #${p.userId}`}</span>
                     </td>
-                    <td className="px-6 py-4 text-gray-900 font-semibold" data-testid={`text-payout-amount-${p.id}`}>
+                    <td className="px-3 md:px-6 py-4 text-gray-900 font-semibold" data-testid={`text-payout-amount-${p.id}`}>
                       ${Number(p.amount).toFixed(2)}
                     </td>
-                    <td className="px-6 py-4 text-gray-600 capitalize" data-testid={`text-payout-method-${p.id}`}>
+                    <td className="px-6 py-4 text-gray-600 capitalize hidden md:table-cell" data-testid={`text-payout-method-${p.id}`}>
                       {p.method?.type?.replace("_", " ") || "—"}
                     </td>
-                    <td className="px-6 py-4">{statusPill(p.status)}</td>
-                    <td className="px-6 py-4 text-gray-500">
+                    <td className="px-3 md:px-6 py-4">{statusPill(p.status)}</td>
+                    <td className="px-6 py-4 text-gray-500 hidden md:table-cell">
                       {p.createdAt ? new Date(p.createdAt).toLocaleDateString() : "—"}
                     </td>
-                    <td className="px-6 py-4 text-center">
+                    <td className="px-3 md:px-6 py-4 text-center">
                       {p.status === "pending" && (
-                        <div className="flex items-center justify-center gap-2">
+                        <div className="flex items-center justify-center gap-1 md:gap-2">
                           <Button
                             size="sm"
                             onClick={() => payoutMutation.mutate({ id: p.id, status: "approved" })}
@@ -228,6 +231,7 @@ export default function AdminPayouts() {
                 ))}
               </tbody>
             </table>
+            </div>
           )}
         </div>
       </div>

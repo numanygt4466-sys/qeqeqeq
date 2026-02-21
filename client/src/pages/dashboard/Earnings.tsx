@@ -52,25 +52,25 @@ export default function Earnings() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-gray-100 text-xs font-medium text-gray-400 uppercase tracking-wider">
-                  <th className="px-6 py-3 text-left">Date</th>
-                  <th className="px-6 py-3 text-left">Description</th>
-                  <th className="px-6 py-3 text-left">Release</th>
-                  <th className="px-6 py-3 text-right">Amount</th>
+                  <th className="px-4 sm:px-6 py-3 text-left hidden sm:table-cell">Date</th>
+                  <th className="px-4 sm:px-6 py-3 text-left">Description</th>
+                  <th className="px-4 sm:px-6 py-3 text-left hidden md:table-cell">Release</th>
+                  <th className="px-4 sm:px-6 py-3 text-right">Amount</th>
                 </tr>
               </thead>
               <tbody>
                 {earnings.map((earning: any) => (
                   <tr key={earning.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors" data-testid={`row-earning-${earning.id}`}>
-                    <td className="px-6 py-3 text-gray-600">
+                    <td className="px-4 sm:px-6 py-3 text-gray-600 hidden sm:table-cell">
                       {new Date(earning.createdAt).toLocaleDateString()}
                     </td>
-                    <td className="px-6 py-3 text-gray-900 font-medium">
+                    <td className="px-4 sm:px-6 py-3 text-gray-900 font-medium">
                       {earning.description || "—"}
                     </td>
-                    <td className="px-6 py-3 text-gray-600">
+                    <td className="px-4 sm:px-6 py-3 text-gray-600 hidden md:table-cell">
                       {earning.releaseId ? `#${earning.releaseId}` : "—"}
                     </td>
-                    <td className="px-6 py-3 text-right font-medium text-gray-900">
+                    <td className="px-4 sm:px-6 py-3 text-right font-medium text-gray-900">
                       ${Number(earning.amount).toFixed(2)}
                     </td>
                   </tr>

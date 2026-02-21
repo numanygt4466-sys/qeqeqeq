@@ -25,7 +25,7 @@ export default function Navbar() {
         <div className="flex items-center gap-8">
           <Sheet>
             <SheetTrigger asChild>
-              <button className="p-2 -ml-2 hover:bg-white/5 transition-colors group" aria-label="Menu">
+              <button className="p-2 -ml-2 hover:bg-white/5 transition-colors group min-w-[44px] min-h-[44px] flex items-center justify-center" aria-label="Menu">
                 <Menu className="w-6 h-6 text-white group-hover:scale-110 transition-transform" />
               </button>
             </SheetTrigger>
@@ -60,7 +60,7 @@ export default function Navbar() {
                   </SheetClose>
                 </div>
               </div>
-              <div className="absolute bottom-8 left-8">
+              <div className="absolute bottom-8 left-8 pb-[env(safe-area-inset-bottom)]">
                 <div className="flex flex-col gap-1">
                   <span className="font-black text-xl tracking-[0.3em] uppercase leading-none text-white">RAW ARCHIVES</span>
                   <span className="text-[7px] tracking-[0.6em] font-bold text-white/40 uppercase mt-1">Global Music Group</span>
@@ -88,9 +88,9 @@ export default function Navbar() {
         
         <Link href="/" className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center group">
           <div className="flex flex-col items-center gap-0">
-            <Globe className="w-6 h-6 text-white mb-1 transition-transform group-hover:rotate-12" />
-            <span className="font-black text-xl tracking-[0.3em] uppercase leading-none">RAW ARCHIVES</span>
-            <span className="text-[7px] tracking-[0.6em] font-bold text-white/40 uppercase mt-1">Music Group</span>
+            <Globe className="w-5 h-5 md:w-6 md:h-6 text-white mb-1 transition-transform group-hover:rotate-12" />
+            <span className="font-black text-sm md:text-xl tracking-[0.2em] md:tracking-[0.3em] uppercase leading-none">RAW ARCHIVES</span>
+            <span className="text-[7px] tracking-[0.6em] font-bold text-white/40 uppercase mt-1 hidden sm:block">Music Group</span>
           </div>
         </Link>
 
@@ -107,7 +107,7 @@ export default function Navbar() {
           </Link>
           <Link 
             href="/login" 
-            className="flex items-center gap-2 bg-white text-black px-5 py-2 text-[10px] font-black tracking-[0.2em] uppercase hover:bg-white/90 transition-all"
+            className="flex items-center gap-2 bg-white text-black px-6 py-2 text-[10px] font-black tracking-[0.2em] uppercase hover:bg-white/90 transition-all min-h-[44px]"
           >
             <User className="w-3 h-3" />
             Login

@@ -79,7 +79,7 @@ export default function Settings() {
           </div>
           <div className="pt-2">
             <button
-              className="bg-indigo-600 text-white hover:bg-indigo-700 rounded-md px-4 py-2 text-sm font-medium inline-flex items-center gap-2"
+              className="bg-indigo-600 text-white hover:bg-indigo-700 rounded-md px-4 py-2 text-sm font-medium inline-flex items-center gap-2 w-full sm:w-auto justify-center"
               data-testid="button-save-profile"
             >
               <Save className="w-4 h-4" /> Save Changes
@@ -127,7 +127,7 @@ export default function Settings() {
           </div>
           <div className="pt-2">
             <button
-              className="bg-indigo-600 text-white hover:bg-indigo-700 rounded-md px-4 py-2 text-sm font-medium inline-flex items-center gap-2"
+              className="bg-indigo-600 text-white hover:bg-indigo-700 rounded-md px-4 py-2 text-sm font-medium inline-flex items-center gap-2 w-full sm:w-auto justify-center"
               data-testid="button-change-password"
             >
               <Lock className="w-4 h-4" /> Update Password

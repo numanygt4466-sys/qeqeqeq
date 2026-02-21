@@ -130,15 +130,16 @@ export default function AdminUsers() {
         {isLoading ? (
           <div className="p-8 text-center text-gray-400 text-sm">Loading...</div>
         ) : (
+          <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-100 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <th className="px-6 py-3 text-left">Username</th>
-                <th className="px-6 py-3 text-left">Email</th>
-                <th className="px-6 py-3 text-left">Full Name</th>
-                <th className="px-6 py-3 text-left">Role</th>
-                <th className="px-6 py-3 text-left">Status</th>
-                <th className="px-6 py-3 text-center">Actions</th>
+                <th className="px-3 md:px-6 py-3 text-left">Username</th>
+                <th className="px-6 py-3 text-left hidden md:table-cell">Email</th>
+                <th className="px-6 py-3 text-left hidden md:table-cell">Full Name</th>
+                <th className="px-3 md:px-6 py-3 text-left">Role</th>
+                <th className="px-6 py-3 text-left hidden md:table-cell">Status</th>
+                <th className="px-3 md:px-6 py-3 text-center">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -148,22 +149,22 @@ export default function AdminUsers() {
                   className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
                   data-testid={`row-user-${u.id}`}
                 >
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                  <td className="px-3 md:px-6 py-4">
+                    <div className="flex items-center gap-2 md:gap-3">
+                      <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center shrink-0">
                         <User className="w-4 h-4 text-gray-400" />
                       </div>
-                      <span className="font-medium text-gray-900" data-testid={`text-username-${u.id}`}>
+                      <span className="font-medium text-gray-900 truncate" data-testid={`text-username-${u.id}`}>
                         {u.username}
                       </span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-gray-600" data-testid={`text-user-email-${u.id}`}>{u.email}</td>
-                  <td className="px-6 py-4 text-gray-900" data-testid={`text-user-fullname-${u.id}`}>{u.fullName}</td>
-                  <td className="px-6 py-4">{rolePill(u.role)}</td>
-                  <td className="px-6 py-4">{statusPill(u.isApproved)}</td>
-                  <td className="px-6 py-4 text-center">
-                    <div className="flex items-center justify-center gap-2">
+                  <td className="px-6 py-4 text-gray-600 hidden md:table-cell" data-testid={`text-user-email-${u.id}`}>{u.email}</td>
+                  <td className="px-6 py-4 text-gray-900 hidden md:table-cell" data-testid={`text-user-fullname-${u.id}`}>{u.fullName}</td>
+                  <td className="px-3 md:px-6 py-4">{rolePill(u.role)}</td>
+                  <td className="px-6 py-4 hidden md:table-cell">{statusPill(u.isApproved)}</td>
+                  <td className="px-3 md:px-6 py-4 text-center">
+                    <div className="flex items-center justify-center gap-1 md:gap-2 flex-wrap">
                       <Button
                         size="sm"
                         variant="outline"
@@ -199,11 +200,12 @@ export default function AdminUsers() {
               ))}
             </tbody>
           </table>
+          </div>
         )}
       </div>
 
       <Dialog open={!!editUser} onOpenChange={(open) => { if (!open) setEditUser(null); }}>
-        <DialogContent>
+        <DialogContent className="w-[95vw] max-w-lg">
           <DialogHeader>
             <DialogTitle>Edit User</DialogTitle>
             <DialogDescription>Update user information and permissions.</DialogDescription>
@@ -272,7 +274,7 @@ export default function AdminUsers() {
       </Dialog>
 
       <Dialog open={!!resetUser} onOpenChange={(open) => { if (!open) { setResetUser(null); setNewPassword(""); } }}>
-        <DialogContent>
+        <DialogContent className="w-[95vw] max-w-lg">
           <DialogHeader>
             <DialogTitle>Reset Password</DialogTitle>
             <DialogDescription>
@@ -304,7 +306,7 @@ export default function AdminUsers() {
       </Dialog>
 
       <Dialog open={!!deleteUser} onOpenChange={(open) => { if (!open) setDeleteUser(null); }}>
-        <DialogContent>
+        <DialogContent className="w-[95vw] max-w-lg">
           <DialogHeader>
             <DialogTitle>Delete User</DialogTitle>
             <DialogDescription>

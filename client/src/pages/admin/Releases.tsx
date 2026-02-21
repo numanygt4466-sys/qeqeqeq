@@ -116,16 +116,17 @@ export default function AdminReleases() {
         ) : releases.length === 0 ? (
           <div className="p-8 text-center text-gray-400 text-sm">No releases found</div>
         ) : (
+          <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-100 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <th className="px-6 py-3 text-left">Cover</th>
-                <th className="px-6 py-3 text-left">Title</th>
-                <th className="px-6 py-3 text-left">Artist</th>
-                <th className="px-6 py-3 text-left">Type</th>
-                <th className="px-6 py-3 text-left">Date</th>
-                <th className="px-6 py-3 text-left">Status</th>
-                <th className="px-6 py-3 text-center">Actions</th>
+                <th className="px-3 md:px-6 py-3 text-left hidden md:table-cell">Cover</th>
+                <th className="px-3 md:px-6 py-3 text-left">Title</th>
+                <th className="px-6 py-3 text-left hidden md:table-cell">Artist</th>
+                <th className="px-6 py-3 text-left hidden md:table-cell">Type</th>
+                <th className="px-6 py-3 text-left hidden md:table-cell">Date</th>
+                <th className="px-3 md:px-6 py-3 text-left">Status</th>
+                <th className="px-3 md:px-6 py-3 text-center">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -135,7 +136,7 @@ export default function AdminReleases() {
                   className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
                   data-testid={`row-release-${release.id}`}
                 >
-                  <td className="px-6 py-4">
+                  <td className="px-3 md:px-6 py-4 hidden md:table-cell">
                     {release.coverArtUrl ? (
                       <img
                         src={release.coverArtUrl}
@@ -149,20 +150,20 @@ export default function AdminReleases() {
                       </div>
                     )}
                   </td>
-                  <td className="px-6 py-4">
-                    <div className="font-medium text-gray-900" data-testid={`text-release-title-${release.id}`}>
+                  <td className="px-3 md:px-6 py-4">
+                    <div className="font-medium text-gray-900 truncate max-w-[150px] md:max-w-none" data-testid={`text-release-title-${release.id}`}>
                       {release.title}
                     </div>
                     <div className="text-xs text-gray-500">ID: {release.id}</div>
                   </td>
-                  <td className="px-6 py-4 text-gray-600" data-testid={`text-release-artist-${release.id}`}>
+                  <td className="px-6 py-4 text-gray-600 hidden md:table-cell" data-testid={`text-release-artist-${release.id}`}>
                     {release.primaryArtist}
                   </td>
-                  <td className="px-6 py-4 text-gray-500 capitalize">{release.releaseType}</td>
-                  <td className="px-6 py-4 text-gray-500">{release.releaseDate}</td>
-                  <td className="px-6 py-4">{statusPill(release.status)}</td>
-                  <td className="px-6 py-4 text-center">
-                    <div className="flex items-center justify-center gap-2">
+                  <td className="px-6 py-4 text-gray-500 capitalize hidden md:table-cell">{release.releaseType}</td>
+                  <td className="px-6 py-4 text-gray-500 hidden md:table-cell">{release.releaseDate}</td>
+                  <td className="px-3 md:px-6 py-4">{statusPill(release.status)}</td>
+                  <td className="px-3 md:px-6 py-4 text-center">
+                    <div className="flex items-center justify-center gap-1 md:gap-2 flex-wrap">
                       <Button
                         size="sm"
                         variant="outline"
@@ -199,6 +200,7 @@ export default function AdminReleases() {
               ))}
             </tbody>
           </table>
+          </div>
         )}
       </div>
 
@@ -232,7 +234,7 @@ export default function AdminReleases() {
       </Dialog>
 
       <Dialog open={!!editRelease} onOpenChange={(open) => { if (!open) setEditRelease(null); }}>
-        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+        <DialogContent className="w-[95vw] max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Release Details</DialogTitle>
             <DialogDescription>View and edit release information.</DialogDescription>
@@ -247,7 +249,7 @@ export default function AdminReleases() {
                   data-testid="img-edit-cover"
                 />
               )}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium text-gray-700 mb-1 block">Title</label>
                   <Input

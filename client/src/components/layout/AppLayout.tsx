@@ -94,14 +94,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     { href: "/app/admin/settings", label: "Platform Settings" },
   ] : [];
 
-  const allMobileItems: NavItem[] = [
-    { href: "/app/dashboard", label: "Home" },
-    ...distributionItems,
-    ...financeItems,
-    { href: "/app/settings", label: "Settings" },
-    ...adminItems,
-  ];
-
   const initials = user?.fullName?.split(" ").map(n => n[0]).join("").substring(0, 2).toUpperCase() || "??";
 
   return (
@@ -175,7 +167,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             </DropdownMenu>
 
             <button
-              className="md:hidden p-1 text-gray-400 hover:text-white"
+              className="md:hidden p-1 text-gray-400 hover:text-white min-w-[44px] min-h-[44px] flex items-center justify-center"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               data-testid="button-mobile-menu"
             >
@@ -185,8 +177,24 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         </div>
 
         {mobileMenuOpen && (
-          <div className="md:hidden border-t border-gray-700 px-4 py-2 space-y-0.5 bg-black">
-            {allMobileItems.map((item) => (
+          <div className="md:hidden border-t border-gray-700 px-4 py-2 bg-black max-h-[calc(100vh-52px)] overflow-y-auto pb-[calc(0.5rem+env(safe-area-inset-bottom))]">
+            <Link
+              href="/app/dashboard"
+              onClick={() => setMobileMenuOpen(false)}
+              className={cn(
+                "block px-3 py-2.5 rounded text-[13px] font-medium transition-colors",
+                location === "/app/dashboard"
+                  ? "bg-white/10 text-white"
+                  : "text-gray-400 hover:text-white hover:bg-white/5"
+              )}
+            >
+              Home
+            </Link>
+
+            <div className="mt-3 mb-1 px-3 pt-3 border-t border-gray-700">
+              <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-500">Distribution</span>
+            </div>
+            {distributionItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
@@ -201,19 +209,95 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 {item.label}
               </Link>
             ))}
+
+            <div className="mt-3 mb-1 px-3 pt-3 border-t border-gray-700">
+              <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-500">Finance</span>
+            </div>
+            {financeItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setMobileMenuOpen(false)}
+                className={cn(
+                  "block px-3 py-2.5 rounded text-[13px] font-medium transition-colors",
+                  location === item.href
+                    ? "bg-white/10 text-white"
+                    : "text-gray-400 hover:text-white hover:bg-white/5"
+                )}
+              >
+                {item.label}
+              </Link>
+            ))}
+
+            {adminItems.length > 0 && (
+              <>
+                <div className="mt-3 mb-1 px-3 pt-3 border-t border-gray-700">
+                  <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-500">Admin</span>
+                </div>
+                {adminItems.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={cn(
+                      "block px-3 py-2.5 rounded text-[13px] font-medium transition-colors",
+                      location === item.href
+                        ? "bg-white/10 text-white"
+                        : "text-gray-400 hover:text-white hover:bg-white/5"
+                    )}
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </>
+            )}
+
+            <div className="mt-3 mb-1 px-3 pt-3 border-t border-gray-700">
+              <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-500">Support</span>
+            </div>
+            <Link
+              href="/app/support"
+              onClick={() => setMobileMenuOpen(false)}
+              className={cn(
+                "block px-3 py-2.5 rounded text-[13px] font-medium transition-colors",
+                location === "/app/support"
+                  ? "bg-white/10 text-white"
+                  : "text-gray-400 hover:text-white hover:bg-white/5"
+              )}
+            >
+              Support
+            </Link>
             <Link
               href="/app/help"
               onClick={() => setMobileMenuOpen(false)}
-              className="block px-3 py-2.5 rounded text-[13px] font-medium text-gray-400 hover:text-white hover:bg-white/5"
+              className={cn(
+                "block px-3 py-2.5 rounded text-[13px] font-medium transition-colors",
+                location === "/app/help"
+                  ? "bg-white/10 text-white"
+                  : "text-gray-400 hover:text-white hover:bg-white/5"
+              )}
             >
               Help Center
+            </Link>
+
+            <Link
+              href="/app/settings"
+              onClick={() => setMobileMenuOpen(false)}
+              className={cn(
+                "block px-3 py-2.5 rounded text-[13px] font-medium transition-colors mt-3 pt-3 border-t border-gray-700",
+                location === "/app/settings"
+                  ? "bg-white/10 text-white"
+                  : "text-gray-400 hover:text-white hover:bg-white/5"
+              )}
+            >
+              Settings
             </Link>
           </div>
         )}
       </nav>
 
       <div className="flex-1 overflow-y-auto">
-        <div className="p-5 md:p-6 max-w-[1400px] mx-auto w-full">
+        <div className="p-4 md:p-6 max-w-[1400px] mx-auto w-full">
           {children}
         </div>
       </div>

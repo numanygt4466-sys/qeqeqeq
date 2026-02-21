@@ -76,50 +76,52 @@ export default function Dsps() {
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
-              <table className="w-full text-left" data-testid={`table-dsps-${region}`}>
-                <thead>
-                  <tr className="border-b border-gray-200 text-xs text-gray-500 uppercase">
-                    <th className="px-6 py-3 font-medium">Name</th>
-                    <th className="px-6 py-3 font-medium">Region</th>
-                    <th className="px-6 py-3 font-medium">Status</th>
-                    <th className="px-6 py-3 font-medium text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="text-sm">
-                  {grouped[region].map((dsp: any) => (
-                    <tr
-                      key={dsp.id}
-                      className="border-b border-gray-100 hover:bg-gray-50"
-                      data-testid={`row-dsp-${dsp.id}`}
-                    >
-                      <td className="px-6 py-4 font-medium text-gray-900">{dsp.name}</td>
-                      <td className="px-6 py-4 text-gray-500">{dsp.region}</td>
-                      <td className="px-6 py-4">
-                        <Badge
-                          variant={dsp.enabled ? "default" : "secondary"}
-                          data-testid={`status-dsp-${dsp.id}`}
-                        >
-                          {dsp.enabled ? "Enabled" : "Disabled"}
-                        </Badge>
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <span className="text-xs text-gray-400">
-                            {dsp.enabled ? "On" : "Off"}
-                          </span>
-                          <Switch
-                            checked={dsp.enabled}
-                            onCheckedChange={(checked) =>
-                              toggleMutation.mutate({ id: dsp.id, enabled: checked })
-                            }
-                            data-testid={`switch-dsp-${dsp.id}`}
-                          />
-                        </div>
-                      </td>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left" data-testid={`table-dsps-${region}`}>
+                  <thead>
+                    <tr className="border-b border-gray-200 text-xs text-gray-500 uppercase">
+                      <th className="px-4 md:px-6 py-3 font-medium">Name</th>
+                      <th className="px-4 md:px-6 py-3 font-medium hidden md:table-cell">Region</th>
+                      <th className="px-4 md:px-6 py-3 font-medium hidden sm:table-cell">Status</th>
+                      <th className="px-4 md:px-6 py-3 font-medium text-right">Toggle</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="text-sm">
+                    {grouped[region].map((dsp: any) => (
+                      <tr
+                        key={dsp.id}
+                        className="border-b border-gray-100 hover:bg-gray-50"
+                        data-testid={`row-dsp-${dsp.id}`}
+                      >
+                        <td className="px-4 md:px-6 py-4 font-medium text-gray-900">{dsp.name}</td>
+                        <td className="px-4 md:px-6 py-4 text-gray-500 hidden md:table-cell">{dsp.region}</td>
+                        <td className="px-4 md:px-6 py-4 hidden sm:table-cell">
+                          <Badge
+                            variant={dsp.enabled ? "default" : "secondary"}
+                            data-testid={`status-dsp-${dsp.id}`}
+                          >
+                            {dsp.enabled ? "Enabled" : "Disabled"}
+                          </Badge>
+                        </td>
+                        <td className="px-4 md:px-6 py-4 text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            <span className="text-xs text-gray-400">
+                              {dsp.enabled ? "On" : "Off"}
+                            </span>
+                            <Switch
+                              checked={dsp.enabled}
+                              onCheckedChange={(checked) =>
+                                toggleMutation.mutate({ id: dsp.id, enabled: checked })
+                              }
+                              data-testid={`switch-dsp-${dsp.id}`}
+                            />
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </CardContent>
           </Card>
         ))

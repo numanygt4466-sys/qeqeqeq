@@ -76,11 +76,11 @@ export default function Catalog() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-gray-100 text-xs font-medium text-gray-400 uppercase tracking-wider">
-                    <th className="px-4 py-3 text-left">Type</th>
+                    <th className="px-4 py-3 text-left hidden md:table-cell">Type</th>
                     <th className="px-4 py-3 text-left">Title</th>
-                    <th className="px-4 py-3 text-left">Artist</th>
-                    <th className="px-4 py-3 text-left">Release Date</th>
-                    <th className="px-4 py-3 text-left">Tracks</th>
+                    <th className="px-4 py-3 text-left hidden md:table-cell">Artist</th>
+                    <th className="px-4 py-3 text-left hidden md:table-cell">Release Date</th>
+                    <th className="px-4 py-3 text-left hidden md:table-cell">Tracks</th>
                     <th className="px-4 py-3 text-left">Status</th>
                     <th className="px-4 py-3 text-left"></th>
                   </tr>
@@ -88,7 +88,7 @@ export default function Catalog() {
                 <tbody>
                   {paginated.map((release: any) => (
                     <tr key={release.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors" data-testid={`row-catalog-${release.id}`}>
-                      <td className="px-4 py-3 text-gray-600 capitalize">{release.releaseType}</td>
+                      <td className="px-4 py-3 text-gray-600 capitalize hidden md:table-cell">{release.releaseType}</td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-3">
                           {release.coverArtUrl ? (
@@ -101,9 +101,9 @@ export default function Catalog() {
                           <span className="font-medium text-gray-900">{release.title}</span>
                         </div>
                       </td>
-                      <td className="px-4 py-3 text-gray-600">{release.primaryArtist}</td>
-                      <td className="px-4 py-3 text-gray-600">{release.releaseDate}</td>
-                      <td className="px-4 py-3 text-gray-600">{release.trackCount ?? "—"}</td>
+                      <td className="px-4 py-3 text-gray-600 hidden md:table-cell">{release.primaryArtist}</td>
+                      <td className="px-4 py-3 text-gray-600 hidden md:table-cell">{release.releaseDate}</td>
+                      <td className="px-4 py-3 text-gray-600 hidden md:table-cell">{release.trackCount ?? "—"}</td>
                       <td className="px-4 py-3">{getStatusPill(release.status)}</td>
                       <td className="px-4 py-3">
                         <button className="p-1 rounded hover:bg-gray-100 text-gray-400" data-testid={`button-menu-${release.id}`}>
@@ -121,17 +121,17 @@ export default function Catalog() {
                 <button
                   onClick={() => setPage(p => Math.max(1, p - 1))}
                   disabled={currentPage <= 1}
-                  className="p-1 rounded hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="p-2 sm:p-1 rounded hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed"
                 >
-                  <ChevronLeft className="w-4 h-4" />
+                  <ChevronLeft className="w-5 h-5 sm:w-4 sm:h-4" />
                 </button>
                 <span className="text-sm">Page {currentPage} of {totalPages}</span>
                 <button
                   onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                   disabled={currentPage >= totalPages}
-                  className="p-1 rounded hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="p-2 sm:p-1 rounded hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed"
                 >
-                  <ChevronRight className="w-4 h-4" />
+                  <ChevronRight className="w-5 h-5 sm:w-4 sm:h-4" />
                 </button>
               </div>
             </div>

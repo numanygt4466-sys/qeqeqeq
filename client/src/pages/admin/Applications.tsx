@@ -118,16 +118,17 @@ export default function AdminApplications() {
         ) : filtered.length === 0 ? (
           <div className="p-8 text-center text-gray-400 text-sm">No applications found</div>
         ) : (
+          <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-100 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <th className="px-6 py-3 text-left w-8"></th>
-                <th className="px-6 py-3 text-left">Applicant</th>
-                <th className="px-6 py-3 text-left">Email</th>
-                <th className="px-6 py-3 text-left">Label</th>
-                <th className="px-6 py-3 text-left">Date</th>
-                <th className="px-6 py-3 text-left">Status</th>
-                <th className="px-6 py-3 text-center">Actions</th>
+                <th className="px-3 md:px-6 py-3 text-left w-8"></th>
+                <th className="px-3 md:px-6 py-3 text-left">Applicant</th>
+                <th className="px-6 py-3 text-left hidden md:table-cell">Email</th>
+                <th className="px-6 py-3 text-left hidden md:table-cell">Label</th>
+                <th className="px-6 py-3 text-left hidden md:table-cell">Date</th>
+                <th className="px-3 md:px-6 py-3 text-left">Status</th>
+                <th className="px-3 md:px-6 py-3 text-center">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -139,39 +140,39 @@ export default function AdminApplications() {
                   data-testid={`row-application-${app.id}`}
                   onClick={() => setExpandedId(expandedId === app.id ? null : app.id)}
                 >
-                  <td className="px-3 py-4 text-gray-400">
+                  <td className="px-2 md:px-3 py-4 text-gray-400">
                     {expandedId === app.id ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-3 md:px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                      <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center shrink-0">
                         <User className="w-4 h-4 text-gray-400" />
                       </div>
-                      <div>
-                        <div className="font-medium text-gray-900" data-testid={`text-applicant-name-${app.id}`}>
+                      <div className="min-w-0">
+                        <div className="font-medium text-gray-900 truncate" data-testid={`text-applicant-name-${app.id}`}>
                           {app.user?.fullName}
                         </div>
-                        <div className="text-xs text-gray-500">@{app.user?.username}</div>
+                        <div className="text-xs text-gray-500 truncate">@{app.user?.username}</div>
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-gray-600" data-testid={`text-applicant-email-${app.id}`}>
+                  <td className="px-6 py-4 text-gray-600 hidden md:table-cell" data-testid={`text-applicant-email-${app.id}`}>
                     {app.user?.email}
                   </td>
-                  <td className="px-6 py-4 text-gray-600" data-testid={`text-applicant-label-${app.id}`}>
+                  <td className="px-6 py-4 text-gray-600 hidden md:table-cell" data-testid={`text-applicant-label-${app.id}`}>
                     {app.user?.labelName || "—"}
                   </td>
-                  <td className="px-6 py-4 text-gray-500">
+                  <td className="px-6 py-4 text-gray-500 hidden md:table-cell">
                     {new Date(app.createdAt).toLocaleDateString()}
                   </td>
-                  <td className="px-6 py-4">{statusPill(app.status)}</td>
-                  <td className="px-6 py-4 text-center" onClick={e => e.stopPropagation()}>
+                  <td className="px-3 md:px-6 py-4">{statusPill(app.status)}</td>
+                  <td className="px-3 md:px-6 py-4 text-center" onClick={e => e.stopPropagation()}>
                     {app.status === "pending" && (
-                      <div className="flex items-center justify-center gap-2">
+                      <div className="flex items-center justify-center gap-1 md:gap-2">
                         <Button
                           size="sm"
                           onClick={() => mutation.mutate({ id: app.id, status: "approved" })}
-                          className="bg-indigo-600 text-white hover:bg-indigo-700 rounded-md"
+                          className="bg-indigo-600 text-white hover:bg-indigo-700 rounded-md min-h-[44px] md:min-h-0"
                           data-testid={`button-approve-${app.id}`}
                         >
                           Approve
@@ -180,7 +181,7 @@ export default function AdminApplications() {
                           size="sm"
                           variant="outline"
                           onClick={() => setRejectionId(app.id)}
-                          className="border-red-300 text-red-600 hover:bg-red-50 rounded-md"
+                          className="border-red-300 text-red-600 hover:bg-red-50 rounded-md min-h-[44px] md:min-h-0"
                           data-testid={`button-reject-${app.id}`}
                         >
                           Reject
@@ -191,7 +192,7 @@ export default function AdminApplications() {
                 </tr>
                 {expandedId === app.id && (
                   <tr key={`detail-${app.id}`} className="border-b border-gray-100 bg-gray-50">
-                    <td colSpan={7} className="px-6 py-4">
+                    <td colSpan={7} className="px-3 md:px-6 py-4">
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div className="flex items-start gap-3 p-3 bg-white rounded-lg border border-gray-200">
                           <Music className="w-5 h-5 text-indigo-500 mt-0.5 shrink-0" />
@@ -234,11 +235,12 @@ export default function AdminApplications() {
               ))}
             </tbody>
           </table>
+          </div>
         )}
       </div>
 
       <Dialog open={!!rejectionId} onOpenChange={(open) => { if (!open) { setRejectionId(null); setRejectionReason(""); } }}>
-        <DialogContent>
+        <DialogContent className="w-[95vw] max-w-lg">
           <DialogHeader>
             <DialogTitle>Reject Application</DialogTitle>
             <DialogDescription>Provide a reason for rejecting this application.</DialogDescription>

@@ -118,7 +118,7 @@ export default function Login() {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-xs font-medium text-gray-600 hover:text-black transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-xs font-medium text-gray-600 hover:text-black transition-colors min-h-[44px] min-w-[44px] justify-center"
               tabIndex={-1}
               data-testid="button-toggle-password"
             >
@@ -139,7 +139,7 @@ export default function Login() {
           <div className="text-right">
             <Link
               href="/forgot-password"
-              className="text-[13px] font-medium text-gray-600 hover:text-black transition-colors underline"
+              className="text-[13px] font-medium text-gray-600 hover:text-black transition-colors underline inline-flex items-center min-h-[44px]"
               data-testid="link-forgot-password"
             >
               Forgot Password?
@@ -156,16 +156,16 @@ export default function Login() {
           </button>
         </form>
 
-        <div className="mt-8 pt-6 border-t border-gray-200 text-center space-y-3">
-          <p className="text-[13px] text-gray-500">
+        <div className="mt-8 pt-6 border-t border-gray-200 text-center space-y-4">
+          <p className="text-[13px] text-gray-500 min-h-[44px] flex items-center justify-center">
             Don't have an account?{" "}
-            <Link href="/register" className="text-gray-700 hover:text-black font-medium underline" data-testid="link-register">
+            <Link href="/register" className="text-gray-700 hover:text-black font-medium underline ml-1 inline-flex items-center min-h-[44px]" data-testid="link-register">
               Apply Now
             </Link>
           </p>
-          <p className="text-[12px] text-gray-400">
+          <p className="text-[12px] text-gray-400 min-h-[44px] flex items-center justify-center">
             Difficulties logging in? Contact{" "}
-            <a href="mailto:support@rawarchives.com" className="text-gray-600 hover:text-black underline">
+            <a href="mailto:support@rawarchives.com" className="text-gray-600 hover:text-black underline ml-1 inline-flex items-center min-h-[44px]">
               support@rawarchives.com
             </a>
           </p>

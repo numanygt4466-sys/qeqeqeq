@@ -226,7 +226,7 @@ export default function AdminNews() {
       )}
 
       <Dialog open={showForm} onOpenChange={(open) => { if (!open) resetForm(); }}>
-        <DialogContent className="max-w-2xl bg-white rounded-lg">
+        <DialogContent className="w-[95vw] max-w-2xl bg-white rounded-lg">
           <DialogHeader>
             <DialogTitle className="text-lg font-semibold text-gray-900">
               {editPost ? "Edit Post" : "Create New Post"}
@@ -323,7 +323,7 @@ export default function AdminNews() {
       </Dialog>
 
       <Dialog open={!!previewPost} onOpenChange={(open) => { if (!open) setPreviewPost(null); }}>
-        <DialogContent className="max-w-2xl bg-white rounded-lg max-h-[80vh] overflow-y-auto">
+        <DialogContent className="w-[95vw] max-w-2xl bg-white rounded-lg max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold text-gray-900" data-testid="text-preview-title">
               {previewPost?.title}

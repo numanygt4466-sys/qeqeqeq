@@ -111,7 +111,7 @@ export default function Support() {
 
         <Card className="bg-white border border-gray-200 rounded-md">
           <CardContent className="p-0">
-            <div className="max-h-[400px] overflow-y-auto p-6 space-y-4">
+            <div className="max-h-[400px] overflow-y-auto p-4 sm:p-6 space-y-4">
               {ticketDetail.messages?.map((msg: any) => (
                 <div
                   key={msg.id}
@@ -136,7 +136,7 @@ export default function Support() {
               ))}
             </div>
             {ticketDetail.status !== "closed" && (
-              <div className="border-t border-gray-200 p-4 flex gap-2">
+              <div className="border-t border-gray-200 p-3 sm:p-4 flex gap-2">
                 <Input
                   value={reply}
                   onChange={(e) => setReply(e.target.value)}
@@ -191,14 +191,14 @@ export default function Support() {
               <p className="text-sm text-gray-400">Create a support ticket to get help</p>
             </div>
           ) : (
-            <table className="w-full text-left" data-testid="table-tickets">
+            <div className="overflow-x-auto"><table className="w-full text-left" data-testid="table-tickets">
               <thead>
                 <tr className="border-b border-gray-200 text-xs text-gray-500 uppercase">
-                  <th className="px-6 py-3 font-medium">#</th>
-                  <th className="px-6 py-3 font-medium">Subject</th>
-                  <th className="px-6 py-3 font-medium">Priority</th>
-                  <th className="px-6 py-3 font-medium">Status</th>
-                  <th className="px-6 py-3 font-medium">Date</th>
+                  <th className="px-4 sm:px-6 py-3 font-medium hidden sm:table-cell">#</th>
+                  <th className="px-4 sm:px-6 py-3 font-medium">Subject</th>
+                  <th className="px-4 sm:px-6 py-3 font-medium hidden md:table-cell">Priority</th>
+                  <th className="px-4 sm:px-6 py-3 font-medium">Status</th>
+                  <th className="px-4 sm:px-6 py-3 font-medium hidden sm:table-cell">Date</th>
                 </tr>
               </thead>
               <tbody className="text-sm">
@@ -209,23 +209,23 @@ export default function Support() {
                     className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors"
                     data-testid={`row-ticket-${t.id}`}
                   >
-                    <td className="px-6 py-4 text-gray-400 text-xs">#{t.id}</td>
-                    <td className="px-6 py-4 font-medium text-gray-900">{t.subject}</td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 sm:px-6 py-4 text-gray-400 text-xs hidden sm:table-cell">#{t.id}</td>
+                    <td className="px-4 sm:px-6 py-4 font-medium text-gray-900">{t.subject}</td>
+                    <td className="px-4 sm:px-6 py-4 hidden md:table-cell">
                       <Badge variant={priorityBadge(t.priority)}>{t.priority}</Badge>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 sm:px-6 py-4">
                       <Badge variant={statusBadge(t.status)}>
                         {t.status.replace("_", " ")}
                       </Badge>
                     </td>
-                    <td className="px-6 py-4 text-gray-500">
+                    <td className="px-4 sm:px-6 py-4 text-gray-500 hidden sm:table-cell">
                       {new Date(t.createdAt).toLocaleDateString()}
                     </td>
                   </tr>
                 ))}
               </tbody>
-            </table>
+            </table></div>
           )}
         </CardContent>
       </Card>

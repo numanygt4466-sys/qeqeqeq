@@ -109,7 +109,7 @@ export default function Dashboard() {
             </div>
           )}
 
-          <div className="flex items-center gap-3" data-testid="quick-links">
+          <div className="flex items-center gap-3 flex-wrap" data-testid="quick-links">
             <Link href="/app/catalog" className="text-sm font-medium text-indigo-600 hover:text-indigo-700 transition-colors flex items-center gap-1" data-testid="quick-link-releases">
               Releases <ChevronRight className="w-3.5 h-3.5" />
             </Link>
@@ -235,13 +235,13 @@ export default function Dashboard() {
                 const date = formatDate(rel.releaseDate);
                 return (
                   <div key={rel.id} className="flex items-center gap-4 px-5 py-4 hover:bg-gray-50 transition-colors" data-testid={`calendar-release-${rel.id}`}>
-                    <div className="w-16 shrink-0 text-center">
-                      <div className="bg-indigo-600 text-white text-[9px] font-bold uppercase tracking-wider rounded-t-md px-2 py-1">
+                    <div className="w-12 sm:w-16 shrink-0 text-center">
+                      <div className="bg-indigo-600 text-white text-[8px] sm:text-[9px] font-bold uppercase tracking-wider rounded-t-md px-1.5 sm:px-2 py-0.5 sm:py-1">
                         Release
                       </div>
-                      <div className="border border-gray-200 border-t-0 rounded-b-md px-2 py-1.5 bg-white">
-                        <p className="text-[10px] text-gray-500 leading-tight">{date.month}</p>
-                        <p className="text-lg font-bold text-gray-900 leading-tight">{date.day}</p>
+                      <div className="border border-gray-200 border-t-0 rounded-b-md px-1.5 sm:px-2 py-1 sm:py-1.5 bg-white">
+                        <p className="text-[9px] sm:text-[10px] text-gray-500 leading-tight">{date.month}</p>
+                        <p className="text-base sm:text-lg font-bold text-gray-900 leading-tight">{date.day}</p>
                       </div>
                     </div>
 
@@ -265,7 +265,7 @@ export default function Dashboard() {
                     <div className="flex items-center gap-2 shrink-0">
                       <div className="flex items-center gap-1.5">
                         {getStatusIcon(rel.status)}
-                        <span className="text-xs text-gray-500">{getStatusLabel(rel.status)}</span>
+                        <span className="text-xs text-gray-500 hidden sm:inline">{getStatusLabel(rel.status)}</span>
                       </div>
                     </div>
                   </div>

@@ -287,7 +287,7 @@ export default function Upload() {
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-gray-900" data-testid="text-page-title">New Release</h1>
           <p className="text-sm text-gray-500 mt-1">Fill in all sections below, then submit for review.</p>
@@ -295,7 +295,7 @@ export default function Upload() {
         <Button
           onClick={handleSubmit}
           disabled={submitting}
-          className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 h-10"
+          className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 h-11 w-full sm:w-auto"
           data-testid="button-submit-release"
         >
           {submitting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
@@ -615,8 +615,8 @@ export default function Upload() {
               </div>
             )}
 
-            <div className="flex items-center gap-3">
-              <div className="relative flex-1 max-w-sm">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+              <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <Input
                   value={dspSearch}
@@ -626,26 +626,28 @@ export default function Upload() {
                   data-testid="input-dsp-search"
                 />
               </div>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={selectAllDsps}
-                className="border-gray-300 text-gray-700 hover:bg-gray-50 text-xs"
-                data-testid="button-select-all-dsps"
-              >
-                Select All
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={deselectAllDsps}
-                className="border-gray-300 text-gray-700 hover:bg-gray-50 text-xs"
-                data-testid="button-deselect-all-dsps"
-              >
-                Deselect All
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={selectAllDsps}
+                  className="border-gray-300 text-gray-700 hover:bg-gray-50 text-xs flex-1 sm:flex-none"
+                  data-testid="button-select-all-dsps"
+                >
+                  Select All
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={deselectAllDsps}
+                  className="border-gray-300 text-gray-700 hover:bg-gray-50 text-xs flex-1 sm:flex-none"
+                  data-testid="button-deselect-all-dsps"
+                >
+                  Deselect All
+                </Button>
+              </div>
             </div>
 
             <div className="space-y-4 max-h-80 overflow-y-auto">
@@ -684,11 +686,11 @@ export default function Upload() {
         )}
       </div>
 
-      <div className="flex justify-end pb-8">
+      <div className="flex justify-center sm:justify-end pb-8">
         <Button
           onClick={handleSubmit}
           disabled={submitting}
-          className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 h-11"
+          className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 h-11 w-full sm:w-auto"
           data-testid="button-submit-release-bottom"
         >
           {submitting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}

@@ -239,7 +239,7 @@ export default function Payouts() {
                 Number(payoutAmount) > balance ||
                 requestPayoutMutation.isPending
               }
-              className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-md"
+              className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-md w-full sm:w-auto"
               data-testid="button-request-payout"
             >
               {requestPayoutMutation.isPending ? "Submitting..." : "Request Payout"}
@@ -270,7 +270,7 @@ export default function Payouts() {
               {methods.map((m: any) => (
                 <div
                   key={m.id}
-                  className="flex items-center justify-between p-4 border border-gray-200 rounded-md"
+                  className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 p-4 border border-gray-200 rounded-md"
                   data-testid={`method-${m.id}`}
                 >
                   <div className="flex items-center gap-3">
@@ -308,13 +308,13 @@ export default function Payouts() {
               No payouts yet.
             </p>
           ) : (
-            <table className="w-full text-left" data-testid="table-payouts">
+            <div className="overflow-x-auto"><table className="w-full text-left" data-testid="table-payouts">
               <thead>
                 <tr className="border-b border-gray-200 text-xs text-gray-500 uppercase">
-                  <th className="px-6 py-3 font-medium">ID</th>
-                  <th className="px-6 py-3 font-medium">Amount</th>
-                  <th className="px-6 py-3 font-medium">Status</th>
-                  <th className="px-6 py-3 font-medium">Date</th>
+                  <th className="px-4 sm:px-6 py-3 font-medium hidden sm:table-cell">ID</th>
+                  <th className="px-4 sm:px-6 py-3 font-medium">Amount</th>
+                  <th className="px-4 sm:px-6 py-3 font-medium">Status</th>
+                  <th className="px-4 sm:px-6 py-3 font-medium hidden sm:table-cell">Date</th>
                 </tr>
               </thead>
               <tbody className="text-sm">
@@ -324,22 +324,22 @@ export default function Payouts() {
                     className="border-b border-gray-100 hover:bg-gray-50"
                     data-testid={`row-payout-${p.id}`}
                   >
-                    <td className="px-6 py-4 text-gray-600">#{p.id}</td>
-                    <td className="px-6 py-4 font-medium text-gray-900">
+                    <td className="px-4 sm:px-6 py-4 text-gray-600 hidden sm:table-cell">#{p.id}</td>
+                    <td className="px-4 sm:px-6 py-4 font-medium text-gray-900">
                       ${Number(p.amount).toFixed(2)}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 sm:px-6 py-4">
                       <Badge variant={statusVariant(p.status)} data-testid={`status-payout-${p.id}`}>
                         {p.status}
                       </Badge>
                     </td>
-                    <td className="px-6 py-4 text-gray-500">
+                    <td className="px-4 sm:px-6 py-4 text-gray-500 hidden sm:table-cell">
                       {new Date(p.createdAt).toLocaleDateString()}
                     </td>
                   </tr>
                 ))}
               </tbody>
-            </table>
+            </table></div>
           )}
         </CardContent>
       </Card>
@@ -386,7 +386,7 @@ export default function Payouts() {
                     data-testid="input-bank-name"
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="space-y-1.5">
                     <label className="text-sm font-medium text-gray-700">Branch Name</label>
                     <Input
@@ -408,7 +408,7 @@ export default function Payouts() {
                     />
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="space-y-1.5">
                     <label className="text-sm font-medium text-gray-700">SWIFT / BIC Code <span className="text-red-500">*</span></label>
                     <Input
@@ -430,7 +430,7 @@ export default function Payouts() {
                     />
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="space-y-1.5">
                     <label className="text-sm font-medium text-gray-700">Account Number</label>
                     <Input
@@ -468,7 +468,7 @@ export default function Payouts() {
                     data-testid="input-crypto-wallet"
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="space-y-1.5">
                     <label className="text-sm font-medium text-gray-700">Network <span className="text-red-500">*</span></label>
                     <Select value={cryptoDetails.network} onValueChange={(v) => setCryptoDetails(d => ({ ...d, network: v }))}>

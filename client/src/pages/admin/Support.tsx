@@ -114,16 +114,17 @@ export default function AdminSupport() {
         ) : tickets.length === 0 ? (
           <div className="p-8 text-center text-gray-400 text-sm">No tickets found</div>
         ) : (
+          <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-100 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <th className="px-6 py-3 text-left">ID</th>
-                <th className="px-6 py-3 text-left">Subject</th>
-                <th className="px-6 py-3 text-left">User</th>
-                <th className="px-6 py-3 text-left">Status</th>
-                <th className="px-6 py-3 text-left">Priority</th>
-                <th className="px-6 py-3 text-left">Date</th>
-                <th className="px-6 py-3 text-center">Actions</th>
+                <th className="px-6 py-3 text-left hidden md:table-cell">ID</th>
+                <th className="px-3 md:px-6 py-3 text-left">Subject</th>
+                <th className="px-6 py-3 text-left hidden md:table-cell">User</th>
+                <th className="px-3 md:px-6 py-3 text-left">Status</th>
+                <th className="px-6 py-3 text-left hidden md:table-cell">Priority</th>
+                <th className="px-6 py-3 text-left hidden md:table-cell">Date</th>
+                <th className="px-3 md:px-6 py-3 text-center">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -133,22 +134,22 @@ export default function AdminSupport() {
                   className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
                   data-testid={`row-ticket-${t.id}`}
                 >
-                  <td className="px-6 py-4 text-gray-400 font-mono text-xs">#{t.id}</td>
-                  <td className="px-6 py-4 font-medium text-gray-900" data-testid={`text-ticket-subject-${t.id}`}>
-                    {t.subject}
+                  <td className="px-6 py-4 text-gray-400 font-mono text-xs hidden md:table-cell">#{t.id}</td>
+                  <td className="px-3 md:px-6 py-4 font-medium text-gray-900" data-testid={`text-ticket-subject-${t.id}`}>
+                    <span className="truncate block max-w-[150px] md:max-w-none">{t.subject}</span>
                   </td>
-                  <td className="px-6 py-4 text-gray-600">{t.user?.fullName || "—"}</td>
-                  <td className="px-6 py-4">{statusPill(t.status)}</td>
-                  <td className="px-6 py-4">{priorityPill(t.priority)}</td>
-                  <td className="px-6 py-4 text-gray-500">
+                  <td className="px-6 py-4 text-gray-600 hidden md:table-cell">{t.user?.fullName || "—"}</td>
+                  <td className="px-3 md:px-6 py-4">{statusPill(t.status)}</td>
+                  <td className="px-6 py-4 hidden md:table-cell">{priorityPill(t.priority)}</td>
+                  <td className="px-6 py-4 text-gray-500 hidden md:table-cell">
                     {new Date(t.createdAt).toLocaleDateString()}
                   </td>
-                  <td className="px-6 py-4 text-center">
+                  <td className="px-3 md:px-6 py-4 text-center">
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={() => setSelectedTicket(t.id)}
-                      className="rounded-md"
+                      className="rounded-md min-h-[44px] md:min-h-0"
                       data-testid={`button-view-ticket-${t.id}`}
                     >
                       <MessageCircle className="w-3 h-3 mr-1" /> View
@@ -158,11 +159,12 @@ export default function AdminSupport() {
               ))}
             </tbody>
           </table>
+          </div>
         )}
       </div>
 
       <Dialog open={!!selectedTicket && !!ticketDetail} onOpenChange={(open) => { if (!open) setSelectedTicket(null); }}>
-        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+        <DialogContent className="w-[95vw] max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle data-testid="text-ticket-subject">
               {ticketDetail?.subject}
@@ -174,7 +176,7 @@ export default function AdminSupport() {
 
           {ticketDetail && (
             <div className="space-y-4">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 {["open", "in_progress", "closed"].map((s) => (
                   <Button
                     key={s}
@@ -215,7 +217,7 @@ export default function AdminSupport() {
                   ))}
                 </div>
 
-                <div className="border-t border-gray-200 p-3 flex gap-2 bg-white">
+                <div className="border-t border-gray-200 p-3 flex gap-2 bg-white flex-col sm:flex-row">
                   <Input
                     value={reply}
                     onChange={(e) => setReply(e.target.value)}
