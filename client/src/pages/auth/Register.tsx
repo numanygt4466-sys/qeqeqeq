@@ -160,7 +160,7 @@ export default function Register() {
           <Button 
             type="submit" 
             disabled={isLoading}
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white h-11 rounded-md font-medium mt-2"
+            className="w-full bg-black hover:bg-gray-900 text-white h-11 rounded-md font-medium mt-2"
             data-testid="button-register"
           >
             {isLoading ? "Submitting..." : "Submit Application"}
