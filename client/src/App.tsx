@@ -35,10 +35,12 @@ import SuspendedAccount from "@/pages/SuspendedAccount";
 import PublicCatalog from "@/pages/Catalog";
 import PublicArtists from "@/pages/Artists";
 import PublicSubmissions from "@/pages/Submissions";
+import Article from "@/pages/Article";
 import ForgotPassword from "@/pages/auth/ForgotPassword";
 import TermsOfService from "@/pages/legal/TermsOfService";
 import PrivacyPolicy from "@/pages/legal/PrivacyPolicy";
 import CookieChoices from "@/pages/legal/CookieChoices";
+import CookieConsent from "@/components/CookieConsent";
 
 const PublicLayout = ({ children }: { children: React.ReactNode }) => (
   <div className="flex flex-col min-h-screen selection:bg-primary/30">
@@ -130,6 +132,7 @@ function Router() {
 
       <Route path="/dashboard"><Redirect to="/app/dashboard" /></Route>
 
+      <Route path="/news/:id"><Article /></Route>
       <Route path="/"><PublicLayout><Home /></PublicLayout></Route>
       <Route path="/catalog"><PublicLayout><PublicCatalog /></PublicLayout></Route>
       <Route path="/artists"><PublicLayout><PublicArtists /></PublicLayout></Route>
@@ -146,6 +149,7 @@ function App() {
       <AuthProvider>
         <TooltipProvider>
           <Router />
+          <CookieConsent />
           <Toaster />
         </TooltipProvider>
       </AuthProvider>

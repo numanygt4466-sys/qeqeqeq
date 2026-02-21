@@ -51,7 +51,7 @@ export default function Home() {
 
         {newsPosts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
-            <div className="md:col-span-8 group cursor-pointer" data-testid="card-featured-news">
+            <Link href={`/news/${newsPosts[0].id}`} className="md:col-span-8 group cursor-pointer block" data-testid="card-featured-news">
               <div className="aspect-[16/8] overflow-hidden mb-8 bg-[#111]">
                 {newsPosts[0].imageUrl ? (
                   <img src={newsPosts[0].imageUrl} className="w-full h-full object-cover grayscale brightness-75 transition-all duration-1000 group-hover:scale-105 group-hover:brightness-100" alt={newsPosts[0].title} />
@@ -73,11 +73,11 @@ export default function Home() {
                 </p>
                 <span className="text-[9px] font-black tracking-[0.3em] uppercase text-white pb-1 border-b-2 border-white inline-block">Read Article</span>
               </div>
-            </div>
+            </Link>
 
             <div className="md:col-span-4 flex flex-col gap-12 border-l-0 pl-0 md:border-l md:border-white/5 md:pl-12">
               {newsPosts.slice(1, 3).map((post: any, i: number) => (
-                <div key={post.id} className="group cursor-pointer" data-testid={`card-news-${post.id}`}>
+                <Link href={`/news/${post.id}`} key={post.id} className="group cursor-pointer block" data-testid={`card-news-${post.id}`}>
                   <div className="aspect-video overflow-hidden mb-6 bg-[#111]">
                     {post.imageUrl ? (
                       <img src={post.imageUrl} className="w-full h-full object-cover grayscale transition-transform duration-700 group-hover:scale-110" alt={post.title} />
@@ -91,7 +91,7 @@ export default function Home() {
                     {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'News'}
                   </span>
                   <h3 className="text-lg font-black tracking-tight uppercase leading-tight group-hover:text-white/80 transition-colors">{post.title}</h3>
-                </div>
+                </Link>
               ))}
             </div>
           </div>

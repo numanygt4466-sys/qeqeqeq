@@ -637,6 +637,13 @@ export async function registerRoutes(
     res.json(posts);
   });
 
+  app.get("/api/news/:id", async (req: Request, res: Response) => {
+    const post = await storage.getNewsPost(paramId(req.params.id));
+    if (!post || post.status !== "published") return res.status(404).json({ message: "Not found" });
+    const user = await storage.getUser(post.authorId);
+    res.json({ ...post, author: user ? { id: user.id, fullName: user.fullName } : undefined });
+  });
+
   app.get("/api/admin/news", requireAdmin, async (_req: Request, res: Response) => {
     const posts = await storage.getAllNewsPosts();
     res.json(posts);
