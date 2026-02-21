@@ -1,0 +1,406 @@
+You are a senior full-stack developer. Review the current final state of my project (file structure, routing, UI components, state management, dummy data, etc.) and improve it professionally.
+
+The goal is to build a modern White-Label Record Label / Distribution Platform Dashboard similar to a real label management panel.
+
+The dashboard partially exists, but I want you to refine and complete:
+
+Login system
+
+Dashboard layout
+
+Core pages
+
+Navigation
+
+Data structure
+
+Clean architecture
+
+Make it production-ready in structure (even if using mock data).
+
+1. General Requirements
+
+Modern, clean UI (professional SaaS style)
+
+Responsive (mobile + desktop)
+
+Dark mode ready (optional toggle)
+
+Component-based architecture
+
+Clean folder structure
+
+No repeated code
+
+Scalable structure
+
+Clear separation of layout / components / pages
+
+Use realistic dummy data where backend is not connected.
+
+2. Routing Structure
+
+Implement proper routing with these routes:
+
+Public Routes
+
+/login
+
+/register
+
+/forgot-password
+
+Protected Routes
+
+/app (Main Layout Wrapper)
+
+/app/dashboard
+
+/app/catalog
+
+/app/upload
+
+/app/earnings
+
+/app/payouts
+
+/app/artists
+
+/app/users
+
+/app/settings
+
+/app/support
+
+Protected routes must redirect to /login if not authenticated.
+
+3. Authentication Flow
+Login Page
+
+Email
+
+Password
+
+Remember me
+
+Forgot password link
+
+Form validation (required fields, email format, min password length)
+
+On success → redirect to /app/dashboard
+
+Register Page
+
+Label Name
+
+Full Name
+
+Email
+
+Password
+
+Country
+
+Timezone
+
+Form validation
+
+Forgot Password
+
+Email input
+
+Confirmation message (mock logic)
+
+Include proper auth state handling (mock JWT or context-based).
+
+4. Main Layout (App Layout)
+
+After login, show a professional SaaS layout:
+
+Left Sidebar Navigation
+
+Logo (Label Name)
+
+Dashboard
+
+Catalog
+
+Upload
+
+Earnings
+
+Payouts
+
+Artists
+
+Users
+
+Settings
+
+Support
+
+Logout button at bottom
+
+Top Bar
+
+Search input
+
+Notification icon
+
+User avatar dropdown
+
+Profile
+
+Settings
+
+Logout
+
+5. Dashboard Page
+
+Make it realistic and useful.
+
+KPI Cards
+
+Total Revenue
+
+This Month Revenue
+
+Total Streams
+
+Active Artists
+
+Active Releases
+
+Charts
+
+Monthly revenue chart
+
+Streams growth chart
+
+Tables
+
+Recent Releases
+
+Latest Payout Requests
+
+Use mock realistic financial/stream data.
+
+6. Catalog Page
+
+Release management table:
+
+Columns:
+
+Cover
+
+Title
+
+Artist
+
+Type (Single / EP / Album)
+
+Status (Pending / Approved / Rejected / Live)
+
+Release Date
+
+Streams
+
+Revenue
+
+Actions (View / Edit)
+
+Include:
+
+Filter by status
+
+Search by title
+
+Pagination
+
+7. Upload Page (Release Wizard)
+
+Multi-step form:
+
+Step 1: Release Info
+
+Title
+
+Version
+
+Primary Artist
+
+Featuring Artists
+
+Genre
+
+Language
+
+Release Type
+
+Step 2: Audio Upload
+
+Track title
+
+ISRC (optional)
+
+Explicit toggle
+
+WAV file upload (mock)
+
+Step 3: Distribution
+
+DSP selection (Spotify, Apple Music, etc.)
+
+Release date
+
+Territory
+
+Step 4: Review & Submit
+
+Summary page
+
+Submit button
+
+On submit:
+
+Add release with "Pending" status.
+
+8. Earnings Page
+
+Revenue summary cards
+
+Monthly breakdown
+
+Filter by:
+
+Artist
+
+Release
+
+Date range
+
+Table:
+
+DSP
+
+Streams
+
+Revenue
+
+Period
+
+9. Payouts Page
+
+Available Balance
+
+Pending Balance
+
+Total Paid
+
+Add Payment Method
+
+Bank Transfer
+
+PayPal
+
+Crypto (optional)
+
+Payout History Table
+
+Date
+
+Amount
+
+Status
+
+Method
+
+10. Artists Page
+
+Artist list
+
+Artist detail page
+
+Total streams
+
+Total revenue
+
+Releases
+
+Performance chart
+
+11. Users Page (Role System)
+
+Implement roles:
+
+Owner
+
+Admin
+
+Manager
+
+Artist
+
+Allow:
+
+Add user
+
+Assign role
+
+Toggle permissions
+
+12. Settings Page
+
+Label Name
+
+Logo upload
+
+Contact email
+
+Default revenue split
+
+Tax settings (mock)
+
+Notification preferences
+
+13. Support Page
+
+Simple ticket/chat style layout:
+
+Open tickets list
+
+Create new ticket
+
+Ticket detail view
+
+Status (Open / In Progress / Closed)
+
+14. Technical Expectations
+
+Clean folder structure:
+
+components/
+
+layouts/
+
+pages/
+
+hooks/
+
+context/
+
+utils/
+
+Reusable UI components (Button, Card, Modal, Table, FormInput)
+
+Proper state management
+
+Clean code
+
+Comment important logic
+
+No overengineering
+
+No unnecessary libraries
+
+If needed, refactor existing code to match a scalable SaaS architecture.
