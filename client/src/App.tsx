@@ -10,7 +10,6 @@ import Artists from "@/pages/Artists";
 import Submissions from "@/pages/Submissions";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import CursorTrail from "@/components/ui/CursorTrail";
 
 function Router() {
   return (
@@ -29,7 +28,6 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <div className="flex flex-col min-h-screen selection:bg-primary/30">
-          <CursorTrail />
           <Navbar />
           <main className="flex-grow">
             <Router />
