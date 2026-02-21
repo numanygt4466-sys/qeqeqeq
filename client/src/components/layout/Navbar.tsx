@@ -5,25 +5,27 @@ export default function Navbar() {
   const [location] = useLocation();
 
   const navItems = [
-    { href: "/", label: "Solutions" },
+    { href: "/", label: "Home" },
     { href: "/artists", label: "Artists" },
-    { href: "/releases", label: "News" },
-    { href: "/about", label: "About" },
+    { href: "/catalog", label: "Catalog" },
+    { href: "/submissions", label: "Submissions" },
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="fixed top-0 z-50 w-full border-b border-white/5 bg-background/60 backdrop-blur-2xl">
       <div className="container mx-auto px-6 h-20 flex items-center justify-between">
-        <Link href="/" className="font-display font-bold text-2xl tracking-tight text-primary flex items-center gap-2" data-testid="link-home-logo">
-          RAW ARCHIVES
+        <Link href="/" className="group flex items-center gap-3" data-testid="link-home-logo">
+          <div className="w-8 h-8 bg-primary rounded-sm flex items-center justify-center font-bold text-white tracking-tighter transition-transform group-hover:scale-110">RA</div>
+          <span className="font-display font-black text-xl tracking-[0.2em] uppercase">RAW ARCHIVES</span>
         </Link>
-        <nav className="hidden md:flex gap-8">
+        
+        <nav className="hidden lg:flex items-center gap-10">
           {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               className={cn(
-                "text-sm font-medium transition-colors hover:text-primary",
+                "text-[13px] font-medium uppercase tracking-[0.15em] transition-all hover:text-primary",
                 location === item.href ? "text-primary" : "text-muted-foreground"
               )}
               data-testid={`link-nav-${item.label.toLowerCase()}`}
@@ -32,9 +34,13 @@ export default function Navbar() {
             </Link>
           ))}
         </nav>
-        <div className="flex items-center gap-4">
-          <button className="bg-primary text-white px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-primary/90 transition-all" data-testid="button-get-in-touch">
-            Get in Touch
+
+        <div className="flex items-center gap-6">
+          <Link href="/submissions" className="hidden sm:block text-xs font-bold uppercase tracking-widest border border-white/10 px-6 py-2.5 hover:bg-white hover:text-black transition-all" data-testid="link-nav-submit">
+            Submit Demo
+          </Link>
+          <button className="lg:hidden text-white" aria-label="Menu">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 8h16M4 16h16"/></svg>
           </button>
         </div>
       </div>

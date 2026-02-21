@@ -5,21 +5,19 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
-import Releases from "@/pages/Releases";
+import Catalog from "@/pages/Catalog";
+import Artists from "@/pages/Artists";
+import Submissions from "@/pages/Submissions";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-
-// Dummy placeholder for Artists/About for now
-const Artists = () => <div className="container mx-auto px-4 py-32 text-center font-mono">ARTISTS ROSTER [UNDER CONSTRUCTION]</div>;
-const About = () => <div className="container mx-auto px-4 py-32 text-center font-mono">MANIFESTO [UNDER CONSTRUCTION]</div>;
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
-      <Route path="/releases" component={Releases} />
+      <Route path="/catalog" component={Catalog} />
       <Route path="/artists" component={Artists} />
-      <Route path="/about" component={About} />
+      <Route path="/submissions" component={Submissions} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -29,7 +27,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <div className="flex flex-col min-h-screen selection:bg-foreground selection:text-background">
+        <div className="flex flex-col min-h-screen selection:bg-primary/30">
           <Navbar />
           <main className="flex-grow">
             <Router />
