@@ -34,7 +34,7 @@ export class DatabaseStorage {
     const [user] = await db.select().from(users).where(eq(users.email, email));
     return user;
   }
-  async createUser(data: Omit<User, "id" | "createdAt" | "isApproved">): Promise<User> {
+  async createUser(data: Omit<User, "id" | "createdAt" | "isApproved" | "isSuspended" | "suspensionReason">): Promise<User> {
     const [user] = await db.insert(users).values(data).returning();
     return user;
   }
