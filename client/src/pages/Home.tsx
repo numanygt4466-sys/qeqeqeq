@@ -1,7 +1,6 @@
 import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
-import { useRef } from "react";
+import { motion } from "framer-motion";
 import heroEditorial from "@/assets/images/hero-editorial.png";
 import release1 from "@/assets/images/release-1.png";
 import release2 from "@/assets/images/release-2.png";
@@ -26,23 +25,9 @@ function RevealOnScroll({ children, delay = 0, className = "" }: { children: Rea
 }
 
 function ParallaxHero() {
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start start", "end start"],
-  });
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "25%"]);
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.15]);
-  const opacity = useTransform(scrollYProgress, [0, 0.8, 1], [1, 0.3, 0]);
-  const smoothY = useSpring(y, { stiffness: 40, damping: 20 });
-  const smoothScale = useSpring(scale, { stiffness: 40, damping: 20 });
-
   return (
-    <section ref={ref} className="relative w-full h-screen overflow-hidden group">
-      <motion.div
-        className="absolute inset-0 z-0"
-        style={{ y: smoothY, scale: smoothScale }}
-      >
+    <section className="relative w-full h-screen overflow-hidden group">
+      <div className="absolute inset-0 z-0">
         <motion.img
           initial={{ scale: 1.2, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -51,11 +36,8 @@ function ParallaxHero() {
           alt="Featured Artist"
           className="w-full h-full object-cover grayscale"
         />
-      </motion.div>
-      <motion.div
-        className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/60 z-[1]"
-        style={{ opacity }}
-      />
+      </div>
+      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/60 z-[1]" />
 
       <div className="absolute right-0 top-1/2 -translate-y-1/2 z-20 hidden md:flex flex-col gap-px">
         <motion.button
