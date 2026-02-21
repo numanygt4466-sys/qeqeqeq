@@ -58,7 +58,7 @@ The project uses a single repository with three main directories:
 - **Migrations**: Drizzle Kit (`drizzle-kit push` for development, migrations output to `./migrations/`)
 
 **Tables:**
-- `users` — id, username, email, password (hashed), fullName, labelName, role (admin/label_manager/artist), isApproved, country, timezone, createdAt
+- `users` — id, username, email, password (hashed), fullName, labelName, role (admin/label_manager/artist), isApproved, isSuspended, suspensionReason, country, timezone, createdAt
 - `applications` — id, userId (FK→users), status, rejectionReason, createdAt, reviewedAt
 - `releases` — id, userId (FK→users), title, version, primaryArtist, releaseType, genre, language, releaseDate, status, rejectionReason, coverArtUrl, dsps (text array), createdAt
 - `tracks` — id, releaseId (FK→releases), title, trackNumber, plus additional fields
