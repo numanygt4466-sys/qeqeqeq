@@ -98,9 +98,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <main className="flex-1 flex flex-col overflow-hidden">
         <header className="h-14 border-b border-gray-200 bg-white flex items-center justify-between px-6 shrink-0">
           <div className="flex items-center gap-4 flex-1">
-            <span className="text-sm font-medium text-gray-500 hidden sm:block">
-              {user?.labelName || "Dashboard"}
-            </span>
           </div>
           <div className="flex items-center gap-4">
             <DropdownMenu>
