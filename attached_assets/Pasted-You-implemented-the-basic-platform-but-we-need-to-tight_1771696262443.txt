@@ -1,0 +1,267 @@
+You implemented the basic platform, but we need to tighten product logic and enforce real workflows. Apply the changes below across backend + frontend + database.
+
+0) Development Reset
+
+Completely reset the development database (wipe all tables / records).
+
+Reseed the admin user:
+
+username/email: admin
+
+password: 123
+
+role: admin
+
+password MUST be hashed
+
+Ensure password hashes are never returned in any API response.
+
+1) Upload Wizard — MP3 + Cover are REQUIRED (Hard Rule)
+
+Currently MP3 and cover upload are not required. Fix that.
+
+Required assets
+
+At least 1 audio file per track (accept .mp3 and/or .wav, but MP3 must be allowed)
+
+Release must have a cover image (jpg/png)
+
+Prevent submit until:
+
+cover uploaded
+
+minimum 1 track exists
+
+each track has audio attached
+
+Validation rules
+
+Release Info required: title, primary artist, release type, genre, language, release date
+
+Track required: track title, audio file, explicit flag default false
+
+Distribution required: at least 1 DSP selected
+
+Show user-friendly errors and block step navigation until valid.
+
+2) DSP Selection — Provide 60 Popular DSPs
+
+In the Distribution step:
+
+Provide a list of the most well-known ~60 DSPs as selectable checkboxes with search/filter and “Select All”.
+
+Store selected DSPs for each release.
+
+Use a seeded DSP table (id, name, region, enabled=true).
+
+Admin can enable/disable DSPs globally (so DSP list is manageable).
+
+Implement DSP list as a database table and seed it on reset.
+
+3) Admin = Full Control (Everything Editable)
+
+Admin must be able to:
+
+Edit ANY release data (title, artist, tracks, DSP selections, release date, cover, audio)
+
+Approve / reject releases (rejection requires reason)
+
+Edit ANY user info, assign role, deactivate/delete users
+
+Change any user password (force reset) including admin password
+
+View all applications, releases, payout requests
+
+Change platform settings (minimum payout threshold, allowed payout methods, etc.)
+
+Add admin-only screens and actions with role guards on both frontend & backend.
+
+4) Approval Workflows — Separate Queues (Admin Pages)
+
+Admin should have separate pages, not mixed:
+
+Admin routes
+
+/app/admin/applications
+
+List pending account applications
+
+Approve / reject + notes
+
+/app/admin/releases
+
+List pending releases
+
+Approve / reject + reason
+
+Admin can open and edit the release before approving
+
+/app/admin/payouts
+
+List payout requests
+
+Approve / reject + reason
+
+If approved → create payout transaction record
+
+Keep these three queues separate and clearly labeled.
+
+5) Account Applications — Must Gate Dashboard
+
+New users are “applicants” until approved:
+
+On register: create Application record + user in “pending approval” state (or user not created until approved—choose one consistent approach).
+
+A non-approved user:
+
+can log in (optional) but must ONLY see a “Waiting for admin approval” screen
+
+cannot access /app/* dashboard pages
+
+Approval flips isApproved=true (or converts applicant to user).
+
+6) Payouts — Minimum $50 + Only Crypto/Bank + Method Approval
+Payout rules
+
+Minimum withdrawal amount: $50 (hard rule)
+
+Only payout methods allowed for now:
+
+Crypto
+
+Bank Transfer
+
+User must submit a Payout Method Application (like account application) that goes to admin.
+
+Admin approves/rejects payout method before payouts can be requested.
+
+User payout flow
+
+Payout page shows:
+
+Available balance
+
+Minimum threshold reminder ($50)
+
+Payment method status (Pending/Approved/Rejected)
+
+Withdraw form disabled until method approved + available balance >= 50
+
+Admin payout flow
+
+Admin reviews payout requests in /app/admin/payouts
+
+Admin approve → mark payout as “approved” and create a transaction record
+
+Admin reject → require reason
+
+7) Support Tickets — Must Exist & Work
+
+Support is not complete. Implement:
+
+User can create ticket: subject required, message required
+
+Ticket thread with messages
+
+Status: open / in_progress / closed
+
+Admin can reply and change status
+Routes:
+
+/app/support user side
+
+/app/admin/support admin side (optional but recommended)
+
+8) Security & Route Guards
+
+Backend must check role/approval status on every protected endpoint.
+
+Frontend route guard:
+
+Not logged in → /login
+
+Logged in but not approved → /pending-approval (only logout allowed)
+
+Approved user → /app/*
+
+Admin-only routes blocked unless role=admin
+
+Strip password hashes from any responses.
+
+Add server-side validation for all required fields (never rely only on frontend).
+
+9) Data Models (Minimum)
+
+Implement/adjust schemas:
+
+User: id, username/email, passwordHash, role, isApproved, createdAt
+
+Application: id, userId or applicant data, status, notes, createdAt
+
+DSP: id, name, enabled
+
+Release: id, title, artistId, coverUrl, releaseDate, status, rejectionReason, createdByUserId
+
+Track: id, releaseId, title, audioUrl, explicit
+
+ReleaseDSP: releaseId, dspId
+
+PayoutMethodApplication: id, userId, type(crypto/bank), details, status, createdAt
+
+PayoutRequest: id, userId, amount, methodId, status, rejectionReason, createdAt
+
+Earnings/Balance: keep mock but consistent (availableBalance must be calculable or seeded)
+
+Ticket + TicketMessage
+
+10) UI Changes
+
+Ensure public site never shows portal/dashboard components.
+
+Dashboard should feel premium SaaS:
+
+Sidebar + topbar + pages
+
+Tables, filters, status pills
+
+Catalog: show releases with status, streams, revenue (mock ok).
+
+Upload: strict validation + required MP3/cover.
+
+Payouts: enforce $50 minimum and method approval.
+
+11) Final: Provide a test checklist
+
+At the end, output a checklist to test:
+
+admin login admin/123
+
+register new user → pending approval
+
+admin approves user → user gets dashboard access
+
+user submits release without cover/audio → blocked
+
+user submits valid release → pending
+
+admin edits and approves/rejects release
+
+user tries payout under $50 → blocked
+
+user submits payout method → admin approves
+
+user requests payout >= $50 → admin approves/rejects
+
+user creates support ticket → admin replies
+
+Do not leave placeholders. Implement real logic with minimum viable UI and consistent data flow.
+
+Dashboard tasarımını fotoğrafa benzetme
+
+Fotoğrafı atınca şunu yap:
+
+Layout / renk / kart stilleri / sidebar yapısı / tablo tasarımı birebir benzesin
+
+Component isimlerini mantıklı kur (Sidebar, Topbar, StatCard, DataTable vs.)
+
+Pixel-perfect yakın bir UI çıkar
