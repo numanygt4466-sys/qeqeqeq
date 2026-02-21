@@ -1,7 +1,7 @@
 import { Link, useLocation } from "wouter";
-import { Menu, User, LayoutDashboard, Send, X } from "lucide-react";
+import { Menu, Globe, User, LayoutDashboard, Send, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import blingLogo from "@/assets/images/raw-archives-logo-bling.png";
+import SparkleText from "@/components/SparkleText";
 import {
   Sheet,
   SheetContent,
@@ -57,15 +57,26 @@ export default function Navbar() {
                 </div>
               </div>
               <div className="absolute bottom-8 left-8 pb-[env(safe-area-inset-bottom)]">
-                <img src={blingLogo} alt="Raw Archives Records" className="h-10 object-contain logo-shine" />
+                <SparkleText color="rgba(255,255,255,0.9)" sparkleCount={4}>
+                  <div className="flex flex-col gap-0">
+                    <span className="font-black text-2xl tracking-[0.3em] uppercase leading-none text-white">RAW ARCHIVES</span>
+                    <span className="text-[8px] tracking-[0.6em] font-bold text-white/40 uppercase mt-1">Records</span>
+                  </div>
+                </SparkleText>
               </div>
             </SheetContent>
           </Sheet>
           
         </div>
         
-        <Link href="/" className="absolute left-1/2 -translate-x-1/2 flex items-center group">
-          <span className="logo-shine"><img src={blingLogo} alt="Raw Archives Records" className="h-10 md:h-14 object-contain transition-transform group-hover:scale-105" /></span>
+        <Link href="/" className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center group">
+          <SparkleText color="rgba(255,255,255,0.9)" sparkleCount={5}>
+            <div className="flex flex-col items-center gap-0">
+              <Globe className="w-6 h-6 md:w-7 md:h-7 text-white mb-1 transition-transform group-hover:rotate-12" />
+              <span className="font-black text-base md:text-2xl tracking-[0.2em] md:tracking-[0.3em] uppercase leading-none">RAW ARCHIVES</span>
+              <span className="text-[8px] tracking-[0.6em] font-bold text-white/40 uppercase mt-1 hidden sm:block">Records</span>
+            </div>
+          </SparkleText>
         </Link>
 
         <div className="flex items-center gap-6">

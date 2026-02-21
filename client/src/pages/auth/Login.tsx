@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { Eye, EyeOff } from "lucide-react";
-import blingLogo from "@/assets/images/raw-archives-logo-bling.png";
+import SparkleText from "@/components/SparkleText";
 
 function FloatingInput({
   id,
@@ -84,7 +84,10 @@ export default function Login() {
     <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6">
       <div className="w-full max-w-[400px]">
         <div className="text-center mb-10" data-testid="text-login-brand">
-          <span className="logo-shine inline-block"><img src={blingLogo} alt="Raw Archives Records" className="h-12 object-contain mx-auto" /></span>
+          <SparkleText color="rgba(0,0,0,0.6)" sparkleCount={5}>
+            <h1 className="text-[26px] font-bold tracking-[0.2em] uppercase text-gray-900">RAW ARCHIVES</h1>
+          </SparkleText>
+          <div className="w-12 h-[2px] bg-black mx-auto mt-3" />
         </div>
 
         {loginError && (

@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/use-auth";
 import { useState, useRef, useEffect } from "react";
-import blingLogo from "@/assets/images/raw-archives-logo-bling.png";
+import SparkleText from "@/components/SparkleText";
 
 type NavItem = { href: string; label: string };
 
@@ -101,8 +101,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     <div className="flex flex-col h-screen overflow-hidden bg-[#f5f6f8]">
       <nav className="bg-black shrink-0">
         <div className="max-w-[1400px] mx-auto px-4 md:px-6 flex items-center h-[52px]">
-          <Link href="/app/dashboard" className="mr-8 shrink-0 logo-shine" data-testid="nav-brand">
-            <img src={blingLogo} alt="Raw Archives Records" className="h-8 object-contain" />
+          <Link href="/app/dashboard" className="mr-8 shrink-0" data-testid="nav-brand">
+            <SparkleText color="rgba(255,255,255,0.8)" sparkleCount={4}>
+              <span className="font-bold text-[15px] tracking-[0.18em] uppercase text-white">RAW ARCHIVES</span>
+            </SparkleText>
           </Link>
 
           <div className="hidden md:flex items-center gap-5 flex-1">
