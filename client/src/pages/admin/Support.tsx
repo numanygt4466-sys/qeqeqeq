@@ -201,9 +201,9 @@ export default function AdminSupport() {
                         <span className="text-sm font-medium text-gray-900">
                           {msg.user?.fullName || "Unknown"}
                         </span>
-                        {msg.user?.role === "admin" && (
+                        {msg.user?.role === "label_manager" && (
                           <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-indigo-100 text-indigo-800">
-                            Admin
+                            Staff
                           </span>
                         )}
                         <span className="text-xs text-gray-400">

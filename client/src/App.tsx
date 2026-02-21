@@ -81,7 +81,7 @@ function RequireAdmin({ children }: { children: React.ReactNode }) {
 
   if (!user) return <Redirect to="/login" />;
   if (!user.isApproved) return <PendingApproval />;
-  if (user.role !== "admin") return <Redirect to="/app/dashboard" />;
+  if (user.role !== "label_manager") return <Redirect to="/app/dashboard" />;
 
   return <AppLayout>{children}</AppLayout>;
 }

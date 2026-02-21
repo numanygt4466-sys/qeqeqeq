@@ -74,7 +74,7 @@ async function seed() {
   console.log("Wiping existing data...");
   await db.execute(sql`TRUNCATE TABLE ticket_messages, tickets, payout_requests, payout_method_applications, earnings, release_dsps, tracks, releases, applications, dsps, platform_settings, users RESTART IDENTITY CASCADE`);
 
-  console.log("Creating admin user...");
+  console.log("Creating label manager user...");
   const hashedPassword = await bcrypt.hash("123", 10);
   await db.insert(users).values({
     username: "admin",
@@ -82,7 +82,7 @@ async function seed() {
     password: hashedPassword,
     fullName: "Platform Administrator",
     labelName: "RAW ARCHIVES",
-    role: "admin",
+    role: "label_manager",
     isApproved: true,
     country: "us",
     timezone: "utc",
@@ -99,7 +99,7 @@ async function seed() {
     { key: "allowed_payout_methods", value: "crypto,bank_transfer" },
   ]);
 
-  console.log(`Seed complete. Admin user: admin / 123. ${DSP_LIST.length} DSPs seeded.`);
+  console.log(`Seed complete. Label Manager user: admin / 123. ${DSP_LIST.length} DSPs seeded.`);
   await pool.end();
 }
 

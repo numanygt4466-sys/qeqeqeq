@@ -83,7 +83,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     { href: "/app/payouts", label: "Payouts" },
   ];
 
-  const adminItems: NavItem[] = user?.role === "admin" ? [
+  const adminItems: NavItem[] = user?.role === "label_manager" ? [
     { href: "/app/admin/applications", label: "Applications" },
     { href: "/app/admin/releases", label: "Release Queue" },
     { href: "/app/admin/payouts", label: "Payouts Queue" },

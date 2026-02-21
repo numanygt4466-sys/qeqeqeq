@@ -66,10 +66,11 @@ The project uses a single repository with three main directories:
 - `ticketMessages` — id, ticketId (FK→tickets), userId (FK→users), message, plus timestamp
 
 ### Role-Based Access Control
-- **admin**: Full platform access — approve/reject applications and releases, manage users, view all tickets
-- **label_manager**: Submit releases, manage artists within their label
+- **label_manager**: Full platform access — approve/reject applications and releases, manage users, view all tickets, platform settings
+- **ar**: A&R role — can view all releases and manage artists within the label
 - **artist**: View own releases and earnings only
-- New accounts require admin approval before dashboard access is granted
+- New accounts require Label Manager approval before dashboard access is granted
+- Default login: username `admin`, password `123` (Label Manager role)
 
 ### Dev vs Production
 - **Development**: `npm run dev` starts Express with Vite middleware for HMR on port 5000

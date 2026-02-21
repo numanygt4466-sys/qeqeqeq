@@ -122,9 +122,9 @@ export default function Support() {
                     <span className="text-sm font-medium text-gray-900">
                       {msg.user?.fullName || "Unknown"}
                     </span>
-                    {msg.user?.role === "admin" && (
+                    {msg.user?.role === "label_manager" && (
                       <Badge variant="destructive" className="text-[10px] px-1.5 py-0">
-                        Admin
+                        Staff
                       </Badge>
                     )}
                     <span className="text-xs text-gray-400">

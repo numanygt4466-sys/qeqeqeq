@@ -45,8 +45,8 @@ function requireAdmin(req: Request, res: Response, next: NextFunction) {
     return res.status(401).json({ message: "Not authenticated" });
   }
   storage.getUser(req.session.userId).then(user => {
-    if (!user || user.role !== "admin") {
-      return res.status(403).json({ message: "Admin access required" });
+    if (!user || user.role !== "label_manager") {
+      return res.status(403).json({ message: "Access denied" });
     }
     next();
   });
@@ -202,7 +202,7 @@ export async function registerRoutes(
   app.get("/api/releases", requireApproved, async (req: Request, res: Response) => {
     const user = await storage.getUser(req.session.userId!);
     if (!user) return res.status(401).json({ message: "Not found" });
-    const rels = user.role === "admin" || user.role === "label_manager"
+    const rels = user.role === "label_manager" || user.role === "ar"
       ? await storage.getAllReleases()
       : await storage.getReleasesByUser(user.id);
     const result = [];
@@ -535,7 +535,7 @@ export async function registerRoutes(
   app.get("/api/tickets", requireApproved, async (req: Request, res: Response) => {
     const user = await storage.getUser(req.session.userId!);
     if (!user) return res.status(401).json({ message: "Not found" });
-    const tix = user.role === "admin"
+    const tix = user.role === "label_manager"
       ? await storage.getAllTickets()
       : await storage.getTicketsByUser(user.id);
     res.json(tix);
@@ -557,7 +557,7 @@ export async function registerRoutes(
     const ticket = await storage.getTicket(paramId(req.params.id));
     if (!ticket) return res.status(404).json({ message: "Not found" });
     const user = await storage.getUser(req.session.userId!);
-    if (user!.role !== "admin" && ticket.userId !== user!.id) {
+    if (user!.role !== "label_manager" && ticket.userId !== user!.id) {
       return res.status(403).json({ message: "Access denied" });
     }
     const messages = await storage.getMessagesByTicket(ticket.id);
@@ -570,7 +570,7 @@ export async function registerRoutes(
       const ticket = await storage.getTicket(paramId(req.params.id));
       if (!ticket) return res.status(404).json({ message: "Not found" });
       const user = await storage.getUser(req.session.userId!);
-      if (user!.role !== "admin" && ticket.userId !== user!.id) {
+      if (user!.role !== "label_manager" && ticket.userId !== user!.id) {
         return res.status(403).json({ message: "Access denied" });
       }
       const msg = await storage.createTicketMessage({ ticketId: ticket.id, userId: req.session.userId!, message: data.message });

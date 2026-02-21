@@ -87,16 +87,16 @@ export default function AdminUsers() {
   };
 
   const rolePill = (role: string) => {
-    if (role === "admin")
-      return (
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-          Admin
-        </span>
-      );
     if (role === "label_manager")
       return (
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
           Label Manager
+        </span>
+      );
+    if (role === "ar")
+      return (
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+          A&R
         </span>
       );
     return (
@@ -182,7 +182,7 @@ export default function AdminUsers() {
                       >
                         <KeyRound className="w-3 h-3 mr-1" /> Reset
                       </Button>
-                      {u.role !== "admin" && (
+                      {u.role !== "label_manager" && (
                         <Button
                           size="sm"
                           variant="outline"
@@ -241,8 +241,8 @@ export default function AdminUsers() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="artist">Artist</SelectItem>
+                  <SelectItem value="ar">A&R</SelectItem>
                   <SelectItem value="label_manager">Label Manager</SelectItem>
-                  <SelectItem value="admin">Admin</SelectItem>
                 </SelectContent>
               </Select>
             </div>

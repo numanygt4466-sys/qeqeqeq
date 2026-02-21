@@ -54,11 +54,11 @@ const categories: Category[] = [
       },
       {
         title: "How do I set up my account after approval?",
-        body: "Once your application is approved by an admin, you'll gain access to the full dashboard. Start by completing your profile under Settings — add your label name, country, timezone, and payout preferences. Then you're ready to submit your first release.",
+        body: "Once your application is approved, you'll gain access to the full dashboard. Start by completing your profile under Settings — add your label name, country, timezone, and payout preferences. Then you're ready to submit your first release.",
       },
       {
         title: "What are the different user roles?",
-        body: "There are three roles on the platform: Artist — can view own releases and earnings; Label Manager — can submit releases and manage artists within their label; Admin — full platform access including approving applications, managing releases, users, and support tickets.",
+        body: "There are three roles on the platform: Artist — can view own releases and earnings; A&R — can view all releases and manage artists within the label; Label Manager — full platform access including approving applications, managing releases, users, and support tickets.",
       },
     ],
   },
@@ -301,18 +301,18 @@ export default function HelpCenter() {
                 <div
                   key={msg.id}
                   className={`px-6 py-5 ${idx > 0 ? "border-t border-gray-100" : ""} ${
-                    msg.user?.role === "admin" ? "bg-blue-50/30" : ""
+                    msg.user?.role === "label_manager" ? "bg-blue-50/30" : ""
                   }`}
                   data-testid={`message-${msg.id}`}
                 >
                   <div className="flex items-center gap-2 mb-2">
                     <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${
-                      msg.user?.role === "admin" ? "bg-black text-white" : "bg-gray-200 text-gray-600"
+                      msg.user?.role === "label_manager" ? "bg-black text-white" : "bg-gray-200 text-gray-600"
                     }`}>
                       {(msg.user?.fullName || "U")[0].toUpperCase()}
                     </div>
                     <span className="text-sm font-semibold text-gray-900">{msg.user?.fullName || "Unknown"}</span>
-                    {msg.user?.role === "admin" && (
+                    {msg.user?.role === "label_manager" && (
                       <span className="text-[10px] font-bold uppercase tracking-wider bg-black text-white px-1.5 py-0.5 rounded">Staff</span>
                     )}
                     <span className="text-xs text-gray-400 ml-auto">{new Date(msg.createdAt).toLocaleString()}</span>
