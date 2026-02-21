@@ -16,7 +16,7 @@ export default function Navbar() {
   const navItems = [
     { href: "/artists", label: "Artists" },
     { href: "/catalog", label: "Catalog" },
-    { href: "/submissions", label: "Submit Application", icon: Send },
+    { href: "/register", label: "Submit Application", icon: Send },
   ];
 
   return (
