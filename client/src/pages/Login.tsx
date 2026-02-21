@@ -36,7 +36,7 @@ export default function Login() {
             </div>
             <CardTitle className="text-2xl font-black tracking-tighter uppercase">Member Access</CardTitle>
             <CardDescription className="text-[10px] tracking-[0.2em] uppercase text-white/40 mt-2">
-              Raw Archives Music Group Portal
+              Raw Archives Records Portal
             </CardDescription>
           </CardHeader>
           <CardContent className="pt-10">

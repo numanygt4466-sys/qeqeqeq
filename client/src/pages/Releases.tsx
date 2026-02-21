@@ -16,7 +16,7 @@ export default function Releases() {
       <header className="py-24 border-b border-border bg-secondary">
         <div className="container mx-auto px-6">
           <h1 className="text-5xl md:text-7xl font-display font-bold tracking-tight mb-4">News & Updates</h1>
-          <p className="text-xl text-muted-foreground max-w-2xl">The latest from Raw Archives Music Group — global insights, artist news, and corporate updates.</p>
+          <p className="text-xl text-muted-foreground max-w-2xl">The latest from Raw Archives Records — global insights, artist news, and corporate updates.</p>
         </div>
       </header>
 

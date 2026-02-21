@@ -167,7 +167,7 @@ export default function Home() {
           <span className="text-[10px] font-bold tracking-[0.5em] uppercase text-white/40 mb-8">Our Official Distribution Partner</span>
           <img
             src={virginMusicLogo}
-            alt="Virgin Music Group"
+            alt="Virgin Records"
             className="h-20 object-contain opacity-80 hover:opacity-100 transition-opacity"
             data-testid="img-distribution-partner"
           />
